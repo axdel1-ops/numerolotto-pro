@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUMEROLOTTO PRO V17.3</title>
+  <style>
+    :root { --cyan:#00e5ff; --fuchsia:#ff00d4; --green:#78ff96; --panel:#101722; }
+    body { margin:0; font-family:Segoe UI,sans-serif; background:#070b11; color:#ecf9ff; padding:18px; }
+    .app { max-width:1400px; margin:0 auto; display:grid; gap:16px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 14px; background:#0d141d; border:1px solid #26445f; border-radius:12px; }
+    .topbar h1 { margin:0; font-size:1.15rem; }
+    .btn-sorteos { border:1px solid var(--cyan); border-radius:8px; background:#0a2530; color:var(--cyan); padding:10px 18px; font-weight:800; cursor:pointer; white-space:nowrap; box-shadow:0 0 10px rgba(0,229,255,.25); }
+    .btn-sorteos:hover { filter:brightness(1.1); }
+    .sorteos-root .sorteos-panel { margin:0; }
+    .sorteos-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+    .lines-list, .records-list { list-style:none; margin:10px 0 0; padding:0; display:flex; flex-direction:column; gap:8px; }
+    .line-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; background:#0b1219; border:1px solid #355b79; border-radius:8px; cursor:pointer; }
+    .line-item:hover { border-color:var(--cyan); }
+    .line-item .line-title { font-weight:700; flex:1; }
+    .line-actions { display:flex; gap:6px; }
+    .line-actions button { padding:6px 10px; font-size:12px; }
+    .record-row { display:grid; grid-template-columns:1fr 1fr auto auto; gap:8px; align-items:center; padding:8px; background:#0b1219; border:1px solid #335978; border-radius:8px; }
+    .record-row input { padding:8px; }
+    .new-record { display:grid; grid-template-columns:1fr 1fr auto; gap:8px; margin:12px 0; align-items:end; }
+    #viewMain { display:grid; gap:16px; }
+    .panel { background:var(--panel); border:1px solid #26445f; border-radius:12px; padding:14px; box-shadow:inset 0 0 10px rgba(0,229,255,.08); }
+    h1,h2,h3,p { margin:0; }
+    .sub { margin-top:6px; color:#9abed6; }
+    .controls { margin-top:10px; display:grid; grid-template-columns:1fr auto; gap:10px; }
+    input { width:100%; border:1px solid #355b79; border-radius:8px; background:#0b1219; color:#ecf9ff; padding:10px; }
+    button { border:1px solid #477fa8; border-radius:8px; background:#13324d; color:#ecfbff; padding:10px 12px; font-weight:700; cursor:pointer; }
+    .top-kpi { margin-top:10px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; }
+    .kpi { background:#0c131b; border:1px solid #315677; border-radius:8px; padding:8px; }
+    .kpi strong { display:block; color:#9dc8e2; font-size:12px; }
+    .ab-panels { margin-top:10px; display:grid; gap:10px; }
+    .ab-block { border:1px solid #335a79; border-radius:8px; padding:8px; }
+    .ab-title { font-size:12px; color:#9ec5dc; margin-bottom:6px; }
+    .ab-row { display:grid; grid-template-columns:40px repeat(6,minmax(48px,1fr)); gap:6px; }
+    .tag { text-align:center; border:1px solid #4a6f89; border-radius:6px; padding:6px 0; font-weight:800; }
+    .tag.a { border-color:var(--green); box-shadow:0 0 8px rgba(120,255,150,.35); }
+    .tag.b { border-color:var(--fuchsia); box-shadow:0 0 8px rgba(255,0,212,.35); }
+    .ab-cell { text-align:center; border:1px solid #355b79; border-radius:6px; padding:6px 0; background:#0b1219; }
+    .ab-tools { margin-top:8px; display:grid; grid-template-columns:1fr 1fr auto auto auto; gap:8px; }
+    .memory-note { margin-top:6px; color:#9dc5dd; font-size:13px; }
+    .boards { display:grid; grid-template-columns:repeat(auto-fit,minmax(430px,1fr)); gap:12px; }
+    .board-wrap { border:1px solid #365d7d; border-radius:10px; padding:10px; background:#0d141d; }
+    .board-wrap.coherent { border-color:var(--green); box-shadow:0 0 12px rgba(120,255,150,.35); }
+    .board-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .score { font-size:12px; border:1px solid #527695; border-radius:999px; padding:2px 8px; }
+    .grid5 { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; }
+    .cell { min-height:50px; border:1px solid #3b6384; border-radius:5px; background:#101b27; display:flex; align-items:center; justify-content:center; position:relative; color:#e8f8ff; font-weight:700; }
+    .cell.cyan { border-color:var(--cyan); box-shadow:0 0 8px rgba(0,229,255,.35); }
+    .cell.fuchsia { border-color:var(--fuchsia); box-shadow:0 0 8px rgba(255,0,212,.35); }
+    .cell.green { border-color:var(--green); box-shadow:0 0 8px rgba(120,255,150,.35); }
+    .cell input { width:100%; height:100%; border:none; background:transparent; color:#ecfbff; font-size:18px; text-align:center; font-weight:800; }
+    .label { position:absolute; left:4px; top:2px; font-size:9px; color:#93bdd6; }
+    .sum-note { margin:6px 0; font-size:13px; }
+    .sum-ok { color:var(--green); }
+    .sum-bad { color:#ff9393; }
+    .actions { margin-top:8px; display:flex; gap:6px; justify-content:flex-end; }
+    .series-grid { margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .series-box { border:1px solid #335978; border-radius:8px; padding:8px; background:#0b1219; display:flex; flex-direction:column; gap:6px; }
+    .series-title { font-size:26px; font-weight:900; line-height:1; }
+    .series-title.x { text-shadow:0 0 12px rgba(0,229,255,.45); }
+    .series-title.y { text-shadow:0 0 12px rgba(255,0,212,.45); }
+    .series-list { font-size:13px; color:#cdeeff; white-space:pre-line; line-height:1.35; }
+    .forensic-box { max-width:460px; margin-top:10px; }
+    .error { margin-top:8px; min-height:18px; color:#ff9494; }
+    .motor-strip { margin-top:10px; padding:12px 14px; border-radius:10px; background:#0f1a14; border:1px solid #3d8f5c; }
+    .motor-strip.warn { border-color:#c9a227; background:#1f1c10; }
+    .motor-strip.err { border-color:#c45c5c; background:#1f1212; }
+    .board-wrap.motor-winner { border:2px solid #ffd700; box-shadow:0 0 18px rgba(255,215,0,.45); }
+    .board-wrap .motor-penalty { font-size:11px; color:#8ec8e8; margin-left:8px; font-weight:600; }
+    .winner-badge { display:inline-block; margin-left:8px; padding:2px 8px; border-radius:999px; background:#5a4a00; color:#ffe566; font-size:11px; font-weight:800; }
+    .motor-aclaracion-text { margin-top:10px; padding:12px; background:#0c131b; border-radius:8px; border:1px solid #315677; line-height:1.45; }
+    .series-box.motor-quad { grid-column:1 / -1; border-color:#b8860b; box-shadow:0 0 10px rgba(255,215,0,.2); }
+    .series-list .series-line-hit { display:block; background:#1f5a34; border:1px solid #78ff96; border-radius:6px; padding:4px 8px; margin:2px 0; font-weight:800; }
+    #motorAnalisisRow { margin-top:12px; }
+    #motorCoincidenciaMsg { margin-top:8px; min-height:20px; font-size:14px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1>NUMEROLOTTO PRO V17.3</h1>
+      <button type="button" class="btn-sorteos" id="btnSorteos">Sorteos</button>
+    </header>
+    <div id="viewMain">
+    <section class="panel">
+      <h2 style="font-size:1.05rem;margin-bottom:6px">Arquitectura asistida</h2>
+      <p class="sub">Espejo del Excel: X central, tensores etiquetados, doble panel A/B y series en columnas debajo de cada cuadrícula.</p>
+      <div class="controls">
+        <input id="seedInput" type="text" maxlength="4" placeholder="Semilla inicial 4 cifras (ej: 9428)">
+        <button id="buildBtn" type="button">Construir 6 cuadrículas</button>
+      </div>
+      <div class="top-kpi">
+        <div class="kpi"><strong>Semilla</strong><span id="kpiSeed">----</span></div>
+        <div class="kpi"><strong>Equivalente (3 cifras)</strong><span id="kpiEq">---</span></div>
+        <div class="kpi"><strong>Pivote central</strong><span id="kpiPivot">-</span></div>
+      </div>
+      <p class="sub motor-aclaracion-text">
+        <strong>El motor selecciona la cuadrícula más consistente (A–F).</strong>
+        Las combinaciones de 4 cifras son el espacio de búsqueda dentro de esa cuadrícula.
+      </p>
+      <div id="motorResultStrip" class="motor-strip warn" style="display:none"></div>
+      <div id="motorAnalisisRow" class="controls" style="display:none; grid-template-columns:1fr auto; max-width:560px">
+        <input id="motorNumeroGanador" type="text" maxlength="4" placeholder="Número ganador (4 cifras), opcional" autocomplete="off">
+        <button type="button" id="btnAnalizarCoincidencia">Analizar coincidencia</button>
+      </div>
+      <div id="motorCoincidenciaMsg" class="memory-note"></div>
+      <pre id="motorPropagacionLog" class="memory-note" style="display:none;white-space:pre-wrap;font-size:11px;max-width:760px;margin-top:8px;padding:10px;background:#0d1520;border:1px solid #355b79;border-radius:8px;color:#cdeeff"></pre>
+      <div class="ab-panels">
+        <div class="ab-block">
+          <div class="ab-title">Fila 1 - Dato Real / Memoria</div>
+          <div class="ab-row">
+            <div class="tag a">A</div>
+            <div class="ab-cell" id="memA1">--</div><div class="ab-cell" id="memA2">--</div><div class="ab-cell" id="memA3">--</div>
+            <div class="ab-cell" id="memA4">--</div><div class="ab-cell" id="memA5">--</div><div class="ab-cell" id="memA6">--</div>
+          </div>
+          <div class="ab-row" style="margin-top:6px;">
+            <div class="tag b">B</div>
+            <div class="ab-cell" id="memB1">--</div><div class="ab-cell" id="memB2">--</div><div class="ab-cell" id="memB3">--</div>
+            <div class="ab-cell" id="memB4">--</div><div class="ab-cell" id="memB5">--</div><div class="ab-cell" id="memB6">--</div>
+          </div>
+          <div class="ab-tools">
+            <input id="memAInput" type="text" placeholder="Tabla A memoria (ej: 32-41-50-69-78-87)">
+            <input id="memBInput" type="text" placeholder="Tabla B memoria (ej: 44-53-62-71-80-99)">
+            <button id="editMemBtn" type="button">Editar</button>
+            <button id="saveMemBtn" type="button">Guardar</button>
+            <button id="deleteMemBtn" type="button">Borrar</button>
+          </div>
+        </div>
+        <div class="ab-block">
+          <div class="ab-title">Fila 2 - Sugerencia Matemática</div>
+          <div class="ab-row">
+            <div class="tag a">A</div>
+            <div class="ab-cell" id="sugA1">--</div><div class="ab-cell" id="sugA2">--</div><div class="ab-cell" id="sugA3">--</div>
+            <div class="ab-cell" id="sugA4">--</div><div class="ab-cell" id="sugA5">--</div><div class="ab-cell" id="sugA6">--</div>
+          </div>
+          <div class="ab-row" style="margin-top:6px;">
+            <div class="tag b">B</div>
+            <div class="ab-cell" id="sugB1">--</div><div class="ab-cell" id="sugB2">--</div><div class="ab-cell" id="sugB3">--</div>
+            <div class="ab-cell" id="sugB4">--</div><div class="ab-cell" id="sugB5">--</div><div class="ab-cell" id="sugB6">--</div>
+          </div>
+        </div>
+      </div>
+      <div id="memoryNote" class="memory-note">Historial listo.</div>
+      <div id="mainError" class="error"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Fase 2 - Cuadrículas 5x5 operativas</h2>
+      <div id="boards" class="boards"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Laboratorio Forense Espejo</h2>
+      <p class="sub">10 variaciones; encaje eje X <em>o</em> eje Y (vacío/igual + pivote). <strong>T = 3.º dígito del equivalente</strong>. Gemelos vía memoria/Tablas A/B del panel. <strong>Cuadrícula A–F</strong> = malla 1–6 (no Tablas gemelas).</p>
+      <div class="controls" style="grid-template-columns:1fr 1fr auto;">
+        <input id="forensicSeed" type="text" maxlength="4" placeholder="Semilla 4 cifras">
+        <input id="forensicWinner" type="text" maxlength="4" placeholder="Ganador 4 cifras">
+        <button id="forensicBtn" type="button">Reconstruir</button>
+      </div>
+      <div id="forensicError" class="error"></div>
+      <div id="forensicPanel" class="forensic-box"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Laboratorio Forense (sin tablas A/B)</h2>
+      <p class="sub">Sin Tablas gemelas A/B: <strong>x₃,y₃</strong> fijos del plan (pivote 10/20); la variación llena x₂,x₄,y₂,y₄ e <strong>y₁=T</strong>. Encaje eje X (x₂,x₄,T) <em>o</em> eje Y (y₂,y₃,y₄,T), vacío/igual. <strong>T = 3.º dígito del equivalente</strong> (p. ej. 361 → 1). <strong>A–F</strong> = malla, no “tabla A”.</p>
+      <div class="controls" style="grid-template-columns:1fr 1fr auto;">
+        <input id="forensicSimpleSeed" type="text" maxlength="4" placeholder="Semilla 4 cifras">
+        <input id="forensicSimpleWinner" type="text" maxlength="4" placeholder="Ganador 4 cifras">
+        <button id="forensicSimpleBtn" type="button">Reconstruir</button>
+      </div>
+      <div id="forensicSimpleError" class="error"></div>
+      <div id="forensicSimplePanel" class="forensic-box"></div>
+    </section>
+    </div>
+
+    <div id="viewSorteos" style="display:none">
+      <section class="panel sorteos-root">
+        <div class="sorteos-head">
+          <button type="button" id="btnVolverApp">← Volver a la app</button>
+          <h2>Sorteos</h2>
+        </div>
+        <div id="sorteosListView">
+          <div class="controls" style="grid-template-columns:1fr auto;max-width:720px">
+            <input id="newLineTitle" type="text" placeholder="Título de la línea de sorteo">
+            <button type="button" id="btnCrearLinea">Crear línea</button>
+          </div>
+          <p class="sub" style="margin-top:8px">Pulsa una línea para abrir sus registros (máx. 100 por línea; al superar el tope se elimina el más antiguo).</p>
+          <ul id="sorteosLinesList" class="lines-list"></ul>
+        </div>
+        <div id="sorteosDetailView" style="display:none">
+          <button type="button" id="btnVolverLineas">← Líneas</button>
+          <h3 id="detailLineTitle" style="margin:10px 0"></h3>
+          <div class="controls" style="grid-template-columns:1fr auto;max-width:560px;margin-bottom:10px">
+            <input id="editLineTitle" type="text" placeholder="Editar título de la línea">
+            <button type="button" id="btnGuardarTitulo">Guardar título</button>
+          </div>
+          <div class="new-record" style="max-width:720px">
+            <input id="recDigits" type="text" maxlength="4" placeholder="Número 4 dígitos">
+            <input id="recDate" type="date">
+            <button type="button" id="btnGuardarRegistro">Guardar registro</button>
+          </div>
+          <ul id="recordsList" class="records-list"></ul>
+          <div id="sorteosMsg" class="memory-note"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      const letters = ["a", "b", "c", "d", "e", "f"];
+      const espejoMap = { 0:5,1:6,2:7,3:8,4:9,5:0,6:1,7:2,8:3,9:4 };
+      const tablaA = { 0:1,1:2,2:3,3:4,4:5,5:6,6:7,7:8,8:9,9:0 };
+      const tablaB = espejoMap;
+      const invA = invertMap(tablaA);
+      const invB = invertMap(tablaB);
+      const equivalenciaMap = { 0:0,1:9,2:8,3:7,4:6,5:5,6:4,7:3,8:2,9:1 };
+      const APP_VERSION = "17.3";
+      const BOARD_STORE_KEY = "numerolotto_v17_3_boards";
+      const MEMORY_KEY = "numerolotto_v17_3_memory_ab";
+      const SORTEOS_KEY = "numerolotto_v17_3_sorteos";
+      /** Equivalente 3 cifras validado con procedimiento (excepción documentada). Clave = semilla 4 cifras normalizada. */
+      const EQUIVALENT_SEED_OVERRIDE = {
+        "9072": [3, 6, 1]
+      };
+      function equivalentOverrideForSeed(s4) {
+        if (EQUIVALENT_SEED_OVERRIDE[s4]) return EQUIVALENT_SEED_OVERRIDE[s4].slice();
+        const n = String(Number(s4));
+        if (n.length === 4 && EQUIVALENT_SEED_OVERRIDE[n]) return EQUIVALENT_SEED_OVERRIDE[n].slice();
+        return null;
+      }
+      /** Gemelos por defecto si la memoria A/B no define el par (Ley de atracción). */
+      const FALLBACK_PAIR_A = { 0: 0, 1: 9, 2: 8, 3: 7, 4: 6, 5: 9, 6: 4, 7: 3, 8: 2, 9: 1 };
+      const FALLBACK_PAIR_B = { 0: 5, 1: 3, 2: 2, 3: 1, 4: 1, 5: 0, 6: 9, 7: 8, 8: 7, 9: 6 };
+      const state = {
+        seed: "1118",
+        eq: [9, 9, 2],
+        pivot: 9,
+        terminal: 2,
+        boards: [],
+        motorPayload: null,
+        motorErr: null
+      };
+      /** Misma ruta que serve_motor.py (mismo origen). */
+      const MOTOR_API = "/api/seleccionar";
+
+      const seedInput = document.getElementById("seedInput");
+      const buildBtn = document.getElementById("buildBtn");
+      const mainError = document.getElementById("mainError");
+      const boardsEl = document.getElementById("boards");
+      const memAInput = document.getElementById("memAInput");
+      const memBInput = document.getElementById("memBInput");
+      const saveMemBtn = document.getElementById("saveMemBtn");
+      const editMemBtn = document.getElementById("editMemBtn");
+      const deleteMemBtn = document.getElementById("deleteMemBtn");
+      const memoryNote = document.getElementById("memoryNote");
+      const kpiSeed = document.getElementById("kpiSeed");
+      const kpiEq = document.getElementById("kpiEq");
+      const kpiPivot = document.getElementById("kpiPivot");
+      const forensicSeed = document.getElementById("forensicSeed");
+      const forensicWinner = document.getElementById("forensicWinner");
+      const forensicBtn = document.getElementById("forensicBtn");
+      const forensicError = document.getElementById("forensicError");
+      const forensicPanel = document.getElementById("forensicPanel");
+      const forensicSimpleSeed = document.getElementById("forensicSimpleSeed");
+      const forensicSimpleWinner = document.getElementById("forensicSimpleWinner");
+      const forensicSimpleBtn = document.getElementById("forensicSimpleBtn");
+      const forensicSimpleError = document.getElementById("forensicSimpleError");
+      const forensicSimplePanel = document.getElementById("forensicSimplePanel");
+      const viewMain = document.getElementById("viewMain");
+      const viewSorteos = document.getElementById("viewSorteos");
+      const btnSorteos = document.getElementById("btnSorteos");
+      const btnVolverApp = document.getElementById("btnVolverApp");
+      const sorteosLinesList = document.getElementById("sorteosLinesList");
+      const sorteosListView = document.getElementById("sorteosListView");
+      const sorteosDetailView = document.getElementById("sorteosDetailView");
+      const newLineTitle = document.getElementById("newLineTitle");
+      const btnCrearLinea = document.getElementById("btnCrearLinea");
+      const btnVolverLineas = document.getElementById("btnVolverLineas");
+      const detailLineTitle = document.getElementById("detailLineTitle");
+      const editLineTitle = document.getElementById("editLineTitle");
+      const btnGuardarTitulo = document.getElementById("btnGuardarTitulo");
+      const recDigits = document.getElementById("recDigits");
+      const recDate = document.getElementById("recDate");
+      const btnGuardarRegistro = document.getElementById("btnGuardarRegistro");
+      const recordsList = document.getElementById("recordsList");
+      const sorteosMsg = document.getElementById("sorteosMsg");
+      let sorteosCurrentLineId = null;
+
+      function invertMap(map) {
+        const out = {};
+        Object.keys(map).forEach((k) => { out[map[k]] = Number(k); });
+        return out;
+      }
+      function escapeHtml(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+      function sanitize4(v) { return String(v || "").replace(/[^\d]/g, "").slice(0, 4).padStart(4, "0"); }
+      function sanitize3(v) { return String(v || "").replace(/[^\d]/g, "").slice(0, 3).padStart(3, "0"); }
+      function root(numStr) {
+        const sum = String(numStr).replace(/[^\d]/g, "").split("").reduce((a, b) => a + Number(b || 0), 0);
+        return sum % 10;
+      }
+      function rootMirror(a, b) { return espejoMap[a] === b; }
+      function parseSeriesList(text) {
+        return String(text || "").replace(/[^\d-]/g, "").split("-").filter(Boolean).slice(0, 6);
+      }
+      function rotateDigit(digit, step) { return (digit + step) % 10; }
+      function buildMatrixFrom4Digits(digits) {
+        const matrix = [];
+        for (let r = 0; r < 10; r++) {
+          matrix.push(digits.map(function (d) { return rotateDigit(d, r); }));
+        }
+        return matrix;
+      }
+      function selectStrictRow(matrix) {
+        let row20 = null;
+        let row10 = null;
+        for (let i = 0; i < matrix.length; i++) {
+          const row = matrix[i];
+          const tern = [row[1], row[2], row[3]];
+          const sum = tern[0] + tern[1] + tern[2];
+          if (sum === 20 && row20 === null) row20 = { idx: i, tern: tern, sum: 20 };
+          if (sum === 10 && row10 === null) row10 = { idx: i, tern: tern, sum: 10 };
+        }
+        return row20 || row10;
+      }
+      function computeEquivalent(seed4) {
+        const s4 = sanitize4(seed4);
+        const ov = equivalentOverrideForSeed(s4);
+        if (ov) {
+          return { equivalent: ov, selectedRow: -1, sum: 20 };
+        }
+        const digits = s4.split("").map(Number);
+        const matrix = buildMatrixFrom4Digits(digits);
+        const selected = selectStrictRow(matrix);
+        if (!selected) return { equivalent: [0, 0, 0], selectedRow: -1, sum: 0 };
+        const equivalent = selected.tern.map(function (d) { return equivalenciaMap[d]; });
+        return { equivalent: equivalent, selectedRow: selected.idx, sum: selected.sum };
+      }
+      function buildPairMapsFromRows(rowTokens) {
+        const xToY = {};
+        const yToX = {};
+        rowTokens.forEach(function (token) {
+          const t = String(token || "").replace(/[^\d]/g, "");
+          if (t.length < 2) return;
+          const y = Number(t[0]);
+          const x = Number(t[1]);
+          xToY[x] = y;
+          yToX[y] = x;
+        });
+        return { xToY: xToY, yToX: yToX };
+      }
+      function mergePairMapsFromRows(rowTokens, fallbackXY) {
+        const built = buildPairMapsFromRows(rowTokens);
+        const xToY = Object.assign({}, fallbackXY, built.xToY);
+        const yToX = {};
+        Object.keys(xToY).forEach((xk) => {
+          const x = Number(xk);
+          const y = xToY[xk];
+          if (y === "" || y === undefined || y === null) return;
+          if (yToX[y] === undefined || x > yToX[y]) yToX[y] = x;
+        });
+        return { xToY, yToX };
+      }
+      function getActiveTensorMapsForSeed(seed4) {
+        const seed = sanitize4(seed4);
+        const memory = loadMemory();
+        const row = memory[seed];
+        const rowA = row && row.memA ? parseSeriesList(row.memA) : buildSuggestionRows(seed).a;
+        const rowB = row && row.memB ? parseSeriesList(row.memB) : buildSuggestionRows(seed).b;
+        return {
+          mapA: mergePairMapsFromRows(rowA, FALLBACK_PAIR_A),
+          mapB: mergePairMapsFromRows(rowB, FALLBACK_PAIR_B)
+        };
+      }
+      function getActiveTensorMaps() {
+        return getActiveTensorMapsForSeed(state.seed);
+      }
+      /** x₂/x₄/y₂/y₄ quedan vacíos al construir; se rellenan con la Ley de atracción (Tablas A/B) al editar. */
+      function tensorFromX3Y3(x3, y3) {
+        return { x3, y3, x2: "", y2: "", x4: "", y4: "" };
+      }
+      function loadBoardSnapshots() {
+        try {
+          const raw = localStorage.getItem(BOARD_STORE_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (_e) { return {}; }
+      }
+      function saveBoardSnapshots(data) {
+        localStorage.setItem(BOARD_STORE_KEY, JSON.stringify(data));
+      }
+      function loadMemory() {
+        try {
+          const raw = localStorage.getItem(MEMORY_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (_e) { return {}; }
+      }
+      function saveMemory(data) {
+        localStorage.setItem(MEMORY_KEY, JSON.stringify(data));
+      }
+      function updateTensorByField(board, field, value) {
+        const maps = getActiveTensorMaps();
+        if (value === "" || value === null) {
+          if (field === "x3") board.tensor.x3 = "";
+          if (field === "y3") board.tensor.y3 = "";
+          if (field === "x2") {
+            board.tensor.x2 = "";
+            board.tensor.y2 = "";
+          }
+          if (field === "y2") {
+            board.tensor.y2 = "";
+            board.tensor.x2 = "";
+          }
+          if (field === "x4") {
+            board.tensor.x4 = "";
+            board.tensor.y4 = "";
+          }
+          if (field === "y4") {
+            board.tensor.y4 = "";
+            board.tensor.x4 = "";
+          }
+          return;
+        }
+        const d = Math.max(0, Math.min(9, Number(value)));
+        if (field === "x3") board.tensor.x3 = d;
+        if (field === "y3") board.tensor.y3 = d;
+        if (field === "x2") {
+          board.tensor.x2 = d;
+          board.tensor.y2 = partnerFromMap(maps, false, d);
+        }
+        if (field === "y2") {
+          board.tensor.y2 = d;
+          const xBack = maps.mapA.yToX[d];
+          board.tensor.x2 = xBack !== undefined ? xBack : "";
+        }
+        if (field === "x4") {
+          board.tensor.x4 = d;
+          board.tensor.y4 = partnerFromMap(maps, true, d);
+        }
+        if (field === "y4") {
+          board.tensor.y4 = d;
+          const xBackB = maps.mapB.yToX[d];
+          board.tensor.x4 = xBackB !== undefined ? xBackB : "";
+        }
+      }
+      function validateSum(board) {
+        if (board.tensor.x3 === "" || board.tensor.y3 === "") return { ok: false, sum: "-" };
+        const sum = Number(board.tensor.x3) + state.pivot + Number(board.tensor.y3);
+        return { ok: sum === 10 || sum === 20, sum };
+      }
+      /**
+       * MODO_MOTOR (UI cuadrícula): `tensorBrazosCompletos` + `series10RotacionesDesdeBase4` solo tras cerrar x₂–x₄ e y₂–y₄.
+       * MODO_FORENSE (laboratorio): `series10RotacionesDesdeBase4` siempre desde 4 dígitos (ganador o x₃·pivote·P·T); nunca bloquear por brazos vacíos.
+       */
+      /** Rotación 0..9 desde base de 4 dígitos; no inspecciona el tensor — exclusivo lógica MODO_FORENSE / reconstrucción. */
+      function series10RotacionesDesdeBase4(base4) {
+        const d = sanitize4(base4).split("").map(Number);
+        const out = [];
+        for (let i = 0; i < 10; i++) out.push(d.map((n) => (n + i) % 10).join(""));
+        return out;
+      }
+      /** Alias algorítmico con el backend Python; en UI de cuadrícula las series se filtran aparte (brazos). */
+      function buildSeries10From4(base4) {
+        return series10RotacionesDesdeBase4(base4);
+      }
+      /** Brazos x₂–x₄ y y₂–y₄: sin esto no hay series automáticas (evita rotaciones falsas). */
+      function tensorBrazosCompletos(t) {
+        if (!t) return false;
+        return ["x2", "x3", "x4", "y2", "y3", "y4"].every(function (k) {
+          const v = t[k];
+          return v !== "" && v != null && String(v).trim() !== "";
+        });
+      }
+      function mensajeSeriesBloqueadasHtml() {
+        return (
+          '<span style="color:#9abed6;line-height:1.55">Cuadrícula parcialmente propagada<br>' +
+          "Esperando cierre estructural<br>" +
+          "Series no disponibles</span>"
+        );
+      }
+      function getCellValue(board, r, c) {
+        if (r === 1 && c === 5) return "Y";
+        if (r === 4 && c === 1) return "X";
+        if (r === 3 && c === 3) return state.eq[0];
+        if (r === 4 && c === 4) return state.pivot;
+        if (r === 5 && c === 5) return state.terminal;
+        if (r === 2 && c === 5) return board.tensor.y2;
+        if (r === 3 && c === 5) return board.tensor.y3;
+        if (r === 4 && c === 5) return board.tensor.y4;
+        if (r === 5 && c === 2) return board.tensor.x2;
+        if (r === 5 && c === 3) return board.tensor.x3;
+        if (r === 5 && c === 4) return board.tensor.x4;
+        return "";
+      }
+
+      function getCellClass(r, c) {
+        if (r === 1 && c === 5) return "green";
+        if ((r === 2 && c === 5) || (r === 5 && c === 2)) return "cyan";
+        if ((r === 4 && c === 5) || (r === 5 && c === 4)) return "fuchsia";
+        if ((r === 3 && c === 5) || (r === 5 && c === 3)) return "green";
+        if ((r === 4 && c === 4) || (r === 5 && c === 5)) return "green";
+        return "";
+      }
+      function getEditableField(r, c) {
+        if (r === 2 && c === 5) return "y2";
+        if (r === 3 && c === 5) return "y3";
+        if (r === 4 && c === 5) return "y4";
+        if (r === 5 && c === 2) return "x2";
+        if (r === 5 && c === 3) return "x3";
+        if (r === 5 && c === 4) return "x4";
+        return "";
+      }
+      function coherenceLevel(board) {
+        if (board.tensor.x2 === "" || board.tensor.x3 === "" || board.tensor.x4 === "") return "Media";
+        if (board.tensor.y2 === "" || board.tensor.y3 === "" || board.tensor.y4 === "") return "Media";
+        const sx = root(String(board.tensor.x2) + String(board.tensor.x3) + String(board.tensor.x4));
+        const sy = root(String(board.tensor.y2) + String(board.tensor.y3) + String(board.tensor.y4));
+        return sx === sy || rootMirror(sx, sy) ? "Alta" : "Media";
+      }
+      function setRow(prefix, values) {
+        for (let i = 1; i <= 6; i++) {
+          document.getElementById(prefix + i).textContent = values[i - 1] || "--";
+        }
+      }
+      function buildSuggestionRows(seed4) {
+        const eqObj = computeEquivalent(seed4);
+        const eq = eqObj.equivalent;
+        const family = Number(String(eq[0]) + String(eq[1]));
+        const a = [];
+        const b = [];
+        let curA = family;
+        let curB = (family + 12) % 100;
+        for (let i = 0; i < 6; i++) {
+          a.push(String(curA).padStart(2, "0"));
+          b.push(String(curB).padStart(2, "0"));
+          curA = (curA + 9) % 100;
+          curB = (curB + 9) % 100;
+        }
+        return { a, b };
+      }
+      function refreshABPanel() {
+        const mem = loadMemory();
+        const row = mem[state.seed];
+        const a = row ? parseSeriesList(row.memA) : [];
+        const b = row ? parseSeriesList(row.memB) : [];
+        setRow("memA", a);
+        setRow("memB", b);
+        const sug = buildSuggestionRows(state.seed);
+        setRow("sugA", sug.a);
+        setRow("sugB", sug.b);
+        if (row) {
+          memAInput.value = row.memA || "";
+          memBInput.value = row.memB || "";
+          memoryNote.textContent = "Historial activo para " + state.seed + " | Actualizado: " + (row.updatedAt || "n/a");
+        } else {
+          memAInput.value = "";
+          memBInput.value = "";
+          memoryNote.textContent = "Sin registro de memoria para " + state.seed + ".";
+        }
+      }
+      function renderBoards() {
+        boardsEl.innerHTML = "";
+        const winLet = state.motorPayload && state.motorPayload.ganador ? state.motorPayload.ganador.letra : null;
+        state.boards.forEach((board) => {
+          const val = validateSum(board);
+          const card = document.createElement("div");
+          const coh = coherenceLevel(board);
+          let cls = "board-wrap" + (coh === "Alta" ? " coherent" : "");
+          if (winLet && board.letter === winLet) cls += " motor-winner";
+          card.className = cls;
+          const motorRow =
+            state.motorPayload && state.motorPayload.candidatos
+              ? state.motorPayload.candidatos.find(function (c) {
+                  return c.letra === board.letter;
+                })
+              : null;
+          const motorPenHtml = motorRow
+            ? '<span class="motor-penalty">Motor: pen ' +
+              motorRow.penalizacion +
+              (motorRow.es_valido ? " · es_valido" : "") +
+              (motorRow.falla_dura ? " · falla dura" : "") +
+              "</span>"
+            : "";
+          /* MODO_MOTOR (cuadrícula): no mostrar 10 rotaciones hasta tener los seis brazos; el Laboratorio Forense no usa este candado. */
+          const brazosOk = tensorBrazosCompletos(board.tensor);
+          const mp = state.motorPayload;
+          const seriesMotorOk = mp && mp.series_disponibles === true;
+          const ganadoraPlena = seriesMotorOk && brazosOk;
+          let winnerBadge = "";
+          if (winLet && board.letter === winLet) {
+            winnerBadge = ganadoraPlena
+              ? '<span class="winner-badge">GANADORA (motor)</span>'
+              : '<span class="winner-badge" style="background:linear-gradient(90deg,#5a4a10,#7a6218);border-color:#a08030">GANADORA PARCIAL (motor)</span>';
+          }
+          const serieX = brazosOk
+            ? sanitize4(String(board.tensor.x2) + String(board.tensor.x3) + String(board.tensor.x4) + String(state.terminal))
+            : "—";
+          const serieY = brazosOk
+            ? sanitize4(String(board.tensor.y2) + String(board.tensor.y3) + String(board.tensor.y4) + String(state.terminal))
+            : "—";
+          const xSeries = brazosOk ? series10RotacionesDesdeBase4(serieX) : [];
+          const ySeries = brazosOk ? series10RotacionesDesdeBase4(serieY) : [];
+          const serieXBody = brazosOk ? (xSeries.length ? xSeries.map((n) => "• " + n).join("\n") : "• —") : mensajeSeriesBloqueadasHtml();
+          const serieYBody = brazosOk ? (ySeries.length ? ySeries.map((n) => "• " + n).join("\n") : "• —") : mensajeSeriesBloqueadasHtml();
+          let motorQuadHtml = "";
+          if (winLet && board.letter === winLet && state.motorPayload && state.motorPayload.ok) {
+            const mp = state.motorPayload;
+            const seriesMotorOk = mp.series10 && mp.series10.length === 10;
+            if (seriesMotorOk) {
+              const hitCombo = mp.combinacion_encontrada || "";
+              const b4m = mp.base4_usada || "";
+              const tipoM = mp.tipo_base || "";
+              const linesMotor = mp.series10
+                .map(function (n, idx) {
+                  const isHit = hitCombo && n === hitCombo;
+                  const lineClass = isHit ? "series-line-hit" : "";
+                  return '<span class="' + lineClass + '">• ' + n + " (var. " + (idx + 1) + "/10)</span>";
+                })
+                .join("\n");
+              motorQuadHtml =
+                '<div class="series-box motor-quad">' +
+                '<div class="series-title x" style="font-size:18px">Serie cuadrícula ganadora (motor)</div>' +
+                '<div style="font-size:12px;color:#9ec6de;margin-bottom:6px">Base: <strong>' +
+                escapeHtml(b4m) +
+                '</strong> · tipo <code>' +
+                escapeHtml(tipoM) +
+                "</code> · misma rotación que <code>buildSeries10From4</code></div>" +
+                '<div class="series-list">' +
+                linesMotor +
+                "</div></div>";
+            } else {
+              motorQuadHtml =
+                '<div class="series-box motor-quad">' +
+                '<div class="series-title x" style="font-size:17px">Ganadora parcial — series no generadas</div>' +
+                '<div class="series-list">' +
+                mensajeSeriesBloqueadasHtml() +
+                (mp.tipo_base
+                  ? '<br><span style="font-size:11px;opacity:.88">Estado motor: <code>' + escapeHtml(mp.tipo_base) + "</code></span>"
+                  : "") +
+                "</div></div>";
+            }
+          }
+          card.innerHTML = `
+            <div class="board-head">
+              <strong>Cuadrícula ${board.letter.toUpperCase()}${winnerBadge}</strong>
+              <span class="score">Coherencia: ${coh}${motorPenHtml}</span>
+            </div>
+            <div class="sum-note ${val.ok ? "sum-ok" : "sum-bad"}">x3(F5/C3) + pivote(F4/C4) + y3(F3/C5) = ${val.sum}</div>
+            <div class="grid5">
+              ${Array.from({ length: 25 }).map((_, i) => {
+                const r = Math.floor(i / 5) + 1;
+                const c = (i % 5) + 1;
+                const v = getCellValue(board, r, c);
+                const role = getCellClass(r, c);
+                const field = getEditableField(r, c);
+                const fieldLabel = field ? field.toUpperCase() : "";
+                if (field) {
+                  return `<div class="cell ${role}"><span class="label">${fieldLabel}</span><input data-board="${board.letter}" data-field="${field}" maxlength="1" value="${v === "" ? "" : v}"></div>`;
+                }
+                const show = v === "" ? "" : v;
+                return `<div class="cell ${role}">${show}</div>`;
+              }).join("")}
+            </div>
+            <div class="actions">
+              <button data-act="edit" data-board="${board.letter}">Editar</button>
+              <button data-act="save" data-board="${board.letter}">Guardar</button>
+              <button data-act="delete" data-board="${board.letter}">Borrar</button>
+            </div>
+            <div class="series-grid">
+              <div class="series-box">
+                <div class="series-title x">Serie X: ${serieX}</div>
+                <div class="series-list">${serieXBody}</div>
+              </div>
+              <div class="series-box">
+                <div class="series-title y">Serie Y: ${serieY}</div>
+                <div class="series-list">${serieYBody}</div>
+              </div>
+              ${motorQuadHtml}
+            </div>
+          `;
+          boardsEl.appendChild(card);
+        });
+        attachBoardListeners();
+      }
+      function attachBoardListeners() {
+        boardsEl.querySelectorAll("input[data-board]").forEach((el) => {
+          el.addEventListener("input", (ev) => {
+            const target = ev.currentTarget;
+            const letter = target.getAttribute("data-board");
+            const field = target.getAttribute("data-field");
+            const value = String(target.value).replace(/[^\d]/g, "");
+            target.value = value.slice(0, 1);
+            const board = state.boards.find((b) => b.letter === letter);
+            updateTensorByField(board, field, target.value === "" ? "" : Number(target.value));
+            renderBoards();
+          });
+        });
+        boardsEl.querySelectorAll("button[data-act]").forEach((btn) => {
+          btn.addEventListener("click", (ev) => {
+            const act = ev.currentTarget.getAttribute("data-act");
+            const letter = ev.currentTarget.getAttribute("data-board");
+            const board = state.boards.find((b) => b.letter === letter);
+            const snapshots = loadBoardSnapshots();
+            if (act === "save") {
+              snapshots[letter] = { tensor: board.tensor, seed: state.seed };
+              saveBoardSnapshots(snapshots);
+            } else if (act === "delete") {
+              delete snapshots[letter];
+              saveBoardSnapshots(snapshots);
+              board.tensor = { x2:"", x3:"", x4:"", y2:"", y3:"", y4:"" };
+              renderBoards();
+            } else if (act === "edit") {
+              ev.currentTarget.textContent = "Editando...";
+              setTimeout(() => { ev.currentTarget.textContent = "Editar"; }, 500);
+            }
+          });
+        });
+      }
+
+      function renderAll() {
+        kpiSeed.textContent = state.seed;
+        kpiEq.textContent = sanitize3(state.eq.join(""));
+        kpiPivot.textContent = String(state.pivot);
+        refreshABPanel();
+        renderBoards();
+      }
+      function generateUniquePairsForTarget(pivot, targetSum) {
+        const needed = targetSum - pivot;
+        const pairs = [];
+        for (let x = 9; x >= 0; x--) {
+          const y = needed - x;
+          if (y < 0 || y > 9) continue;
+          if (x < y) continue;
+          pairs.push({ x3: x, y3: y, total: targetSum });
+        }
+        return pairs;
+      }
+      function buildXPlan(pivot) {
+        const p20 = generateUniquePairsForTarget(pivot, 20);
+        const p10 = generateUniquePairsForTarget(pivot, 10);
+        const queue = p20.concat(p10);
+        while (queue.length < 6) queue.push({ x3: "", y3: "", total: 0 });
+        return queue.slice(0, 6);
+      }
+      function buildProject(seed4) {
+        state.seed = sanitize4(seed4);
+        const eqObj = computeEquivalent(state.seed);
+        state.eq = eqObj.equivalent;
+        state.pivot = state.eq[1];
+        state.terminal = state.eq[2];
+        const xPlan = buildXPlan(state.pivot);
+        state.boards = letters.map((letter, idx) => ({
+          letter,
+          targetSum: xPlan[idx].total,
+          tensor: { x2: "", x3: xPlan[idx].x3, x4: "", y2: "", y3: xPlan[idx].y3, y4: "" }
+        }));
+        const snapshots = loadBoardSnapshots();
+        state.boards.forEach((b) => {
+          if (snapshots[b.letter] && snapshots[b.letter].seed === state.seed) {
+            b.tensor = Object.assign({}, b.tensor, snapshots[b.letter].tensor);
+            if (b.targetSum == null || b.targetSum === 0) {
+              b.targetSum = Number(b.tensor.x3) + state.pivot + Number(b.tensor.y3);
+            }
+          }
+        });
+        renderAll();
+        const mn = document.getElementById("motorNumeroGanador");
+        if (mn) mn.value = "";
+        consultarMotorPython(state.seed, null);
+      }
+
+      function aplicarResultadoMotorOk(d) {
+        const strip = document.getElementById("motorResultStrip");
+        const coinMsg = document.getElementById("motorCoincidenciaMsg");
+        const g = d.ganador;
+        const penG = typeof g.penalizacion === "number" ? g.penalizacion : null;
+        const seriesOk = d.series_disponibles === true;
+        const acl =
+          d.aclaracion ?
+            "<p style='margin:0 0 10px;font-size:13px;color:#cdeeff;line-height:1.45'><strong>Nota.</strong> " +
+            escapeHtml(d.aclaracion) +
+            "</p>" :
+            "";
+        const msgEstructura =
+          d.mensaje_series ?
+            "<p style='margin:0 0 10px;font-size:12px;color:#e6e6a8;line-height:1.5;border-left:3px solid #a08030;padding-left:10px'>" +
+            escapeHtml(d.mensaje_series) +
+            "</p>" :
+            "";
+        let topBlock = "";
+        if (d.top_sugeridas && d.top_sugeridas.length) {
+          topBlock =
+            "<div style='margin-top:10px;padding-top:10px;border-top:1px solid #2a4a60'><strong style='color:#cdeeff'>Top 3 combinaciones sugeridas</strong> " +
+            "<span style='font-size:11px;color:#7a9aad'>(sin número real o como referencia)</span><br>" +
+            d.top_sugeridas
+              .map(function (t, i) {
+                return (
+                  (i + 1) +
+                  ". <strong style='color:#ffd700'>" +
+                  escapeHtml(t.combinacion) +
+                  "</strong> · variación " +
+                  t.variacion +
+                  "/10"
+                );
+              })
+              .join("<br>") +
+            "</div>";
+        }
+        let valBlock = "";
+        coinMsg.textContent = "";
+        coinMsg.style.color = "";
+        if (d.numero_solicitado) {
+          if (!seriesOk) {
+            valBlock =
+              "<div style='margin-top:12px;padding:10px;border-radius:8px;background:#1a1a12;border:1px solid #6a6a3a;color:#e6e6a8;font-weight:600'>Series no disponibles: el motor no ha cerrado aún los brazos estructurales (x₂–x₄, y₂–y₄). No se verifica el número contra las 10 rotaciones automáticas; usa el Laboratorio Forense con un ganador conocido.</div>";
+            coinMsg.textContent =
+              "Sin series del motor: no hay verificación por rotación hasta propagación completa. El forense sigue siendo la referencia para cierres reales.";
+            coinMsg.style.color = "#e6e6a8";
+          } else if (d.coincidencia) {
+            valBlock =
+              "<div style='margin-top:12px;padding:10px;border-radius:8px;background:#142418;border:1px solid #3d8f5c;color:#78ff96;font-weight:700'>Coincidencia encontrada en la cuadrícula seleccionada" +
+              (d.combinacion_encontrada ? " · <strong>" + escapeHtml(d.combinacion_encontrada) + "</strong>" : "") +
+              "</div>";
+            coinMsg.textContent =
+              "Coincidencia encontrada en la cuadrícula seleccionada" +
+              (d.combinacion_encontrada ? ": " + d.combinacion_encontrada : "") +
+              ".";
+            coinMsg.style.color = "#78ff96";
+          } else {
+            valBlock =
+              "<div style='margin-top:12px;padding:10px;border-radius:8px;background:#241414;border:1px solid #8f3d3d;color:#ff9e9e;font-weight:700'>El número no pertenece a la cuadrícula seleccionada.</div>";
+            coinMsg.textContent = "El número no pertenece a la cuadrícula seleccionada.";
+            coinMsg.style.color = "#ff9e9e";
+          }
+        } else {
+          coinMsg.textContent = seriesOk
+            ? "Opcional: introduce 4 cifras del sorteo y pulsa «Analizar coincidencia». Si lo dejas vacío, se muestra solo el Top 3."
+            : "Opcional: 4 cifras para comprobar rotación solo cuando el motor genere series (brazos x₂–x₄ e y₂–y₄ cerrados en el backend). Sin series no hay Top 3 ni verificación automática por rotación.";
+          coinMsg.style.color = "#9abed6";
+        }
+        const detalle = d.candidatos
+          .map(function (c) {
+            return (
+              "<strong>" +
+              c.letra.toUpperCase() +
+              "</strong>: penalización " +
+              c.penalizacion +
+              (c.es_valido ? " · válida fuerte" : "") +
+              (c.falla_dura ? " · <span style='color:#ff9e9e'>falla dura</span>" : "") +
+              " · " +
+              c.n_fallos +
+              " contradicciones"
+            );
+          })
+          .join("<br>");
+        strip.className = "motor-strip";
+        strip.innerHTML =
+          acl +
+          msgEstructura +
+          "<div style='font-size:1.05rem;margin-bottom:6px'>Cuadrícula seleccionada por el motor: " +
+          "<span style='color:#ffd700;font-weight:900;font-size:1.25rem'>" +
+          g.letra.toUpperCase() +
+          "</span>" +
+          (seriesOk ?
+            '<span class="winner-badge" style="margin-left:10px">GANADORA (motor)</span>' :
+            '<span class="winner-badge" style="margin-left:10px;background:linear-gradient(90deg,#5a4a10,#7a6218);border-color:#a08030">GANADORA PARCIAL (motor)</span>') +
+          "</div>" +
+          "<div style='font-size:13px;color:#cdeeff;margin-bottom:8px'>Equivalente " +
+          d.equivalente.join("") +
+          " · x₃=" +
+          g.x3 +
+          ", P=" +
+          g.y3 +
+          ", suma plan=" +
+          g.suma_objetivo +
+          (penG !== null ? " · <strong>pen. ganadora " + penG + "</strong>" : "") +
+          "</div>" +
+          (d.base4_usada ?
+            "<div style='font-size:12px;color:#9ec6de;margin-bottom:6px'>Base 4 cifras (espacio de búsqueda): <strong>" +
+            escapeHtml(d.base4_usada) +
+            "</strong> · tipo <code>" +
+            escapeHtml(d.tipo_base || "") +
+            "</code></div>" :
+            "") +
+          valBlock +
+          topBlock +
+          "<div style='font-size:12px;color:#9ec6de;line-height:1.45;border-top:1px solid #2a4a60;padding-top:10px;margin-top:10px'>" +
+          "<strong>Todas las cuadrículas (evaluar):</strong><br>" +
+          detalle +
+          "</div>";
+        const propLogEl = document.getElementById("motorPropagacionLog");
+        if (propLogEl) {
+          if (d.propagacion_log) {
+            propLogEl.style.display = "block";
+            propLogEl.textContent = d.propagacion_log;
+          } else {
+            propLogEl.style.display = "none";
+            propLogEl.textContent = "";
+          }
+        }
+        if (d.ganador && d.ganador.letra) {
+          const wb = state.boards.find(function (b) {
+            return b.letter === d.ganador.letra;
+          });
+          if (wb) {
+            ["x2", "x3", "x4", "y2", "y3", "y4"].forEach(function (k) {
+              const v = d.ganador[k];
+              if (v !== undefined && v !== null && v !== "") wb.tensor[k] = String(v);
+            });
+          }
+        }
+      }
+
+      function consultarMotorPython(seed4, numeroOpt) {
+        const strip = document.getElementById("motorResultStrip");
+        const analisisRow = document.getElementById("motorAnalisisRow");
+        const coinMsg = document.getElementById("motorCoincidenciaMsg");
+        strip.style.display = "block";
+        if (analisisRow) analisisRow.style.display = "none";
+        if (coinMsg) {
+          coinMsg.textContent = "";
+          coinMsg.style.color = "";
+        }
+        strip.className = "motor-strip warn";
+        strip.innerHTML =
+          "<strong>Consultando motor Python</strong> <span style='color:#9abed6'>(generar_candidatos → seleccionar_mejor)…</span>";
+        state.motorPayload = null;
+        state.motorErr = null;
+        const body = { seed: seed4 };
+        if (numeroOpt != null && String(numeroOpt).replace(/\D/g, "").length >= 4) {
+          body.numero = sanitize4(String(numeroOpt));
+        }
+        fetch(MOTOR_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, status: r.status, data: data };
+            });
+          })
+          .then(function (res) {
+            if (!res.ok) {
+              throw new Error(res.data && res.data.error ? res.data.error : "HTTP " + res.status);
+            }
+            state.motorPayload = res.data;
+            if (analisisRow) analisisRow.style.display = "grid";
+            aplicarResultadoMotorOk(res.data);
+            renderBoards();
+          })
+          .catch(function (e) {
+            state.motorErr = e.message || String(e);
+            if (analisisRow) analisisRow.style.display = "none";
+            if (coinMsg) coinMsg.textContent = "";
+            strip.className = "motor-strip err";
+            strip.innerHTML =
+              "<strong>No se pudo obtener el resultado del motor Python.</strong>" +
+              "<p style='margin:8px 0 0;font-size:13px;color:#cdeeff'>La interfaz construye las 6 cuadrículas en JavaScript, pero <code>seleccionar_mejor()</code> solo corre en Python.</p>" +
+              "<p style='margin:6px 0 0;font-size:13px'>En una terminal, dentro de esta carpeta:</p>" +
+              "<code style='display:block;margin:8px 0;padding:10px;background:#0b1219;border-radius:8px;border:1px solid #355b79'>python serve_motor.py</code>" +
+              "<p style='margin:6px 0 0;font-size:12px;color:#9abed6'>Abre luego <strong>http://127.0.0.1:8765/</strong> (no abras <code>index.html</code> como archivo <code>file://</code> si quieres ver la ganadora del motor).</p>" +
+              "<p style='margin:4px 0 0;font-size:11px;color:#888'>Detalle: " +
+              escapeHtml(state.motorErr) +
+              "</p>";
+            renderBoards();
+          });
+      }
+
+      function boardFromSeed(seed4) {
+        const eqObj = computeEquivalent(seed4);
+        const eq = eqObj.equivalent;
+        const pivot = eq[1];
+        const term = eq[2];
+        const pairs = buildXPlan(pivot).map(function (p, i) {
+          return { x3: p.x3, y3: p.y3, id: letters[i].toUpperCase(), total: p.total };
+        });
+        return {
+          seed: seed4,
+          eq: eq.join(""),
+          pivot: pivot,
+          terminal: term,
+          boards: pairs.map(function (p) {
+            const t = tensorFromX3Y3(p.x3, p.y3);
+            return { id: p.id, tensor: t, targetSum: p.total };
+          })
+        };
+      }
+      function renderGrid5Static(item, winner4, highlightSeries) {
+        const wd = winner4.split("").map(Number);
+        const hs = String(highlightSeries || "");
+        const hsDigits = hs ? hs.split("").map(Number) : [];
+        const y1cell = item.tensor.y1 !== undefined && item.tensor.y1 !== "" ? item.tensor.y1 : "Y";
+        const map = {
+          "1-5": y1cell,
+          "3-3": Number(item.eq[0]),
+          "4-1": "X",
+          "4-4": item.pivot,
+          "5-5": item.terminal,
+          "2-5": item.tensor.y2,
+          "3-5": item.tensor.y3,
+          "4-5": item.tensor.y4,
+          "5-2": item.tensor.x2,
+          "5-3": item.tensor.x3,
+          "5-4": item.tensor.x4
+        };
+        return `
+          <div class="grid5">
+            ${Array.from({ length: 25 }).map((_, i) => {
+              const r = Math.floor(i / 5) + 1;
+              const c = (i % 5) + 1;
+              const key = r + "-" + c;
+              const v = map[key] !== undefined ? map[key] : "";
+              const role = getCellClass(r, c);
+              const nv = Number(v);
+              const isWinnerHit = v !== "" && v !== "X" && v !== "Y" && !Number.isNaN(nv) && wd.includes(nv);
+              const isSeriesHit = v !== "" && v !== "X" && v !== "Y" && !Number.isNaN(nv) && hsDigits.includes(nv);
+              const hit = (isWinnerHit || isSeriesHit) ? " style='background:#1f5a34;border-color:#7dffab'" : "";
+              return `<div class="cell ${role}"${hit}>${v}</div>`;
+            }).join("")}
+          </div>
+        `;
+      }
+
+      const FORENSIC_RANK = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5 };
+
+      function partnerFromMap(maps, useB, xVal) {
+        const m = useB ? maps.mapB : maps.mapA;
+        const n = Number(xVal);
+        if (m.xToY[n] !== undefined && m.xToY[n] !== "") return Number(m.xToY[n]);
+        return useB ? FALLBACK_PAIR_B[n] : FALLBACK_PAIR_A[n];
+      }
+
+      function countWinnerOnAxes(board, winner4, terminal) {
+        const want = new Set(winner4.split("").map(Number));
+        const vals = [
+          board.tensor.x2,
+          board.tensor.x3,
+          board.tensor.x4,
+          terminal,
+          board.tensor.y2,
+          board.tensor.y3,
+          board.tensor.y4
+        ]
+          .filter((v) => v !== "" && v != null)
+          .map(Number);
+        return vals.filter((d) => want.has(d)).length;
+      }
+
+      function slotFits(cur, dig) {
+        if (cur === "" || cur == null) return true;
+        return Number(cur) === dig;
+      }
+      function targetSumForBoard(board, pivot) {
+        if (board.targetSum != null && board.targetSum > 0) return board.targetSum;
+        if (board.tensor.x3 === "" || board.tensor.x3 == null || board.tensor.y3 === "" || board.tensor.y3 == null) {
+          return null;
+        }
+        const s = Number(board.tensor.x3) + pivot + Number(board.tensor.y3);
+        return Number.isFinite(s) ? s : null;
+      }
+      function y3FromPivot(board, seriesStr, pivot) {
+        const s = seriesStr.split("").map(Number);
+        const ts = targetSumForBoard(board, pivot);
+        if (ts == null || !Number.isFinite(ts)) return NaN;
+        return ts - pivot - s[1];
+      }
+      /** Eje X: T=s₃; x₂,x₃,x₄ y pivote (y₃ de malla = ts−pivote−s₁). */
+      function seriesFitsAxisX(board, seriesStr, terminal, pivot) {
+        const s = seriesStr.split("").map(Number);
+        if (Number(terminal) !== s[3]) return false;
+        if (!slotFits(board.tensor.x2, s[0])) return false;
+        if (!slotFits(board.tensor.x3, s[1])) return false;
+        if (!slotFits(board.tensor.x4, s[2])) return false;
+        const y3new = y3FromPivot(board, seriesStr, pivot);
+        if (!Number.isFinite(y3new) || y3new < 0 || y3new > 9) return false;
+        if (!slotFits(board.tensor.y3, y3new)) return false;
+        return true;
+      }
+      /** Eje Y: T=s₃; y₂,y₄ con s₁,s₃; y₃ de celda = mismo pivote (ts−pivote−s₁), no el dígito x₃ solo. */
+      function seriesFitsAxisY(board, seriesStr, terminal, pivot) {
+        const s = seriesStr.split("").map(Number);
+        if (Number(terminal) !== s[3]) return false;
+        const y3new = y3FromPivot(board, seriesStr, pivot);
+        if (!Number.isFinite(y3new) || y3new < 0 || y3new > 9) return false;
+        if (!slotFits(board.tensor.y2, s[0])) return false;
+        if (!slotFits(board.tensor.y3, y3new)) return false;
+        if (!slotFits(board.tensor.y4, s[2])) return false;
+        return true;
+      }
+      /** Tras encaje X o Y, la misma variación debe poder escribirse en toda la cruz (vacío o igual en las 6 celdas). */
+      function seriesCompletesCross(board, seriesStr, terminal, pivot) {
+        const s = seriesStr.split("").map(Number);
+        if (Number(terminal) !== s[3]) return false;
+        const y3new = y3FromPivot(board, seriesStr, pivot);
+        if (!Number.isFinite(y3new) || y3new < 0 || y3new > 9) return false;
+        if (!slotFits(board.tensor.x2, s[0])) return false;
+        if (!slotFits(board.tensor.x3, s[1])) return false;
+        if (!slotFits(board.tensor.x4, s[2])) return false;
+        if (!slotFits(board.tensor.y2, s[0])) return false;
+        if (!slotFits(board.tensor.y3, y3new)) return false;
+        if (!slotFits(board.tensor.y4, s[2])) return false;
+        return true;
+      }
+      /**
+       * MODO_FORENSE (espejo): encaje solo por eje X o eje Y con T y pivote coherentes.
+       * No exige `seriesCompletesCross` antes: un brazo conflictivo no debe impedir la reconstrucción
+       * si un eje es válido y `completeForensicTensor` rellena el resto. El motor principal no usa esta ruta.
+       */
+      function forensicSeriesFitsAxesXY(board, seriesStr, terminal, pivot) {
+        return (
+          seriesFitsAxisX(board, seriesStr, terminal, pivot) || seriesFitsAxisY(board, seriesStr, terminal, pivot)
+        );
+      }
+
+      /** Laboratorio sin tablas: x₃,y₃ fijos del plan (pivote 10/20); la variación solo llena x₂,x₄,y₂,y₄ e y₁=T. */
+      function seriesFitsAxisXSimple(board, seriesStr, terminal, pivot) {
+        const s = seriesStr.split("").map(Number);
+        if (Number(terminal) !== s[3]) return false;
+        if (board.tensor.x3 === "" || board.tensor.y3 === "") return false;
+        if (Number(board.tensor.x3) + pivot + Number(board.tensor.y3) !== targetSumForBoard(board, pivot)) return false;
+        if (!slotFits(board.tensor.x2, s[0])) return false;
+        if (!slotFits(board.tensor.x4, s[2])) return false;
+        return true;
+      }
+      function seriesFitsAxisYSimple(board, seriesStr, terminal, pivot) {
+        const s = seriesStr.split("").map(Number);
+        if (Number(terminal) !== s[3]) return false;
+        if (board.tensor.x3 === "" || board.tensor.y3 === "") return false;
+        if (Number(board.tensor.x3) + pivot + Number(board.tensor.y3) !== targetSumForBoard(board, pivot)) return false;
+        if (!slotFits(board.tensor.y2, s[0])) return false;
+        if (!slotFits(board.tensor.y3, s[1])) return false;
+        if (!slotFits(board.tensor.y4, s[2])) return false;
+        return true;
+      }
+      function seriesCompletesCrossSimple(board, seriesStr, terminal, pivot) {
+        const s = seriesStr.split("").map(Number);
+        if (Number(terminal) !== s[3]) return false;
+        if (board.tensor.x3 === "" || board.tensor.y3 === "") return false;
+        if (Number(board.tensor.x3) + pivot + Number(board.tensor.y3) !== targetSumForBoard(board, pivot)) return false;
+        if (!slotFits(board.tensor.x2, s[0])) return false;
+        if (!slotFits(board.tensor.x4, s[2])) return false;
+        if (!slotFits(board.tensor.y2, s[0])) return false;
+        if (!slotFits(board.tensor.y3, s[1])) return false;
+        if (!slotFits(board.tensor.y4, s[2])) return false;
+        return true;
+      }
+      /** MODO_FORENSE (sin tablas): mismo criterio flexible que arriba — eje X o Y, sin cruz completa previa. */
+      function forensicSeriesFitsAxesSimple(board, seriesStr, terminal, pivot) {
+        return (
+          seriesFitsAxisXSimple(board, seriesStr, terminal, pivot) ||
+          seriesFitsAxisYSimple(board, seriesStr, terminal, pivot)
+        );
+      }
+
+      function completeForensicTensor(board, seriesStr, terminal, pivot, maps) {
+        const s = seriesStr.split("").map(Number);
+        const ts = targetSumForBoard(board, pivot);
+        if (ts == null || !Number.isFinite(ts)) return null;
+        const y3new = ts - pivot - s[1];
+        if (!Number.isFinite(y3new) || y3new < 0 || y3new > 9) return null;
+        if (board.tensor.y3 !== "" && board.tensor.y3 != null && Number(board.tensor.y3) !== y3new) return null;
+        const t = Object.assign({}, board.tensor);
+        t.x2 = String(s[0]);
+        t.x3 = String(s[1]);
+        t.x4 = String(s[2]);
+        t.y2 = String(partnerFromMap(maps, false, s[0]));
+        t.y3 = String(y3new);
+        t.y4 = String(partnerFromMap(maps, true, s[2]));
+        t.y1 = String(partnerFromMap(maps, true, Number(terminal)));
+        return t;
+      }
+
+      function compareForensicPick(cand, prev) {
+        if (cand.presence !== prev.presence) return cand.presence - prev.presence;
+        const rankSrc = function (s) {
+          return s === "ganador" ? 1 : 0;
+        };
+        if (rankSrc(cand.source || "ganador") !== rankSrc(prev.source || "ganador")) {
+          return rankSrc(cand.source || "ganador") - rankSrc(prev.source || "ganador");
+        }
+        if (prev.seriesIdx !== cand.seriesIdx) return prev.seriesIdx - cand.seriesIdx;
+        return FORENSIC_RANK[prev.id] - FORENSIC_RANK[cand.id];
+      }
+
+      function pickForensicBoard(base, winner4, series10, pivot, maps) {
+        const terminal = Number(base.terminal);
+        let best = null;
+        function consider(board, ser, idx, source) {
+          if (board.tensor.x3 === "" || board.tensor.x3 == null || board.tensor.y3 === "" || board.tensor.y3 == null) {
+            return;
+          }
+          if (!forensicSeriesFitsAxesXY(board, ser, terminal, pivot)) return;
+          const presence = countWinnerOnAxes(board, winner4, terminal);
+          const cand = { board: board, seriesStr: ser, seriesIdx: idx, id: board.id, presence: presence, source: source };
+          if (!best || compareForensicPick(cand, best) > 0) best = cand;
+        }
+        base.boards.forEach(function (board) {
+          series10.forEach(function (ser, idx) {
+            consider(board, ser, idx, "ganador");
+          });
+        });
+        if (!best) {
+          base.boards.forEach(function (board) {
+            const x3 = board.tensor.x3;
+            const y3 = board.tensor.y3;
+            if (x3 === "" || x3 == null || y3 === "" || y3 == null) return;
+            const base4Struct = sanitize4(String(x3) + String(pivot) + String(y3) + String(terminal));
+            series10RotacionesDesdeBase4(base4Struct).forEach(function (ser, idx) {
+              consider(board, ser, idx, "estructural");
+            });
+          });
+        }
+        if (!best) return null;
+        const filled = completeForensicTensor(best.board, best.seriesStr, terminal, pivot, maps);
+        if (!filled) return null;
+        return Object.assign({}, best, { tensor: filled, terminalUsed: terminal });
+      }
+
+      function renderForensic(seed4, winner4) {
+        forensicPanel.innerHTML = "";
+        const base = boardFromSeed(seed4);
+        const pivot = Number(base.pivot);
+        const maps = getActiveTensorMapsForSeed(seed4);
+        const series10 = series10RotacionesDesdeBase4(winner4);
+        const pick = pickForensicBoard(base, winner4, series10, pivot, maps);
+        const row = document.createElement("div");
+        row.className = "board-wrap coherent";
+        if (!pick) {
+          row.innerHTML =
+            "<strong>Laboratorio Forense Espejo · v" +
+            APP_VERSION +
+            "</strong><p style='margin:8px 0 0;color:#9abed6'>No hay variación que encaje en eje X <em>ni</em> en eje Y (vacío/igual, pivote, T) para esta semilla.</p>";
+          forensicPanel.appendChild(row);
+          return;
+        }
+        const staticItem = {
+          eq: base.eq.split("").map(Number),
+          pivot: pivot,
+          terminal: pick.terminalUsed,
+          tensor: pick.tensor
+        };
+        row.innerHTML = `
+          <strong>Rebobinado real (Cuadrícula ${pick.id}) · v${APP_VERSION}</strong>
+          <div>Semilla: ${base.seed} | Ganador: ${winner4}</div>
+          <div>T (terminal de encaje) = <strong>${pick.terminalUsed}</strong> · tercer dígito del equivalente <strong>${base.eq}</strong> (pivote ${pivot}).</div>
+          <div>Serie encajada: ${pick.seriesStr} (variación ${pick.seriesIdx + 1}/10)${
+            pick.source === "estructural"
+              ? " · <span style='color:#e6c88a'>base estructural x₃·pivote·P·T (modo forense)</span>"
+              : ""
+          } · dígitos ganador en eje antes del llenado: ${pick.presence}/4</div>
+          ${renderGrid5Static(staticItem, winner4, pick.seriesStr)}
+          <div class="series-grid" style="margin-top:8px;">
+            <div class="series-box">
+              <div class="series-title x">Descomposición (10 variaciones)</div>
+              <div class="series-list">${series10
+                .map((s, i) => (pick.seriesStr === s ? "► " : "• ") + s + (i === pick.seriesIdx ? " ← encaje\n" : "\n"))
+                .join("")}</div>
+            </div>
+          </div>
+          <div style="margin-top:6px;font-size:12px;color:#9ec6de;">Criterio (modo forense): basta encaje en eje X <em>o</em> eje Y (vacío/igual + pivote + T); no se exige la cruz completa antes de reconstruir. Si no encaja el ganador, se prueban rotaciones desde x₃·pivote·P·T por malla. Desempate: más coincidencias del ganador en ejes, variación menor; <strong>A–F</strong> = orden de mallas (cuadrícula), no Tablas gemelas.</div>
+        `;
+        forensicPanel.appendChild(row);
+      }
+
+      function completeSimpleTensor(board, seriesStr, terminal, pivot) {
+        const s = seriesStr.split("").map(Number);
+        if (board.tensor.x3 === "" || board.tensor.y3 === "" || board.tensor.x3 == null || board.tensor.y3 == null) return null;
+        const ts = targetSumForBoard(board, pivot);
+        if (ts == null || !Number.isFinite(ts)) return null;
+        if (Number(board.tensor.x3) + pivot + Number(board.tensor.y3) !== ts) return null;
+        const t = Object.assign({}, board.tensor);
+        t.x2 = String(s[0]);
+        t.x3 = String(board.tensor.x3);
+        t.x4 = String(s[2]);
+        t.y2 = String(s[0]);
+        t.y3 = String(board.tensor.y3);
+        t.y4 = String(s[2]);
+        t.y1 = String(s[3]);
+        return t;
+      }
+
+      function pickForensicBoardSimple(base, winner4, series10, pivot) {
+        const terminal = Number(base.terminal);
+        let best = null;
+        function consider(board, ser, idx, source) {
+          if (board.tensor.x3 === "" || board.tensor.x3 == null || board.tensor.y3 === "" || board.tensor.y3 == null) {
+            return;
+          }
+          if (!forensicSeriesFitsAxesSimple(board, ser, terminal, pivot)) return;
+          const presence = countWinnerOnAxes(board, winner4, terminal);
+          const cand = { board: board, seriesStr: ser, seriesIdx: idx, id: board.id, presence: presence, source: source };
+          if (!best || compareForensicPick(cand, best) > 0) best = cand;
+        }
+        base.boards.forEach(function (board) {
+          series10.forEach(function (ser, idx) {
+            consider(board, ser, idx, "ganador");
+          });
+        });
+        if (!best) {
+          base.boards.forEach(function (board) {
+            const x3 = board.tensor.x3;
+            const y3 = board.tensor.y3;
+            if (x3 === "" || x3 == null || y3 === "" || y3 == null) return;
+            const base4Struct = sanitize4(String(x3) + String(pivot) + String(y3) + String(terminal));
+            series10RotacionesDesdeBase4(base4Struct).forEach(function (ser, idx) {
+              consider(board, ser, idx, "estructural");
+            });
+          });
+        }
+        if (!best) return null;
+        const filled = completeSimpleTensor(best.board, best.seriesStr, terminal, pivot);
+        if (!filled) return null;
+        return Object.assign({}, best, { tensor: filled, terminalUsed: terminal });
+      }
+
+      function renderForensicSimple(seed4, winner4) {
+        forensicSimplePanel.innerHTML = "";
+        const base = boardFromSeed(seed4);
+        const pivot = Number(base.pivot);
+        const series10 = series10RotacionesDesdeBase4(winner4);
+        const pick = pickForensicBoardSimple(base, winner4, series10, pivot);
+        const row = document.createElement("div");
+        row.className = "board-wrap coherent";
+        if (!pick) {
+          row.innerHTML =
+            "<strong>Laboratorio sin tablas A/B · v" +
+            APP_VERSION +
+            "</strong><p style='margin:8px 0 0;color:#9abed6'>No hay variación que encaje en eje X <em>ni</em> en eje Y (con T y pivote) para esta semilla.</p>";
+          forensicSimplePanel.appendChild(row);
+          return;
+        }
+        const staticItem = {
+          eq: base.eq.split("").map(Number),
+          pivot: pivot,
+          terminal: pick.terminalUsed,
+          tensor: pick.tensor
+        };
+        row.innerHTML = `
+          <strong>Rebobinado (Cuadrícula ${pick.id}) sin tablas · v${APP_VERSION}</strong>
+          <div>Semilla: ${base.seed} | Ganador: ${winner4} | Equivalente <strong>${base.eq}</strong></div>
+          <div>T = <strong>${pick.terminalUsed}</strong> (3.º dígito del equivalente) · pivote <strong>${pivot}</strong>.</div>
+          <div>Serie aplicada: ${pick.seriesStr} (variación ${pick.seriesIdx + 1}/10)${
+            pick.source === "estructural"
+              ? " · <span style='color:#e6c88a'>base estructural x₃·pivote·P·T (modo forense)</span>"
+              : ""
+          } · coincidencias previas en ejes: ${pick.presence}/4</div>
+          ${renderGrid5Static(staticItem, winner4, pick.seriesStr)}
+          <div class="series-grid" style="margin-top:8px;">
+            <div class="series-box">
+              <div class="series-title x">10 variaciones</div>
+              <div class="series-list">${series10
+                .map((s, i) => (pick.seriesStr === s ? "► " : "• ") + s + (i === pick.seriesIdx ? " ← encaje\n" : "\n"))
+                .join("")}</div>
+            </div>
+          </div>
+          <div style="margin-top:6px;font-size:12px;color:#9ec6de;">x₃,y₃ del plan se mantienen; x₂=y₂=s₀, x₄=y₄=s₂, y₁=s₃=T. Cuadrícula <strong>A–F</strong> = malla.</div>
+        `;
+        forensicSimplePanel.appendChild(row);
+      }
+
+      function loadSorteos() {
+        try {
+          const raw = localStorage.getItem(SORTEOS_KEY);
+          const d = raw ? JSON.parse(raw) : { lines: [] };
+          return d && Array.isArray(d.lines) ? d : { lines: [] };
+        } catch (_e) {
+          return { lines: [] };
+        }
+      }
+      function saveSorteos(data) {
+        localStorage.setItem(SORTEOS_KEY, JSON.stringify(data));
+      }
+      function sortRecordsAsc(records) {
+        records.sort(function (a, b) {
+          const da = new Date(a.date).getTime();
+          const db = new Date(b.date).getTime();
+          if (da !== db) return da - db;
+          return (a.createdAt || 0) - (b.createdAt || 0);
+        });
+      }
+      function trimRecordsTo100(line) {
+        sortRecordsAsc(line.records);
+        while (line.records.length > 100) line.records.shift();
+      }
+      function renderSorteosList() {
+        const data = loadSorteos();
+        sorteosLinesList.innerHTML = "";
+        data.lines.forEach(function (line) {
+          const li = document.createElement("li");
+          li.className = "line-item";
+          li.dataset.id = line.id;
+          li.innerHTML =
+            '<span class="line-title">' +
+            escapeHtml(line.title) +
+            "</span><div class=\"line-actions\">" +
+            '<button type="button" data-act="del-line" data-id="' +
+            escapeHtml(line.id) +
+            '">Eliminar</button></div>';
+          li.addEventListener("click", function (ev) {
+            if (ev.target.closest("button")) return;
+            openSorteosLine(line.id);
+          });
+          sorteosLinesList.appendChild(li);
+        });
+        sorteosLinesList.querySelectorAll('[data-act="del-line"]').forEach(function (btn) {
+          btn.addEventListener("click", function (ev) {
+            ev.stopPropagation();
+            const id = btn.getAttribute("data-id");
+            const d = loadSorteos();
+            d.lines = d.lines.filter(function (l) {
+              return l.id !== id;
+            });
+            saveSorteos(d);
+            renderSorteosList();
+          });
+        });
+      }
+      function openSorteosLine(lineId) {
+        sorteosCurrentLineId = lineId;
+        const d = loadSorteos();
+        const line = d.lines.find(function (l) {
+          return l.id === lineId;
+        });
+        if (!line) return;
+        if (!line.records) line.records = [];
+        sorteosListView.style.display = "none";
+        sorteosDetailView.style.display = "block";
+        detailLineTitle.textContent = line.title;
+        editLineTitle.value = line.title;
+        sorteosMsg.textContent = "Registros: " + line.records.length + " / 100";
+        renderRecordsList(line);
+      }
+      function renderRecordsList(line) {
+        sortRecordsAsc(line.records);
+        recordsList.innerHTML = "";
+        line.records.forEach(function (rec) {
+          const li = document.createElement("li");
+          li.className = "record-row";
+          li.dataset.id = rec.id;
+          li.innerHTML =
+            '<input type="text" class="rec-d" maxlength="4" value="' +
+            escapeHtml(rec.digits) +
+            '" />' +
+            '<input type="date" class="rec-t" value="' +
+            escapeHtml(rec.date) +
+            '" />' +
+            '<button type="button" class="btn-upd-rec" data-id="' +
+            rec.id +
+            '">Guardar</button>' +
+            '<button type="button" class="btn-del-rec" data-id="' +
+            rec.id +
+            '">Eliminar</button>';
+          li.querySelector(".btn-upd-rec").addEventListener("click", function () {
+            const digits = sanitize4(li.querySelector(".rec-d").value);
+            const dateStr = li.querySelector(".rec-t").value;
+            if (!/^\d{4}$/.test(digits)) {
+              sorteosMsg.textContent = "El número debe tener 4 dígitos.";
+              return;
+            }
+            if (!dateStr) {
+              sorteosMsg.textContent = "Indica una fecha.";
+              return;
+            }
+            rec.digits = digits;
+            rec.date = dateStr;
+            const d = loadSorteos();
+            const ln = d.lines.find(function (l) {
+              return l.id === sorteosCurrentLineId;
+            });
+            if (ln) {
+              sortRecordsAsc(ln.records);
+              saveSorteos(d);
+              sorteosMsg.textContent = "Registro actualizado.";
+              renderRecordsList(ln);
+            }
+          });
+          li.querySelector(".btn-del-rec").addEventListener("click", function () {
+            const d = loadSorteos();
+            const ln = d.lines.find(function (l) {
+              return l.id === sorteosCurrentLineId;
+            });
+            if (!ln) return;
+            ln.records = ln.records.filter(function (r) {
+              return r.id !== rec.id;
+            });
+            saveSorteos(d);
+            sorteosMsg.textContent = "Registro eliminado.";
+            renderRecordsList(ln);
+          });
+          recordsList.appendChild(li);
+        });
+      }
+      function showSorteosView() {
+        viewMain.style.display = "none";
+        viewSorteos.style.display = "block";
+        sorteosListView.style.display = "block";
+        sorteosDetailView.style.display = "none";
+        sorteosCurrentLineId = null;
+        renderSorteosList();
+      }
+      function hideSorteosView() {
+        viewSorteos.style.display = "none";
+        viewMain.style.display = "grid";
+      }
+
+      buildBtn.addEventListener("click", () => {
+        mainError.textContent = "";
+        try {
+          const seed4 = sanitize4(seedInput.value);
+          seedInput.value = seed4;
+          if (!/^\d{4}$/.test(seed4)) throw new Error("La semilla debe quedar en 4 cifras.");
+          buildProject(seed4);
+        } catch (e) {
+          mainError.textContent = e.message;
+        }
+      });
+      document.getElementById("btnAnalizarCoincidencia").addEventListener("click", function () {
+        const raw = document.getElementById("motorNumeroGanador").value.trim();
+        if (raw !== "" && !/^\d{4}$/.test(sanitize4(raw))) {
+          const cm = document.getElementById("motorCoincidenciaMsg");
+          cm.textContent = "Introduce exactamente 4 cifras o deja el campo vacío para actualizar solo el Top 3.";
+          cm.style.color = "#ff9e9e";
+          return;
+        }
+        consultarMotorPython(state.seed, raw === "" ? null : sanitize4(raw));
+      });
+      saveMemBtn.addEventListener("click", () => {
+        const mem = loadMemory();
+        mem[state.seed] = {
+          seed: state.seed,
+          memA: memAInput.value.trim(),
+          memB: memBInput.value.trim(),
+          updatedAt: new Date().toISOString()
+        };
+        saveMemory(mem);
+        refreshABPanel();
+      });
+      editMemBtn.addEventListener("click", () => {
+        const mem = loadMemory();
+        const row = mem[state.seed];
+        if (!row) return;
+        memAInput.value = row.memA || "";
+        memBInput.value = row.memB || "";
+        memoryNote.textContent = "Modo edición activo para " + state.seed + ".";
+      });
+      deleteMemBtn.addEventListener("click", () => {
+        const mem = loadMemory();
+        delete mem[state.seed];
+        saveMemory(mem);
+        refreshABPanel();
+      });
+
+      forensicBtn.addEventListener("click", () => {
+        forensicError.textContent = "";
+        try {
+          const s4 = sanitize4(forensicSeed.value);
+          const g4 = sanitize4(forensicWinner.value);
+          forensicSeed.value = s4;
+          forensicWinner.value = g4;
+          if (!/^\d{4}$/.test(s4) || !/^\d{4}$/.test(g4)) throw new Error("Semilla y ganador deben tener 4 cifras.");
+          renderForensic(s4, g4);
+        } catch (e) {
+          forensicError.textContent = e.message;
+        }
+      });
+
+      forensicSimpleBtn.addEventListener("click", () => {
+        forensicSimpleError.textContent = "";
+        try {
+          const s4 = sanitize4(forensicSimpleSeed.value);
+          const g4 = sanitize4(forensicSimpleWinner.value);
+          forensicSimpleSeed.value = s4;
+          forensicSimpleWinner.value = g4;
+          if (!/^\d{4}$/.test(s4) || !/^\d{4}$/.test(g4)) throw new Error("Semilla y ganador deben tener 4 cifras.");
+          renderForensicSimple(s4, g4);
+        } catch (e) {
+          forensicSimpleError.textContent = e.message;
+        }
+      });
+
+      btnSorteos.addEventListener("click", function () {
+        showSorteosView();
+      });
+      btnVolverApp.addEventListener("click", function () {
+        hideSorteosView();
+      });
+      btnCrearLinea.addEventListener("click", function () {
+        const t = newLineTitle.value.trim() || "Sin título";
+        const d = loadSorteos();
+        d.lines.push({ id: "L" + Date.now(), title: t, records: [] });
+        saveSorteos(d);
+        newLineTitle.value = "";
+        renderSorteosList();
+        sorteosMsg.textContent = "Línea creada.";
+      });
+      btnVolverLineas.addEventListener("click", function () {
+        sorteosDetailView.style.display = "none";
+        sorteosListView.style.display = "block";
+        sorteosCurrentLineId = null;
+      });
+      btnGuardarTitulo.addEventListener("click", function () {
+        if (!sorteosCurrentLineId) return;
+        const d = loadSorteos();
+        const line = d.lines.find(function (l) {
+          return l.id === sorteosCurrentLineId;
+        });
+        if (!line) return;
+        line.title = editLineTitle.value.trim() || line.title;
+        saveSorteos(d);
+        detailLineTitle.textContent = line.title;
+        sorteosMsg.textContent = "Título guardado.";
+      });
+      btnGuardarRegistro.addEventListener("click", function () {
+        if (!sorteosCurrentLineId) return;
+        const digits = sanitize4(recDigits.value);
+        const dateStr = recDate.value;
+        if (!/^\d{4}$/.test(digits)) {
+          sorteosMsg.textContent = "El número debe tener 4 dígitos.";
+          return;
+        }
+        if (!dateStr) {
+          sorteosMsg.textContent = "Selecciona la fecha.";
+          return;
+        }
+        const d = loadSorteos();
+        const line = d.lines.find(function (l) {
+          return l.id === sorteosCurrentLineId;
+        });
+        if (!line) return;
+        line.records.push({
+          id: "R" + Date.now(),
+          digits: digits,
+          date: dateStr,
+          createdAt: Date.now()
+        });
+        trimRecordsTo100(line);
+        saveSorteos(d);
+        recDigits.value = "";
+        sorteosMsg.textContent = "Registro guardado. Total: " + line.records.length + " (orden por fecha ascendente).";
+        openSorteosLine(sorteosCurrentLineId);
+      });
+
+      seedInput.value = state.seed;
+      forensicSeed.value = state.seed;
+      forensicSimpleSeed.value = state.seed;
+      buildProject(state.seed);
+    })();
+  </script>
+</body>
+</html>
