@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NUMEROLOTTO PRO V17.3</title>
+  <title>NUMEROLOTTO PRO — V18 base estable</title>
   <style>
     :root { --cyan:#00e5ff; --fuchsia:#ff00d4; --green:#78ff96; --panel:#101722; }
     body { margin:0; font-family:Segoe UI,sans-serif; background:#070b11; color:#ecf9ff; padding:18px; }
@@ -83,8 +83,12 @@
 <body>
   <div class="app">
     <header class="topbar">
-      <h1>NUMEROLOTTO PRO V17.3</h1>
-      <button type="button" class="btn-sorteos" id="btnSorteos">Sorteos</button>
+      <h1>NUMEROLOTTO PRO · V18 base estable</h1>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="btn-sorteos" id="btnTablasRef" style="border-color:#477fa8">Tablas de referencia</button>
+        <button type="button" class="btn-sorteos" id="btnAuditoriaHistorica" style="border-color:#6a4a9e">Auditoría Histórica</button>
+        <button type="button" class="btn-sorteos" id="btnSorteos">Sorteos</button>
+      </div>
     </header>
     <div id="viewMain">
     <section class="panel">
@@ -100,8 +104,8 @@
         <div class="kpi"><strong>Pivote central</strong><span id="kpiPivot">-</span></div>
       </div>
       <p class="sub motor-aclaracion-text">
-        <strong>El motor selecciona la cuadrícula más consistente (A–F).</strong>
-        Las combinaciones de 4 cifras son el espacio de búsqueda dentro de esa cuadrícula.
+        <strong>NUMEROLOTTO PRO · V18 base estable:</strong> sin motor predictivo ni “cuadrícula ganadora”.
+        Construcción y series X/Y automáticas solo cuando los brazos están completos por entrada manual.
       </p>
       <div id="motorResultStrip" class="motor-strip warn" style="display:none"></div>
       <div id="motorAnalisisRow" class="controls" style="display:none; grid-template-columns:1fr auto; max-width:560px">
@@ -132,7 +136,7 @@
           </div>
         </div>
         <div class="ab-block">
-          <div class="ab-title">Fila 2 - Sugerencia Matemática</div>
+          <div class="ab-title">Fila 2 — Recorrido circular (inicios solo desde <code>historicos_ab.json</code>)</div>
           <div class="ab-row">
             <div class="tag a">A</div>
             <div class="ab-cell" id="sugA1">--</div><div class="ab-cell" id="sugA2">--</div><div class="ab-cell" id="sugA3">--</div>
@@ -148,6 +152,15 @@
       <div id="memoryNote" class="memory-note">Historial listo.</div>
       <div id="mainError" class="error"></div>
     </section>
+
+    <!-- ========== SUGERENCIAS_EXPERIMENTALES_AB (módulo aislado; quitar sección + JS marcado para revertir) ========== -->
+    <section class="panel" id="panelExperimentalAB" style="border:2px dashed #5c3d7a;background:#0c1018">
+      <h2 style="font-size:1.02rem;margin-bottom:6px">Sugerencias experimentales A/B</h2>
+      <p class="sub" style="margin-bottom:10px">Solo lectura. <strong>No</strong> es dato oficial: no escribe en memoria ni en cálculos de cuadrícula. Incluye la antigua hipótesis de inicio desde equivalente (no confirmada) solo para contraste visual.</p>
+      <div id="expAbMount" style="margin-top:8px"></div>
+      <button type="button" id="btnRefrescarExpAB" style="margin-top:10px">Actualizar vista experimental</button>
+    </section>
+    <!-- ========== /SUGERENCIAS_EXPERIMENTALES_AB ========== -->
 
     <section class="panel">
       <h2>Fase 2 - Cuadrículas 5x5 operativas</h2>
@@ -212,6 +225,62 @@
     </div>
   </div>
 
+  <div id="refTablesOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#101722;border:1px solid #26445f;border-radius:12px;max-width:540px;padding:16px 18px;box-shadow:0 0 24px rgba(0,229,255,.15);color:#ecf9ff" role="dialog" aria-labelledby="refTablesTitle">
+      <h2 id="refTablesTitle" style="font-size:1.05rem;margin:0 0 10px">Tablas de referencia</h2>
+      <p style="margin:0 0 12px;font-size:12px;color:#9abed6">Consulta rápida. No modifica la cuadrícula.</p>
+      <div style="display:grid;gap:12px;font-size:13px;line-height:1.55">
+        <div>
+          <div style="font-weight:800;color:#78ff96;margin-bottom:4px">TABLA EQUIVALENCIA</div>
+          <div>1↔9 · 4↔6 · 5↔5 · 3↔7 · 2↔8 · 0↔0</div>
+        </div>
+        <div>
+          <div style="font-weight:800;color:#00e5ff;margin-bottom:4px">TABLA ESPEJO</div>
+          <div>2↔7 · 3↔8 · 4↔9 · 5↔0 · 6↔1 · 7↔2 · 8↔3 · 9↔4 · 0↔5 · 1↔6</div>
+        </div>
+        <div>
+          <div style="font-weight:800;color:#ff00d4;margin-bottom:4px">TABLA ESCALERA</div>
+          <div>1↔0 · 2↔1 · 3↔2 · 4↔3 · 5↔4 · 6↔5 · 7↔6 · 8↔7 · 9↔8 · 0↔9</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;text-align:right">
+        <button type="button" id="refTablesClose" style="padding:8px 16px">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODO_AUDITORIA_HISTORICA (módulo aislado; quitar este bloque para revertir) ========== -->
+  <div id="auditHistoricaOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.75);padding:14px;overflow:auto;box-sizing:border-box;">
+    <div style="max-width:1180px;margin:0 auto;display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;">
+      <div style="flex:1;min-width:300px;background:#101722;border:1px solid #26445f;border-radius:12px;padding:14px 16px;color:#ecf9ff">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <div>
+            <h2 style="font-size:1.1rem;margin:0">Auditoría Histórica</h2>
+            <p style="margin:6px 0 0;font-size:12px;color:#9abed6;line-height:1.45">Casos desde <code>historicos_ab.json</code>. Carga parcial: semilla, memoria A/B si hay <code>inicioA</code>/<code>inicioB</code> documentados (recorrido circular oficial del paso), mallas; <strong>x₂,x₄,y₂,y₄</strong> vacíos. Sin veredicto automático.</p>
+          </div>
+          <button type="button" id="btnCerrarAuditoria" style="padding:8px 14px">Cerrar</button>
+        </div>
+        <div style="font-size:12px;color:#9ec6de;margin-bottom:8px">Casos:</div>
+        <ul id="auditCaseList" style="list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:8px"></ul>
+        <div style="border-top:1px solid #2a4a60;padding-top:12px;margin-top:4px">
+          <h3 style="font-size:1rem;margin:0 0 8px">Comparación visual</h3>
+          <p style="margin:0 0 10px;font-size:12px;color:#9abed6;line-height:1.45">Solo contraste estructural. <strong>No</strong> se afirma cuál cuadrícula es la correcta.</p>
+          <div id="auditCompareMount"></div>
+        </div>
+      </div>
+      <aside style="width:100%;max-width:320px;flex-shrink:0;background:#101722;border:1px solid #3d3560;border-radius:12px;padding:14px 16px;color:#ecf9ff">
+        <h3 style="font-size:1rem;margin:0 0 8px">OBSERVACIONES</h3>
+        <p style="margin:0 0 8px;font-size:11px;color:#9abed6">Coincidencias, hipótesis, relaciones circulares, patrones, notas forenses.</p>
+        <textarea id="auditObsTextarea" rows="12" maxlength="8000" style="width:100%;box-sizing:border-box;border:1px solid #355b79;border-radius:8px;background:#0b1219;color:#ecf9ff;padding:10px;font-size:13px;line-height:1.4;resize:vertical" placeholder="Escribe aquí…"></textarea>
+        <button type="button" id="btnGuardarObservacion" style="margin-top:10px;width:100%;padding:10px">Guardar observación</button>
+        <div id="auditObsMsg" style="min-height:18px;margin-top:8px;font-size:12px;color:#78ff96"></div>
+        <div style="font-size:11px;color:#7a9aad;margin-top:12px">Guardadas (local):</div>
+        <div id="auditObsList" style="margin-top:8px;max-height:220px;overflow:auto;font-size:12px;line-height:1.35"></div>
+      </aside>
+    </div>
+  </div>
+  <!-- ========== /MODO_AUDITORIA_HISTORICA ========== -->
+
   <script>
     (function () {
       "use strict";
@@ -222,10 +291,22 @@
       const invA = invertMap(tablaA);
       const invB = invertMap(tablaB);
       const equivalenciaMap = { 0:0,1:9,2:8,3:7,4:6,5:5,6:4,7:3,8:2,9:1 };
-      const APP_VERSION = "17.3";
-      const BOARD_STORE_KEY = "numerolotto_v17_3_boards";
-      const MEMORY_KEY = "numerolotto_v17_3_memory_ab";
-      const SORTEOS_KEY = "numerolotto_v17_3_sorteos";
+      const APP_VERSION = "NUMEROLOTTO_PRO_V18_BASE_ESTABLE";
+      const BOARD_STORE_KEY = "numerolotto_pro_v18_base_estable_boards";
+      const MEMORY_KEY = "numerolotto_pro_v18_base_estable_memory_ab";
+      const SORTEOS_KEY = "numerolotto_pro_v18_base_estable_sorteos";
+      const OBSERVACIONES_KEY = "numerolotto_pro_v18_base_estable_observaciones";
+      /** Copia embebida de `historicos_ab.json` (fallback si fetch falla, p. ej. file://). */
+      const HISTORICOS_AB_EMBED = [
+        { sorteo: "Boyaca", semilla: "3370", equivalente: "730", inicioA: "43", inicioB: "21", ganador: "8943" },
+        { sorteo: "Histórico", semilla: "9894", equivalente: "983", inicioA: "", inicioB: "", ganador: "3370" },
+        { sorteo: "Histórico", semilla: "5048", equivalente: "406", inicioA: "", inicioB: "", ganador: "4796" },
+        { sorteo: "Registro", semilla: "5497", equivalente: "613", inicioA: "", inicioB: "", ganador: "" },
+        { sorteo: "Registro", semilla: "9428", equivalente: "460", inicioA: "", inicioB: "", ganador: "" },
+        { sorteo: "Registro", semilla: "5264", equivalente: "280", inicioA: "", inicioB: "", ganador: "" },
+        { sorteo: "Registro", semilla: "1409", equivalente: "712", inicioA: "", inicioB: "", ganador: "" }
+      ];
+      let histAbDataset = HISTORICOS_AB_EMBED.slice();
       /** Equivalente 3 cifras validado con procedimiento (excepción documentada). Clave = semilla 4 cifras normalizada. */
       const EQUIVALENT_SEED_OVERRIDE = {
         "9072": [3, 6, 1]
@@ -248,9 +329,6 @@
         motorPayload: null,
         motorErr: null
       };
-      /** Misma ruta que serve_motor.py (mismo origen). */
-      const MOTOR_API = "/api/seleccionar";
-
       const seedInput = document.getElementById("seedInput");
       const buildBtn = document.getElementById("buildBtn");
       const mainError = document.getElementById("mainError");
@@ -307,6 +385,13 @@
           .replace(/"/g, "&quot;");
       }
       function sanitize4(v) { return String(v || "").replace(/[^\d]/g, "").slice(0, 4).padStart(4, "0"); }
+      function findHistoricoRegistro(seed4) {
+        const s = sanitize4(seed4);
+        for (let i = 0; i < histAbDataset.length; i++) {
+          if (sanitize4(histAbDataset[i].semilla) === s) return histAbDataset[i];
+        }
+        return null;
+      }
       function sanitize3(v) { return String(v || "").replace(/[^\d]/g, "").slice(0, 3).padStart(3, "0"); }
       function root(numStr) {
         const sum = String(numStr).replace(/[^\d]/g, "").split("").reduce((a, b) => a + Number(b || 0), 0);
@@ -374,21 +459,10 @@
         });
         return { xToY, yToX };
       }
-      function getActiveTensorMapsForSeed(seed4) {
-        const seed = sanitize4(seed4);
-        const memory = loadMemory();
-        const row = memory[seed];
-        const rowA = row && row.memA ? parseSeriesList(row.memA) : buildSuggestionRows(seed).a;
-        const rowB = row && row.memB ? parseSeriesList(row.memB) : buildSuggestionRows(seed).b;
-        return {
-          mapA: mergePairMapsFromRows(rowA, FALLBACK_PAIR_A),
-          mapB: mergePairMapsFromRows(rowB, FALLBACK_PAIR_B)
-        };
-      }
       function getActiveTensorMaps() {
         return getActiveTensorMapsForSeed(state.seed);
       }
-      /** x₂/x₄/y₂/y₄ quedan vacíos al construir; se rellenan con la Ley de atracción (Tablas A/B) al editar. */
+      /** x₂/x₄/y₂/y₄ quedan vacíos al construir; se rellenan solo manualmente (independientes). */
       function tensorFromX3Y3(x3, y3) {
         return { x3, y3, x2: "", y2: "", x4: "", y4: "" };
       }
@@ -415,49 +489,22 @@
         localStorage.setItem(MEMORY_KEY, JSON.stringify(data));
       }
       function updateTensorByField(board, field, value) {
-        const maps = getActiveTensorMaps();
         if (value === "" || value === null) {
           if (field === "x3") board.tensor.x3 = "";
           if (field === "y3") board.tensor.y3 = "";
-          if (field === "x2") {
-            board.tensor.x2 = "";
-            board.tensor.y2 = "";
-          }
-          if (field === "y2") {
-            board.tensor.y2 = "";
-            board.tensor.x2 = "";
-          }
-          if (field === "x4") {
-            board.tensor.x4 = "";
-            board.tensor.y4 = "";
-          }
-          if (field === "y4") {
-            board.tensor.y4 = "";
-            board.tensor.x4 = "";
-          }
+          if (field === "x2") board.tensor.x2 = "";
+          if (field === "y2") board.tensor.y2 = "";
+          if (field === "x4") board.tensor.x4 = "";
+          if (field === "y4") board.tensor.y4 = "";
           return;
         }
         const d = Math.max(0, Math.min(9, Number(value)));
         if (field === "x3") board.tensor.x3 = d;
         if (field === "y3") board.tensor.y3 = d;
-        if (field === "x2") {
-          board.tensor.x2 = d;
-          board.tensor.y2 = partnerFromMap(maps, false, d);
-        }
-        if (field === "y2") {
-          board.tensor.y2 = d;
-          const xBack = maps.mapA.yToX[d];
-          board.tensor.x2 = xBack !== undefined ? xBack : "";
-        }
-        if (field === "x4") {
-          board.tensor.x4 = d;
-          board.tensor.y4 = partnerFromMap(maps, true, d);
-        }
-        if (field === "y4") {
-          board.tensor.y4 = d;
-          const xBackB = maps.mapB.yToX[d];
-          board.tensor.x4 = xBackB !== undefined ? xBackB : "";
-        }
+        if (field === "x2") board.tensor.x2 = d;
+        if (field === "y2") board.tensor.y2 = d;
+        if (field === "x4") board.tensor.x4 = d;
+        if (field === "y4") board.tensor.y4 = d;
       }
       function validateSum(board) {
         if (board.tensor.x3 === "" || board.tensor.y3 === "") return { ok: false, sum: "-" };
@@ -538,10 +585,38 @@
           document.getElementById(prefix + i).textContent = values[i - 1] || "--";
         }
       }
-      function buildSuggestionRows(seed4) {
+      /** Paso circular oficial: 1.º dígito +1, 2.º −1 (mód 10). Gemelo dd → espejo(d)·espejo(d). */
+      function circularNextPair(abNum) {
+        const n = Number(abNum);
+        const a = Math.floor(n / 10);
+        const b = n % 10;
+        if (a === b) {
+          const e = espejoMap[a];
+          return e * 10 + e;
+        }
+        return ((a + 1) % 10) * 10 + ((b + 9) % 10);
+      }
+      function padTwoInicio(v) {
+        const t = String(v || "").replace(/\D/g, "");
+        if (t.length < 2) return null;
+        return t.slice(-2).padStart(2, "0");
+      }
+      /** Seis pasos con la regla circular oficial a partir de un par inicial documentado. */
+      function buildCircularChainFromInicio(start2) {
+        let cur = Number(start2);
+        if (!Number.isFinite(cur) || cur < 0 || cur > 99) return [];
+        const out = [];
+        for (let i = 0; i < 6; i++) {
+          out.push(String(cur).padStart(2, "0"));
+          cur = circularNextPair(cur);
+        }
+        return out;
+      }
+      /** Solo panel experimental: inicios desde equivalente (hipótesis no confirmada). */
+      function buildExperimentalHypothesisRows(seed4) {
         const eqObj = computeEquivalent(seed4);
         const eq = eqObj.equivalent;
-        const family = Number(String(eq[0]) + String(eq[1]));
+        const family = eq[0] * 10 + eq[1];
         const a = [];
         const b = [];
         let curA = family;
@@ -549,10 +624,52 @@
         for (let i = 0; i < 6; i++) {
           a.push(String(curA).padStart(2, "0"));
           b.push(String(curB).padStart(2, "0"));
-          curA = (curA + 9) % 100;
-          curB = (curB + 9) % 100;
+          curA = circularNextPair(curA);
+          curB = circularNextPair(curB);
         }
-        return { a, b };
+        return { a, b, family: family, curB0: (family + 12) % 100 };
+      }
+      function getActiveTensorMapsForSeed(seed4) {
+        const seed = sanitize4(seed4);
+        const memory = loadMemory();
+        const row = memory[seed];
+        let rowA = row && row.memA ? parseSeriesList(row.memA) : [];
+        let rowB = row && row.memB ? parseSeriesList(row.memB) : [];
+        const h = findHistoricoRegistro(seed);
+        if (!rowA.length && h && padTwoInicio(h.inicioA)) rowA = buildCircularChainFromInicio(padTwoInicio(h.inicioA));
+        if (!rowB.length && h && padTwoInicio(h.inicioB)) rowB = buildCircularChainFromInicio(padTwoInicio(h.inicioB));
+        return {
+          mapA: mergePairMapsFromRows(rowA, FALLBACK_PAIR_A),
+          mapB: mergePairMapsFromRows(rowB, FALLBACK_PAIR_B)
+        };
+      }
+      function renderExperimentalABPanel() {
+        const mount = document.getElementById("expAbMount");
+        if (!mount) return;
+        const exp = buildExperimentalHypothesisRows(state.seed);
+        const eqStr = sanitize3(state.eq.join(""));
+        const cells = function (arr) {
+          return arr
+            .map(function (x) {
+              return '<span style="display:inline-block;min-width:40px;text-align:center;padding:4px 6px;margin:2px;border:1px solid #4a3a6a;border-radius:6px;background:#12101c">' +
+                escapeHtml(x) +
+                "</span>";
+            })
+            .join("");
+        };
+        mount.innerHTML =
+          '<div style="font-size:11px;color:#c9a8e8;margin-bottom:8px">Hipótesis de inicio desde equivalente (no aprobada): A₀ = e₀·10+e₁ = <strong>' +
+          exp.family +
+          "</strong> · B₀ = (A₀+12) mod 100 = <strong>" +
+          exp.curB0 +
+          "</strong> · eq. calc. " +
+          escapeHtml(eqStr) +
+          "</div>" +
+          '<div style="font-size:12px;color:#9ec6de;margin-bottom:4px">Fila experimental A</div><div style="display:flex;flex-wrap:wrap;gap:4px">' +
+          cells(exp.a) +
+          '</div><div style="font-size:12px;color:#9ec6de;margin:10px 0 4px">Fila experimental B</div><div style="display:flex;flex-wrap:wrap;gap:4px">' +
+          cells(exp.b) +
+          "</div>";
       }
       function refreshABPanel() {
         const mem = loadMemory();
@@ -561,9 +678,11 @@
         const b = row ? parseSeriesList(row.memB) : [];
         setRow("memA", a);
         setRow("memB", b);
-        const sug = buildSuggestionRows(state.seed);
-        setRow("sugA", sug.a);
-        setRow("sugB", sug.b);
+        const h = findHistoricoRegistro(state.seed);
+        const offA = h && padTwoInicio(h.inicioA) ? buildCircularChainFromInicio(padTwoInicio(h.inicioA)) : [];
+        const offB = h && padTwoInicio(h.inicioB) ? buildCircularChainFromInicio(padTwoInicio(h.inicioB)) : [];
+        setRow("sugA", offA);
+        setRow("sugB", offB);
         if (row) {
           memAInput.value = row.memA || "";
           memBInput.value = row.memB || "";
@@ -576,38 +695,13 @@
       }
       function renderBoards() {
         boardsEl.innerHTML = "";
-        const winLet = state.motorPayload && state.motorPayload.ganador ? state.motorPayload.ganador.letra : null;
         state.boards.forEach((board) => {
           const val = validateSum(board);
           const card = document.createElement("div");
           const coh = coherenceLevel(board);
-          let cls = "board-wrap" + (coh === "Alta" ? " coherent" : "");
-          if (winLet && board.letter === winLet) cls += " motor-winner";
+          const cls = "board-wrap" + (coh === "Alta" ? " coherent" : "");
           card.className = cls;
-          const motorRow =
-            state.motorPayload && state.motorPayload.candidatos
-              ? state.motorPayload.candidatos.find(function (c) {
-                  return c.letra === board.letter;
-                })
-              : null;
-          const motorPenHtml = motorRow
-            ? '<span class="motor-penalty">Motor: pen ' +
-              motorRow.penalizacion +
-              (motorRow.es_valido ? " · es_valido" : "") +
-              (motorRow.falla_dura ? " · falla dura" : "") +
-              "</span>"
-            : "";
-          /* MODO_MOTOR (cuadrícula): no mostrar 10 rotaciones hasta tener los seis brazos; el Laboratorio Forense no usa este candado. */
           const brazosOk = tensorBrazosCompletos(board.tensor);
-          const mp = state.motorPayload;
-          const seriesMotorOk = mp && mp.series_disponibles === true;
-          const ganadoraPlena = seriesMotorOk && brazosOk;
-          let winnerBadge = "";
-          if (winLet && board.letter === winLet) {
-            winnerBadge = ganadoraPlena
-              ? '<span class="winner-badge">GANADORA (motor)</span>'
-              : '<span class="winner-badge" style="background:linear-gradient(90deg,#5a4a10,#7a6218);border-color:#a08030">GANADORA PARCIAL (motor)</span>';
-          }
           const serieX = brazosOk
             ? sanitize4(String(board.tensor.x2) + String(board.tensor.x3) + String(board.tensor.x4) + String(state.terminal))
             : "—";
@@ -618,48 +712,11 @@
           const ySeries = brazosOk ? series10RotacionesDesdeBase4(serieY) : [];
           const serieXBody = brazosOk ? (xSeries.length ? xSeries.map((n) => "• " + n).join("\n") : "• —") : mensajeSeriesBloqueadasHtml();
           const serieYBody = brazosOk ? (ySeries.length ? ySeries.map((n) => "• " + n).join("\n") : "• —") : mensajeSeriesBloqueadasHtml();
-          let motorQuadHtml = "";
-          if (winLet && board.letter === winLet && state.motorPayload && state.motorPayload.ok) {
-            const mp = state.motorPayload;
-            const seriesMotorOk = mp.series10 && mp.series10.length === 10;
-            if (seriesMotorOk) {
-              const hitCombo = mp.combinacion_encontrada || "";
-              const b4m = mp.base4_usada || "";
-              const tipoM = mp.tipo_base || "";
-              const linesMotor = mp.series10
-                .map(function (n, idx) {
-                  const isHit = hitCombo && n === hitCombo;
-                  const lineClass = isHit ? "series-line-hit" : "";
-                  return '<span class="' + lineClass + '">• ' + n + " (var. " + (idx + 1) + "/10)</span>";
-                })
-                .join("\n");
-              motorQuadHtml =
-                '<div class="series-box motor-quad">' +
-                '<div class="series-title x" style="font-size:18px">Serie cuadrícula ganadora (motor)</div>' +
-                '<div style="font-size:12px;color:#9ec6de;margin-bottom:6px">Base: <strong>' +
-                escapeHtml(b4m) +
-                '</strong> · tipo <code>' +
-                escapeHtml(tipoM) +
-                "</code> · misma rotación que <code>buildSeries10From4</code></div>" +
-                '<div class="series-list">' +
-                linesMotor +
-                "</div></div>";
-            } else {
-              motorQuadHtml =
-                '<div class="series-box motor-quad">' +
-                '<div class="series-title x" style="font-size:17px">Ganadora parcial — series no generadas</div>' +
-                '<div class="series-list">' +
-                mensajeSeriesBloqueadasHtml() +
-                (mp.tipo_base
-                  ? '<br><span style="font-size:11px;opacity:.88">Estado motor: <code>' + escapeHtml(mp.tipo_base) + "</code></span>"
-                  : "") +
-                "</div></div>";
-            }
-          }
+          const motorQuadHtml = "";
           card.innerHTML = `
             <div class="board-head">
-              <strong>Cuadrícula ${board.letter.toUpperCase()}${winnerBadge}</strong>
-              <span class="score">Coherencia: ${coh}${motorPenHtml}</span>
+              <strong>Cuadrícula ${board.letter.toUpperCase()}</strong>
+              <span class="score">Coherencia: ${coh}</span>
             </div>
             <div class="sum-note ${val.ok ? "sum-ok" : "sum-bad"}">x3(F5/C3) + pivote(F4/C4) + y3(F3/C5) = ${val.sum}</div>
             <div class="grid5">
@@ -739,6 +796,7 @@
         kpiPivot.textContent = String(state.pivot);
         refreshABPanel();
         renderBoards();
+        renderExperimentalABPanel();
       }
       function generateUniquePairsForTarget(pivot, targetSum) {
         const needed = targetSum - pivot;
@@ -758,7 +816,8 @@
         while (queue.length < 6) queue.push({ x3: "", y3: "", total: 0 });
         return queue.slice(0, 6);
       }
-      function buildProject(seed4) {
+      function buildProject(seed4, opts) {
+        opts = opts || {};
         state.seed = sanitize4(seed4);
         const eqObj = computeEquivalent(state.seed);
         state.eq = eqObj.equivalent;
@@ -770,221 +829,61 @@
           targetSum: xPlan[idx].total,
           tensor: { x2: "", x3: xPlan[idx].x3, x4: "", y2: "", y3: xPlan[idx].y3, y4: "" }
         }));
-        const snapshots = loadBoardSnapshots();
-        state.boards.forEach((b) => {
-          if (snapshots[b.letter] && snapshots[b.letter].seed === state.seed) {
-            b.tensor = Object.assign({}, b.tensor, snapshots[b.letter].tensor);
-            if (b.targetSum == null || b.targetSum === 0) {
-              b.targetSum = Number(b.tensor.x3) + state.pivot + Number(b.tensor.y3);
+        if (!opts.auditPartialLoad) {
+          const snapshots = loadBoardSnapshots();
+          state.boards.forEach((b) => {
+            if (snapshots[b.letter] && snapshots[b.letter].seed === state.seed) {
+              b.tensor = Object.assign({}, b.tensor, snapshots[b.letter].tensor);
+              if (b.targetSum == null || b.targetSum === 0) {
+                b.targetSum = Number(b.tensor.x3) + state.pivot + Number(b.tensor.y3);
+              }
             }
-          }
-        });
+          });
+        } else {
+          state.boards.forEach(function (b) {
+            b.tensor.x2 = "";
+            b.tensor.x4 = "";
+            b.tensor.y2 = "";
+            b.tensor.y4 = "";
+          });
+        }
         renderAll();
         const mn = document.getElementById("motorNumeroGanador");
         if (mn) mn.value = "";
-        consultarMotorPython(state.seed, null);
+        state.motorPayload = null;
       }
 
       function aplicarResultadoMotorOk(d) {
-        const strip = document.getElementById("motorResultStrip");
-        const coinMsg = document.getElementById("motorCoincidenciaMsg");
-        const g = d.ganador;
-        const penG = typeof g.penalizacion === "number" ? g.penalizacion : null;
-        const seriesOk = d.series_disponibles === true;
-        const acl =
-          d.aclaracion ?
-            "<p style='margin:0 0 10px;font-size:13px;color:#cdeeff;line-height:1.45'><strong>Nota.</strong> " +
-            escapeHtml(d.aclaracion) +
-            "</p>" :
-            "";
-        const msgEstructura =
-          d.mensaje_series ?
-            "<p style='margin:0 0 10px;font-size:12px;color:#e6e6a8;line-height:1.5;border-left:3px solid #a08030;padding-left:10px'>" +
-            escapeHtml(d.mensaje_series) +
-            "</p>" :
-            "";
-        let topBlock = "";
-        if (d.top_sugeridas && d.top_sugeridas.length) {
-          topBlock =
-            "<div style='margin-top:10px;padding-top:10px;border-top:1px solid #2a4a60'><strong style='color:#cdeeff'>Top 3 combinaciones sugeridas</strong> " +
-            "<span style='font-size:11px;color:#7a9aad'>(sin número real o como referencia)</span><br>" +
-            d.top_sugeridas
-              .map(function (t, i) {
-                return (
-                  (i + 1) +
-                  ". <strong style='color:#ffd700'>" +
-                  escapeHtml(t.combinacion) +
-                  "</strong> · variación " +
-                  t.variacion +
-                  "/10"
-                );
-              })
-              .join("<br>") +
-            "</div>";
-        }
-        let valBlock = "";
-        coinMsg.textContent = "";
-        coinMsg.style.color = "";
-        if (d.numero_solicitado) {
-          if (!seriesOk) {
-            valBlock =
-              "<div style='margin-top:12px;padding:10px;border-radius:8px;background:#1a1a12;border:1px solid #6a6a3a;color:#e6e6a8;font-weight:600'>Series no disponibles: el motor no ha cerrado aún los brazos estructurales (x₂–x₄, y₂–y₄). No se verifica el número contra las 10 rotaciones automáticas; usa el Laboratorio Forense con un ganador conocido.</div>";
-            coinMsg.textContent =
-              "Sin series del motor: no hay verificación por rotación hasta propagación completa. El forense sigue siendo la referencia para cierres reales.";
-            coinMsg.style.color = "#e6e6a8";
-          } else if (d.coincidencia) {
-            valBlock =
-              "<div style='margin-top:12px;padding:10px;border-radius:8px;background:#142418;border:1px solid #3d8f5c;color:#78ff96;font-weight:700'>Coincidencia encontrada en la cuadrícula seleccionada" +
-              (d.combinacion_encontrada ? " · <strong>" + escapeHtml(d.combinacion_encontrada) + "</strong>" : "") +
-              "</div>";
-            coinMsg.textContent =
-              "Coincidencia encontrada en la cuadrícula seleccionada" +
-              (d.combinacion_encontrada ? ": " + d.combinacion_encontrada : "") +
-              ".";
-            coinMsg.style.color = "#78ff96";
-          } else {
-            valBlock =
-              "<div style='margin-top:12px;padding:10px;border-radius:8px;background:#241414;border:1px solid #8f3d3d;color:#ff9e9e;font-weight:700'>El número no pertenece a la cuadrícula seleccionada.</div>";
-            coinMsg.textContent = "El número no pertenece a la cuadrícula seleccionada.";
-            coinMsg.style.color = "#ff9e9e";
-          }
-        } else {
-          coinMsg.textContent = seriesOk
-            ? "Opcional: introduce 4 cifras del sorteo y pulsa «Analizar coincidencia». Si lo dejas vacío, se muestra solo el Top 3."
-            : "Opcional: 4 cifras para comprobar rotación solo cuando el motor genere series (brazos x₂–x₄ e y₂–y₄ cerrados en el backend). Sin series no hay Top 3 ni verificación automática por rotación.";
-          coinMsg.style.color = "#9abed6";
-        }
-        const detalle = d.candidatos
-          .map(function (c) {
-            return (
-              "<strong>" +
-              c.letra.toUpperCase() +
-              "</strong>: penalización " +
-              c.penalizacion +
-              (c.es_valido ? " · válida fuerte" : "") +
-              (c.falla_dura ? " · <span style='color:#ff9e9e'>falla dura</span>" : "") +
-              " · " +
-              c.n_fallos +
-              " contradicciones"
-            );
-          })
-          .join("<br>");
-        strip.className = "motor-strip";
-        strip.innerHTML =
-          acl +
-          msgEstructura +
-          "<div style='font-size:1.05rem;margin-bottom:6px'>Cuadrícula seleccionada por el motor: " +
-          "<span style='color:#ffd700;font-weight:900;font-size:1.25rem'>" +
-          g.letra.toUpperCase() +
-          "</span>" +
-          (seriesOk ?
-            '<span class="winner-badge" style="margin-left:10px">GANADORA (motor)</span>' :
-            '<span class="winner-badge" style="margin-left:10px;background:linear-gradient(90deg,#5a4a10,#7a6218);border-color:#a08030">GANADORA PARCIAL (motor)</span>') +
-          "</div>" +
-          "<div style='font-size:13px;color:#cdeeff;margin-bottom:8px'>Equivalente " +
-          d.equivalente.join("") +
-          " · x₃=" +
-          g.x3 +
-          ", P=" +
-          g.y3 +
-          ", suma plan=" +
-          g.suma_objetivo +
-          (penG !== null ? " · <strong>pen. ganadora " + penG + "</strong>" : "") +
-          "</div>" +
-          (d.base4_usada ?
-            "<div style='font-size:12px;color:#9ec6de;margin-bottom:6px'>Base 4 cifras (espacio de búsqueda): <strong>" +
-            escapeHtml(d.base4_usada) +
-            "</strong> · tipo <code>" +
-            escapeHtml(d.tipo_base || "") +
-            "</code></div>" :
-            "") +
-          valBlock +
-          topBlock +
-          "<div style='font-size:12px;color:#9ec6de;line-height:1.45;border-top:1px solid #2a4a60;padding-top:10px;margin-top:10px'>" +
-          "<strong>Todas las cuadrículas (evaluar):</strong><br>" +
-          detalle +
-          "</div>";
-        const propLogEl = document.getElementById("motorPropagacionLog");
-        if (propLogEl) {
-          if (d.propagacion_log) {
-            propLogEl.style.display = "block";
-            propLogEl.textContent = d.propagacion_log;
-          } else {
-            propLogEl.style.display = "none";
-            propLogEl.textContent = "";
-          }
-        }
-        if (d.ganador && d.ganador.letra) {
-          const wb = state.boards.find(function (b) {
-            return b.letter === d.ganador.letra;
-          });
-          if (wb) {
-            ["x2", "x3", "x4", "y2", "y3", "y4"].forEach(function (k) {
-              const v = d.ganador[k];
-              if (v !== undefined && v !== null && v !== "") wb.tensor[k] = String(v);
-            });
-          }
-        }
+        void d;
       }
 
       function consultarMotorPython(seed4, numeroOpt) {
+        void seed4;
+        void numeroOpt;
         const strip = document.getElementById("motorResultStrip");
         const analisisRow = document.getElementById("motorAnalisisRow");
         const coinMsg = document.getElementById("motorCoincidenciaMsg");
-        strip.style.display = "block";
+        const propLogEl = document.getElementById("motorPropagacionLog");
+        state.motorPayload = null;
+        state.motorErr = null;
+        if (strip) {
+          strip.style.display = "none";
+          strip.innerHTML = "";
+        }
         if (analisisRow) analisisRow.style.display = "none";
         if (coinMsg) {
           coinMsg.textContent = "";
           coinMsg.style.color = "";
         }
-        strip.className = "motor-strip warn";
-        strip.innerHTML =
-          "<strong>Consultando motor Python</strong> <span style='color:#9abed6'>(generar_candidatos → seleccionar_mejor)…</span>";
-        state.motorPayload = null;
-        state.motorErr = null;
-        const body = { seed: seed4 };
-        if (numeroOpt != null && String(numeroOpt).replace(/\D/g, "").length >= 4) {
-          body.numero = sanitize4(String(numeroOpt));
+        if (propLogEl) {
+          propLogEl.style.display = "none";
+          propLogEl.textContent = "";
         }
-        fetch(MOTOR_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        })
-          .then(function (r) {
-            return r.json().then(function (data) {
-              return { ok: r.ok, status: r.status, data: data };
-            });
-          })
-          .then(function (res) {
-            if (!res.ok) {
-              throw new Error(res.data && res.data.error ? res.data.error : "HTTP " + res.status);
-            }
-            state.motorPayload = res.data;
-            if (analisisRow) analisisRow.style.display = "grid";
-            aplicarResultadoMotorOk(res.data);
-            renderBoards();
-          })
-          .catch(function (e) {
-            state.motorErr = e.message || String(e);
-            if (analisisRow) analisisRow.style.display = "none";
-            if (coinMsg) coinMsg.textContent = "";
-            strip.className = "motor-strip err";
-            strip.innerHTML =
-              "<strong>No se pudo obtener el resultado del motor Python.</strong>" +
-              "<p style='margin:8px 0 0;font-size:13px;color:#cdeeff'>La interfaz construye las 6 cuadrículas en JavaScript, pero <code>seleccionar_mejor()</code> solo corre en Python.</p>" +
-              "<p style='margin:6px 0 0;font-size:13px'>En una terminal, dentro de esta carpeta:</p>" +
-              "<code style='display:block;margin:8px 0;padding:10px;background:#0b1219;border-radius:8px;border:1px solid #355b79'>python serve_motor.py</code>" +
-              "<p style='margin:6px 0 0;font-size:12px;color:#9abed6'>Abre luego <strong>http://127.0.0.1:8765/</strong> (no abras <code>index.html</code> como archivo <code>file://</code> si quieres ver la ganadora del motor).</p>" +
-              "<p style='margin:4px 0 0;font-size:11px;color:#888'>Detalle: " +
-              escapeHtml(state.motorErr) +
-              "</p>";
-            renderBoards();
-          });
       }
 
       function boardFromSeed(seed4) {
-        const eqObj = computeEquivalent(seed4);
+        const s4 = sanitize4(seed4);
+        const eqObj = computeEquivalent(s4);
         const eq = eqObj.equivalent;
         const pivot = eq[1];
         const term = eq[2];
@@ -992,7 +891,7 @@
           return { x3: p.x3, y3: p.y3, id: letters[i].toUpperCase(), total: p.total };
         });
         return {
-          seed: seed4,
+          seed: s4,
           eq: eq.join(""),
           pivot: pivot,
           terminal: term,
@@ -1003,7 +902,8 @@
         };
       }
       function renderGrid5Static(item, winner4, highlightSeries) {
-        const wd = winner4.split("").map(Number);
+        const wClean = String(winner4 || "").replace(/[^\d]/g, "");
+        const wd = wClean.length === 4 ? wClean.split("").map(Number) : [];
         const hs = String(highlightSeries || "");
         const hsDigits = hs ? hs.split("").map(Number) : [];
         const y1cell = item.tensor.y1 !== undefined && item.tensor.y1 !== "" ? item.tensor.y1 : "Y";
@@ -1039,13 +939,6 @@
       }
 
       const FORENSIC_RANK = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5 };
-
-      function partnerFromMap(maps, useB, xVal) {
-        const m = useB ? maps.mapB : maps.mapA;
-        const n = Number(xVal);
-        if (m.xToY[n] !== undefined && m.xToY[n] !== "") return Number(m.xToY[n]);
-        return useB ? FALLBACK_PAIR_B[n] : FALLBACK_PAIR_A[n];
-      }
 
       function countWinnerOnAxes(board, winner4, terminal) {
         const want = new Set(winner4.split("").map(Number));
@@ -1104,31 +997,6 @@
         if (!slotFits(board.tensor.y4, s[2])) return false;
         return true;
       }
-      /** Tras encaje X o Y, la misma variación debe poder escribirse en toda la cruz (vacío o igual en las 6 celdas). */
-      function seriesCompletesCross(board, seriesStr, terminal, pivot) {
-        const s = seriesStr.split("").map(Number);
-        if (Number(terminal) !== s[3]) return false;
-        const y3new = y3FromPivot(board, seriesStr, pivot);
-        if (!Number.isFinite(y3new) || y3new < 0 || y3new > 9) return false;
-        if (!slotFits(board.tensor.x2, s[0])) return false;
-        if (!slotFits(board.tensor.x3, s[1])) return false;
-        if (!slotFits(board.tensor.x4, s[2])) return false;
-        if (!slotFits(board.tensor.y2, s[0])) return false;
-        if (!slotFits(board.tensor.y3, y3new)) return false;
-        if (!slotFits(board.tensor.y4, s[2])) return false;
-        return true;
-      }
-      /**
-       * MODO_FORENSE (espejo): encaje solo por eje X o eje Y con T y pivote coherentes.
-       * No exige `seriesCompletesCross` antes: un brazo conflictivo no debe impedir la reconstrucción
-       * si un eje es válido y `completeForensicTensor` rellena el resto. El motor principal no usa esta ruta.
-       */
-      function forensicSeriesFitsAxesXY(board, seriesStr, terminal, pivot) {
-        return (
-          seriesFitsAxisX(board, seriesStr, terminal, pivot) || seriesFitsAxisY(board, seriesStr, terminal, pivot)
-        );
-      }
-
       /** Laboratorio sin tablas: x₃,y₃ fijos del plan (pivote 10/20); la variación solo llena x₂,x₄,y₂,y₄ e y₁=T. */
       function seriesFitsAxisXSimple(board, seriesStr, terminal, pivot) {
         const s = seriesStr.split("").map(Number);
@@ -1149,18 +1017,6 @@
         if (!slotFits(board.tensor.y4, s[2])) return false;
         return true;
       }
-      function seriesCompletesCrossSimple(board, seriesStr, terminal, pivot) {
-        const s = seriesStr.split("").map(Number);
-        if (Number(terminal) !== s[3]) return false;
-        if (board.tensor.x3 === "" || board.tensor.y3 === "") return false;
-        if (Number(board.tensor.x3) + pivot + Number(board.tensor.y3) !== targetSumForBoard(board, pivot)) return false;
-        if (!slotFits(board.tensor.x2, s[0])) return false;
-        if (!slotFits(board.tensor.x4, s[2])) return false;
-        if (!slotFits(board.tensor.y2, s[0])) return false;
-        if (!slotFits(board.tensor.y3, s[1])) return false;
-        if (!slotFits(board.tensor.y4, s[2])) return false;
-        return true;
-      }
       /** MODO_FORENSE (sin tablas): mismo criterio flexible que arriba — eje X o Y, sin cruz completa previa. */
       function forensicSeriesFitsAxesSimple(board, seriesStr, terminal, pivot) {
         return (
@@ -1169,7 +1025,8 @@
         );
       }
 
-      function completeForensicTensor(board, seriesStr, terminal, pivot, maps) {
+      /** Solo dígitos de la variación y ley del pivote; sin tablas A/B ni sustituciones. axis: 'X' | 'Y'. */
+      function completeForensicTensor(board, seriesStr, terminal, pivot, axis) {
         const s = seriesStr.split("").map(Number);
         const ts = targetSumForBoard(board, pivot);
         if (ts == null || !Number.isFinite(ts)) return null;
@@ -1177,58 +1034,48 @@
         if (!Number.isFinite(y3new) || y3new < 0 || y3new > 9) return null;
         if (board.tensor.y3 !== "" && board.tensor.y3 != null && Number(board.tensor.y3) !== y3new) return null;
         const t = Object.assign({}, board.tensor);
-        t.x2 = String(s[0]);
-        t.x3 = String(s[1]);
-        t.x4 = String(s[2]);
-        t.y2 = String(partnerFromMap(maps, false, s[0]));
         t.y3 = String(y3new);
-        t.y4 = String(partnerFromMap(maps, true, s[2]));
-        t.y1 = String(partnerFromMap(maps, true, Number(terminal)));
+        t.y1 = String(terminal);
+        if (axis === "X") {
+          t.x2 = String(s[0]);
+          t.x3 = String(s[1]);
+          t.x4 = String(s[2]);
+        } else {
+          t.y2 = String(s[0]);
+          t.y4 = String(s[2]);
+        }
         return t;
       }
 
       function compareForensicPick(cand, prev) {
         if (cand.presence !== prev.presence) return cand.presence - prev.presence;
-        const rankSrc = function (s) {
-          return s === "ganador" ? 1 : 0;
-        };
-        if (rankSrc(cand.source || "ganador") !== rankSrc(prev.source || "ganador")) {
-          return rankSrc(cand.source || "ganador") - rankSrc(prev.source || "ganador");
-        }
         if (prev.seriesIdx !== cand.seriesIdx) return prev.seriesIdx - cand.seriesIdx;
         return FORENSIC_RANK[prev.id] - FORENSIC_RANK[cand.id];
       }
 
       function pickForensicBoard(base, winner4, series10, pivot, maps) {
+        void maps;
         const terminal = Number(base.terminal);
         let best = null;
-        function consider(board, ser, idx, source) {
+        function consider(board, ser, idx) {
           if (board.tensor.x3 === "" || board.tensor.x3 == null || board.tensor.y3 === "" || board.tensor.y3 == null) {
             return;
           }
-          if (!forensicSeriesFitsAxesXY(board, ser, terminal, pivot)) return;
+          const xOk = seriesFitsAxisX(board, ser, terminal, pivot);
+          const yOk = seriesFitsAxisY(board, ser, terminal, pivot);
+          if (!xOk && !yOk) return;
+          const axis = xOk ? "X" : "Y";
           const presence = countWinnerOnAxes(board, winner4, terminal);
-          const cand = { board: board, seriesStr: ser, seriesIdx: idx, id: board.id, presence: presence, source: source };
+          const cand = { board: board, seriesStr: ser, seriesIdx: idx, id: board.id, presence: presence, axis: axis };
           if (!best || compareForensicPick(cand, best) > 0) best = cand;
         }
         base.boards.forEach(function (board) {
           series10.forEach(function (ser, idx) {
-            consider(board, ser, idx, "ganador");
+            consider(board, ser, idx);
           });
         });
-        if (!best) {
-          base.boards.forEach(function (board) {
-            const x3 = board.tensor.x3;
-            const y3 = board.tensor.y3;
-            if (x3 === "" || x3 == null || y3 === "" || y3 == null) return;
-            const base4Struct = sanitize4(String(x3) + String(pivot) + String(y3) + String(terminal));
-            series10RotacionesDesdeBase4(base4Struct).forEach(function (ser, idx) {
-              consider(board, ser, idx, "estructural");
-            });
-          });
-        }
         if (!best) return null;
-        const filled = completeForensicTensor(best.board, best.seriesStr, terminal, pivot, maps);
+        const filled = completeForensicTensor(best.board, best.seriesStr, terminal, pivot, best.axis);
         if (!filled) return null;
         return Object.assign({}, best, { tensor: filled, terminalUsed: terminal });
       }
@@ -1260,11 +1107,7 @@
           <strong>Rebobinado real (Cuadrícula ${pick.id}) · v${APP_VERSION}</strong>
           <div>Semilla: ${base.seed} | Ganador: ${winner4}</div>
           <div>T (terminal de encaje) = <strong>${pick.terminalUsed}</strong> · tercer dígito del equivalente <strong>${base.eq}</strong> (pivote ${pivot}).</div>
-          <div>Serie encajada: ${pick.seriesStr} (variación ${pick.seriesIdx + 1}/10)${
-            pick.source === "estructural"
-              ? " · <span style='color:#e6c88a'>base estructural x₃·pivote·P·T (modo forense)</span>"
-              : ""
-          } · dígitos ganador en eje antes del llenado: ${pick.presence}/4</div>
+          <div>Serie encajada: ${pick.seriesStr} (variación ${pick.seriesIdx + 1}/10) · dígitos ganador en eje antes del llenado: ${pick.presence}/4 · eje usado: <strong>${pick.axis}</strong></div>
           ${renderGrid5Static(staticItem, winner4, pick.seriesStr)}
           <div class="series-grid" style="margin-top:8px;">
             <div class="series-box">
@@ -1274,7 +1117,7 @@
                 .join("")}</div>
             </div>
           </div>
-          <div style="margin-top:6px;font-size:12px;color:#9ec6de;">Criterio (modo forense): basta encaje en eje X <em>o</em> eje Y (vacío/igual + pivote + T); no se exige la cruz completa antes de reconstruir. Si no encaja el ganador, se prueban rotaciones desde x₃·pivote·P·T por malla. Desempate: más coincidencias del ganador en ejes, variación menor; <strong>A–F</strong> = orden de mallas (cuadrícula), no Tablas gemelas.</div>
+          <div style="margin-top:6px;font-size:12px;color:#9ec6de;">Solo rotaciones desde el ganador (sin bases inventadas). Brazos: inferior x₂–x₄, derecho y₂–y₄. Sin sustitución por tablas A/B en el llenado.</div>
         `;
         forensicPanel.appendChild(row);
       }
@@ -1299,31 +1142,20 @@
       function pickForensicBoardSimple(base, winner4, series10, pivot) {
         const terminal = Number(base.terminal);
         let best = null;
-        function consider(board, ser, idx, source) {
+        function consider(board, ser, idx) {
           if (board.tensor.x3 === "" || board.tensor.x3 == null || board.tensor.y3 === "" || board.tensor.y3 == null) {
             return;
           }
           if (!forensicSeriesFitsAxesSimple(board, ser, terminal, pivot)) return;
           const presence = countWinnerOnAxes(board, winner4, terminal);
-          const cand = { board: board, seriesStr: ser, seriesIdx: idx, id: board.id, presence: presence, source: source };
+          const cand = { board: board, seriesStr: ser, seriesIdx: idx, id: board.id, presence: presence };
           if (!best || compareForensicPick(cand, best) > 0) best = cand;
         }
         base.boards.forEach(function (board) {
           series10.forEach(function (ser, idx) {
-            consider(board, ser, idx, "ganador");
+            consider(board, ser, idx);
           });
         });
-        if (!best) {
-          base.boards.forEach(function (board) {
-            const x3 = board.tensor.x3;
-            const y3 = board.tensor.y3;
-            if (x3 === "" || x3 == null || y3 === "" || y3 == null) return;
-            const base4Struct = sanitize4(String(x3) + String(pivot) + String(y3) + String(terminal));
-            series10RotacionesDesdeBase4(base4Struct).forEach(function (ser, idx) {
-              consider(board, ser, idx, "estructural");
-            });
-          });
-        }
         if (!best) return null;
         const filled = completeSimpleTensor(best.board, best.seriesStr, terminal, pivot);
         if (!filled) return null;
@@ -1356,11 +1188,7 @@
           <strong>Rebobinado (Cuadrícula ${pick.id}) sin tablas · v${APP_VERSION}</strong>
           <div>Semilla: ${base.seed} | Ganador: ${winner4} | Equivalente <strong>${base.eq}</strong></div>
           <div>T = <strong>${pick.terminalUsed}</strong> (3.º dígito del equivalente) · pivote <strong>${pivot}</strong>.</div>
-          <div>Serie aplicada: ${pick.seriesStr} (variación ${pick.seriesIdx + 1}/10)${
-            pick.source === "estructural"
-              ? " · <span style='color:#e6c88a'>base estructural x₃·pivote·P·T (modo forense)</span>"
-              : ""
-          } · coincidencias previas en ejes: ${pick.presence}/4</div>
+          <div>Serie aplicada: ${pick.seriesStr} (variación ${pick.seriesIdx + 1}/10) · coincidencias previas en ejes: ${pick.presence}/4</div>
           ${renderGrid5Static(staticItem, winner4, pick.seriesStr)}
           <div class="series-grid" style="margin-top:8px;">
             <div class="series-box">
@@ -1532,15 +1360,31 @@
         }
       });
       document.getElementById("btnAnalizarCoincidencia").addEventListener("click", function () {
-        const raw = document.getElementById("motorNumeroGanador").value.trim();
-        if (raw !== "" && !/^\d{4}$/.test(sanitize4(raw))) {
-          const cm = document.getElementById("motorCoincidenciaMsg");
-          cm.textContent = "Introduce exactamente 4 cifras o deja el campo vacío para actualizar solo el Top 3.";
-          cm.style.color = "#ff9e9e";
-          return;
+        const cm = document.getElementById("motorCoincidenciaMsg");
+        consultarMotorPython(state.seed, null);
+        if (cm) {
+          cm.textContent = "NUMEROLOTTO PRO (V18 base estable): motor automático desactivado. Usa el Laboratorio Forense para reconstrucción manual.";
+          cm.style.color = "#9abed6";
         }
-        consultarMotorPython(state.seed, raw === "" ? null : sanitize4(raw));
       });
+      (function setupRefTables() {
+        const ov = document.getElementById("refTablesOverlay");
+        const btn = document.getElementById("btnTablasRef");
+        const close = document.getElementById("refTablesClose");
+        if (btn && ov) {
+          btn.addEventListener("click", function () {
+            ov.style.display = "flex";
+          });
+          ov.addEventListener("click", function (ev) {
+            if (ev.target === ov) ov.style.display = "none";
+          });
+        }
+        if (close && ov) {
+          close.addEventListener("click", function () {
+            ov.style.display = "none";
+          });
+        }
+      })();
       saveMemBtn.addEventListener("click", () => {
         const mem = loadMemory();
         mem[state.seed] = {
@@ -1655,6 +1499,274 @@
         recDigits.value = "";
         sorteosMsg.textContent = "Registro guardado. Total: " + line.records.length + " (orden por fecha ascendente).";
         openSorteosLine(sorteosCurrentLineId);
+      });
+
+      /* --- MODO_AUDITORIA_HISTORICA (módulo aislado; eliminar este bloque y el HTML marcado para revertir) --- */
+      let auditCasoActivo = null;
+
+      function syncHistoricosAbFromFile() {
+        if (typeof fetch !== "function") return Promise.resolve();
+        return fetch("historicos_ab.json", { cache: "no-store" })
+          .then(function (r) {
+            if (!r.ok) throw new Error("no json");
+            return r.json();
+          })
+          .then(function (arr) {
+            if (Array.isArray(arr) && arr.length) histAbDataset = arr;
+          })
+          .catch(function () {
+            /* se mantiene HISTORICOS_AB_EMBED */
+          });
+      }
+
+      function rebuildAuditCaseListDOM() {
+        const list = document.getElementById("auditCaseList");
+        if (!list) return;
+        list.innerHTML = "";
+        histAbDataset.forEach(function (rec, idx) {
+          const li = document.createElement("li");
+          const s = sanitize4(rec.semilla);
+          const g = rec.ganador ? sanitize4(rec.ganador) : "";
+          const label = g && /^\d{4}$/.test(g) ? s + " → " + g : s + " (sin ganador en dataset)";
+          li.textContent = rec.sorteo ? rec.sorteo + " · " + label : label;
+          li.setAttribute("data-audit-idx", String(idx));
+          li.style.cssText =
+            "padding:10px 12px;background:#0b1219;border:1px solid #355b79;border-radius:8px;cursor:pointer;font-weight:700";
+          list.appendChild(li);
+        });
+      }
+
+      function loadObservacionesStore() {
+        try {
+          const raw = localStorage.getItem(OBSERVACIONES_KEY);
+          if (!raw) return { entries: [] };
+          const p = JSON.parse(raw);
+          return p && Array.isArray(p.entries) ? p : { entries: [] };
+        } catch (_e) {
+          return { entries: [] };
+        }
+      }
+      function saveObservacionesStore(data) {
+        localStorage.setItem(OBSERVACIONES_KEY, JSON.stringify(data));
+      }
+
+      function renderAuditObsList() {
+        const mount = document.getElementById("auditObsList");
+        if (!mount) return;
+        const d = loadObservacionesStore();
+        const rows = d.entries.slice(-30).reverse();
+        if (!rows.length) {
+          mount.innerHTML = '<span style="color:#6a7d8f">(ninguna)</span>';
+          return;
+        }
+        mount.innerHTML = rows
+          .map(function (e) {
+            const ctx = e.casosLabel || (e.seed && e.ganador ? e.seed + " → " + e.ganador : "—");
+            return (
+              '<div style="border:1px solid #355b79;border-radius:8px;padding:8px;margin-bottom:8px;background:#0b1219">' +
+              '<div style="font-size:10px;color:#7a9aad">' +
+              escapeHtml(e.ts || "") +
+              " · " +
+              escapeHtml(ctx) +
+              "</div>" +
+              '<div style="margin-top:4px;white-space:pre-wrap;color:#cdeeff">' +
+              escapeHtml(e.text || "") +
+              "</div></div>"
+            );
+          })
+          .join("");
+      }
+
+      function tensorDiffLines(emptyT, fullT) {
+        const keys = ["x2", "x3", "x4", "y2", "y3", "y4", "y1"];
+        const lines = [];
+        keys.forEach(function (k) {
+          const a = emptyT[k] === undefined || emptyT[k] === "" ? "∅" : String(emptyT[k]);
+          const b = fullT[k] === undefined || fullT[k] === "" ? "∅" : String(fullT[k]);
+          if (a !== b) lines.push(k + ": " + a + " → " + b);
+        });
+        return lines.length ? lines.join(" · ") : "Sin cambios en celdas tensoras respecto al plan vacío del mismo id.";
+      }
+
+      function renderAuditComparison(seed4, winner4) {
+        const mount = document.getElementById("auditCompareMount");
+        if (!mount) return;
+        const s4 = sanitize4(seed4);
+        const w4 = sanitize4(winner4);
+        const base = boardFromSeed(s4);
+        const pivot = Number(base.pivot);
+        const maps = getActiveTensorMapsForSeed(s4);
+        const ganadorOk = /^\d{4}$/.test(w4);
+        const series10 = ganadorOk ? series10RotacionesDesdeBase4(w4) : [];
+        const pick = ganadorOk ? pickForensicBoard(base, w4, series10, pivot, maps) : null;
+        let html =
+          '<p style="margin:0 0 12px;font-size:12px;color:#9abed6;line-height:1.45">Contraste estructural con las mismas reglas que el Laboratorio Forense. No hay ranking ni veredicto automático.</p>';
+        if (!ganadorOk) {
+          html +=
+            '<p style="margin:0 0 12px;font-size:12px;color:#e6c88a">Este registro no incluye ganador de 4 cifras en el dataset: solo se muestran mallas del plan.</p>';
+        }
+        if (pick) {
+          const staticPick = {
+            eq: base.eq.split("").map(Number),
+            pivot: pivot,
+            terminal: pick.terminalUsed,
+            tensor: pick.tensor
+          };
+          const planBoard = base.boards.find(function (b) {
+            return b.id === pick.id;
+          });
+          const emptyT = planBoard ? planBoard.tensor : {};
+          const diffTxt = tensorDiffLines(emptyT, pick.tensor);
+          html +=
+            '<div style="margin-bottom:14px"><strong style="color:#cdeeff">Ejemplo de reconstrucción forense</strong> · Cuadrícula ' +
+            escapeHtml(pick.id) +
+            " · eje " +
+            escapeHtml(pick.axis) +
+            " · serie " +
+            escapeHtml(pick.seriesStr) +
+            "</div>" +
+            renderGrid5Static(staticPick, w4, pick.seriesStr) +
+            '<div style="margin-top:10px;font-size:12px;color:#e6c88a"><strong>Diferencias vs. misma malla con brazos vacíos (auditoría):</strong> ' +
+            escapeHtml(diffTxt) +
+            "</div>";
+        } else if (ganadorOk) {
+          html +=
+            '<p style="color:#e6a8a8;font-size:13px">No hay encaje forense automático para semilla ' +
+            escapeHtml(s4) +
+            " y número " +
+            escapeHtml(w4) +
+            ". Revisa manualmente en el Laboratorio Forense.</p>";
+        }
+        html +=
+          '<div style="margin-top:20px;padding-top:12px;border-top:1px solid #2a4a60"><strong style="color:#cdeeff">Otras mallas (mismo sorteo de semilla; brazos x₂,x₄,y₂,y₄ vacíos en carga de auditoría)</strong></div>';
+        base.boards.forEach(function (b) {
+          if (pick && b.id === pick.id) return;
+          const staticItem = {
+            eq: base.eq.split("").map(Number),
+            pivot: pivot,
+            terminal: base.terminal,
+            tensor: b.tensor
+          };
+          html +=
+            '<div style="margin:12px 0;padding:10px;border:1px solid #355b79;border-radius:8px">' +
+            '<div style="font-weight:700;margin-bottom:6px;font-size:13px">Cuadrícula ' +
+            escapeHtml(b.id) +
+            "</div>" +
+            renderGrid5Static(staticItem, ganadorOk ? w4 : "", "") +
+            "</div>";
+        });
+        mount.innerHTML = html;
+      }
+
+      function applyAuditHistoricCase(caso) {
+        auditCasoActivo = caso;
+        const sKey = sanitize4(caso.seed);
+        const h = caso.row || findHistoricoRegistro(sKey);
+        const mem = loadMemory();
+        const prev = mem[sKey] || {};
+        const chainA = h && padTwoInicio(h.inicioA) ? buildCircularChainFromInicio(padTwoInicio(h.inicioA)) : [];
+        const chainB = h && padTwoInicio(h.inicioB) ? buildCircularChainFromInicio(padTwoInicio(h.inicioB)) : [];
+        const memA = chainA.length ? chainA.join("-") : prev.memA || "";
+        const memB = chainB.length ? chainB.join("-") : prev.memB || "";
+        mem[sKey] = {
+          seed: sKey,
+          memA: memA,
+          memB: memB,
+          updatedAt: new Date().toISOString()
+        };
+        saveMemory(mem);
+        seedInput.value = sKey;
+        buildProject(sKey, { auditPartialLoad: true });
+        forensicSeed.value = sKey;
+        forensicWinner.value = caso.ganador ? sanitize4(caso.ganador) : "";
+        forensicSimpleSeed.value = sKey;
+        forensicSimpleWinner.value = caso.ganador ? sanitize4(caso.ganador) : "";
+        renderAuditComparison(sKey, caso.ganador || "");
+        const msg = document.getElementById("auditObsMsg");
+        if (msg) {
+          msg.style.color = "#78ff96";
+          msg.textContent = "Caso cargado: " + caso.label;
+        }
+      }
+
+      function setupModoAuditoriaHistorica() {
+        const ov = document.getElementById("auditHistoricaOverlay");
+        const btnOpen = document.getElementById("btnAuditoriaHistorica");
+        const btnClose = document.getElementById("btnCerrarAuditoria");
+        const list = document.getElementById("auditCaseList");
+        const btnSaveObs = document.getElementById("btnGuardarObservacion");
+        const ta = document.getElementById("auditObsTextarea");
+        if (!ov || !btnOpen || !list) return;
+        list.addEventListener("click", function (ev) {
+          const li = ev.target.closest("li[data-audit-idx]");
+          if (!li) return;
+          const idx = Number(li.getAttribute("data-audit-idx"));
+          const row = histAbDataset[idx];
+          if (!row) return;
+          const s = sanitize4(row.semilla);
+          const g = row.ganador ? sanitize4(row.ganador) : "";
+          const label = g && /^\d{4}$/.test(g) ? s + " → " + g : s + " (sin ganador en dataset)";
+          applyAuditHistoricCase({ label: label, seed: row.semilla, ganador: g, row: row });
+        });
+        btnOpen.addEventListener("click", function () {
+          ov.style.display = "block";
+          renderAuditObsList();
+          const cmp = document.getElementById("auditCompareMount");
+          if (auditCasoActivo) {
+            renderAuditComparison(auditCasoActivo.seed, auditCasoActivo.ganador);
+          } else if (cmp) {
+            cmp.innerHTML =
+              '<p style="margin:0;font-size:12px;color:#9abed6">Selecciona un caso de la lista para cargar la semilla y ver la comparación visual.</p>';
+          }
+        });
+        if (btnClose) {
+          btnClose.addEventListener("click", function () {
+            ov.style.display = "none";
+          });
+        }
+        ov.addEventListener("click", function (ev) {
+          if (ev.target === ov) ov.style.display = "none";
+        });
+        if (btnSaveObs && ta) {
+          btnSaveObs.addEventListener("click", function () {
+            const text = (ta.value || "").trim();
+            const msg = document.getElementById("auditObsMsg");
+            if (!text) {
+              if (msg) {
+                msg.style.color = "#ff9494";
+                msg.textContent = "Escribe algo antes de guardar.";
+              }
+              return;
+            }
+            const store = loadObservacionesStore();
+            store.entries.push({
+              id: "obs_" + Date.now(),
+              ts: new Date().toISOString(),
+              text: text,
+              seed: auditCasoActivo ? sanitize4(auditCasoActivo.seed) : sanitize4(state.seed),
+              ganador: auditCasoActivo ? sanitize4(auditCasoActivo.ganador) : "",
+              casosLabel: auditCasoActivo ? auditCasoActivo.label : sanitize4(state.seed) + " (sin caso histórico)"
+            });
+            saveObservacionesStore(store);
+            ta.value = "";
+            if (msg) {
+              msg.style.color = "#78ff96";
+              msg.textContent = "Observación guardada.";
+            }
+            renderAuditObsList();
+          });
+        }
+      }
+
+      setupModoAuditoriaHistorica();
+      /* --- /MODO_AUDITORIA_HISTORICA --- */
+
+      const btnRefrescarExpAB = document.getElementById("btnRefrescarExpAB");
+      if (btnRefrescarExpAB) btnRefrescarExpAB.addEventListener("click", renderExperimentalABPanel);
+
+      rebuildAuditCaseListDOM();
+      syncHistoricosAbFromFile().finally(function () {
+        rebuildAuditCaseListDOM();
       });
 
       seedInput.value = state.seed;
