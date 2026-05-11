@@ -1,0 +1,58 @@
+[
+  {
+    "sorteo": "Boyaca",
+    "semilla": "3370",
+    "equivalente": "730",
+    "inicioA": "43",
+    "inicioB": "21",
+    "ganador": "8943"
+  },
+  {
+    "sorteo": "Histórico",
+    "semilla": "9894",
+    "equivalente": "983",
+    "inicioA": "",
+    "inicioB": "",
+    "ganador": "3370"
+  },
+  {
+    "sorteo": "Histórico",
+    "semilla": "5048",
+    "equivalente": "406",
+    "inicioA": "",
+    "inicioB": "",
+    "ganador": "4796"
+  },
+  {
+    "sorteo": "Registro",
+    "semilla": "5497",
+    "equivalente": "613",
+    "inicioA": "",
+    "inicioB": "",
+    "ganador": ""
+  },
+  {
+    "sorteo": "Registro",
+    "semilla": "9428",
+    "equivalente": "460",
+    "inicioA": "",
+    "inicioB": "",
+    "ganador": ""
+  },
+  {
+    "sorteo": "Registro",
+    "semilla": "5264",
+    "equivalente": "280",
+    "inicioA": "",
+    "inicioB": "",
+    "ganador": ""
+  },
+  {
+    "sorteo": "Registro",
+    "semilla": "1409",
+    "equivalente": "712",
+    "inicioA": "",
+    "inicioB": "",
+    "ganador": ""
+  }
+]
