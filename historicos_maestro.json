@@ -1,0 +1,105 @@
+{
+  "_meta": {
+    "dataset": "NUMEROLOTTO_PRO_HISTORICOS_MAESTRO",
+    "version": 1,
+    "tipo_contenido": "SOLO_DATOS_REALES_Y_CAMPOS_VACIOS_PENDIENTES",
+    "fuente_consolidacion": [
+      "historicos_ab.json (app V18)",
+      "Proyecto NUMEROLOTTO PRO.txt (Cundinamarca 1409: fecha y ganador documentados)"
+    ],
+    "nota": "Los campos vacíos indican dato no consolidado en fuentes oficiales, no inferencia automática. serieA/serieB en Boyacá derivan solo de inicioA/inicioB con la regla circular documentada en V18."
+  },
+  "registros": [
+    {
+      "sorteo": "Boyaca",
+      "fecha": "",
+      "semilla": "3370",
+      "equivalente": "730",
+      "inicioA": "43",
+      "inicioB": "21",
+      "serieA": ["43", "52", "61", "70", "89", "07"],
+      "serieB": ["21", "30", "49", "58", "67", "76"],
+      "cuadricula_real": "",
+      "ganador_real": "8943",
+      "observaciones": "Migrado desde historicos_ab.json. inicioA/inicioB oficiales; serieA/serieB = seis pasos regla circularNextPair de V18 (auditable, no predictivo)."
+    },
+    {
+      "sorteo": "Histórico",
+      "fecha": "",
+      "semilla": "9894",
+      "equivalente": "983",
+      "inicioA": "",
+      "inicioB": "",
+      "serieA": [],
+      "serieB": [],
+      "cuadricula_real": "",
+      "ganador_real": "3370",
+      "observaciones": "Migrado desde historicos_ab.json. Cierre semilla→ganador documentado en corpus de app."
+    },
+    {
+      "sorteo": "Histórico",
+      "fecha": "",
+      "semilla": "5048",
+      "equivalente": "406",
+      "inicioA": "",
+      "inicioB": "",
+      "serieA": [],
+      "serieB": [],
+      "cuadricula_real": "",
+      "ganador_real": "4796",
+      "observaciones": "Migrado desde historicos_ab.json."
+    },
+    {
+      "sorteo": "Registro",
+      "fecha": "",
+      "semilla": "5497",
+      "equivalente": "613",
+      "inicioA": "",
+      "inicioB": "",
+      "serieA": [],
+      "serieB": [],
+      "cuadricula_real": "",
+      "ganador_real": "",
+      "observaciones": "Migrado desde historicos_ab.json. Ganador no cargado en fuente (pendiente de verificación externa)."
+    },
+    {
+      "sorteo": "Registro",
+      "fecha": "",
+      "semilla": "9428",
+      "equivalente": "460",
+      "inicioA": "",
+      "inicioB": "",
+      "serieA": [],
+      "serieB": [],
+      "cuadricula_real": "",
+      "ganador_real": "",
+      "observaciones": "Migrado desde historicos_ab.json. Ganador no cargado en fuente (pendiente de verificación externa)."
+    },
+    {
+      "sorteo": "Registro",
+      "fecha": "",
+      "semilla": "5264",
+      "equivalente": "280",
+      "inicioA": "",
+      "inicioB": "",
+      "serieA": [],
+      "serieB": [],
+      "cuadricula_real": "",
+      "ganador_real": "",
+      "observaciones": "Migrado desde historicos_ab.json. Ganador no cargado en fuente (pendiente de verificación externa)."
+    },
+    {
+      "sorteo": "Cundinamarca",
+      "fecha": "2026-04-13",
+      "semilla": "1409",
+      "equivalente": "712",
+      "inicioA": "",
+      "inicioB": "",
+      "serieA": [],
+      "serieB": [],
+      "cuadricula_real": "",
+      "ganador_real": "7706",
+      "observaciones": "Fecha y ganador_real tomados de documentación de proyecto (Proyecto NUMEROLOTTO PRO.txt). equivalente 712 alineado con historicos_ab.json. Malla/celdas no serializadas aquí; análisis manual en laboratorio forense."
+    }
+  ]
+}
