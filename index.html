@@ -505,6 +505,114 @@
       </div>
       <div id="invoSummaryMount" class="invo-section"></div>
       <div class="invo-section">
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Frecuencias basadas en pocas muestras pueden producir coincidencias falsas.</strong> Por defecto se ocultan filas con menos de 4 registros de apoyo (frecuencia o contraste global).</p>
+        <label class="invo-muted" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-bottom:10px">
+          <input type="checkbox" id="invoMostrarMuestrasInsuficientes" />
+          Mostrar muestras insuficientes (&lt; 4 registros)
+        </label>
+        <h3 style="margin-top:12px">Exploración masiva (ranking formula × destino)</h3>
+        <p class="invo-muted">Orden: % descendente. Marcas solo si hay al menos 4 registros evaluables en el contraste.</p>
+        <div class="invo-table-wrap" style="max-height:320px">
+          <table class="invo-table"><thead><tr><th>Fórmula</th><th>Destino</th><th>Aciertos</th><th>Fallos</th><th>%</th><th>Total eval.</th><th>Validez</th><th>Marca (obs.)</th><th>Reg. aciertos</th><th>Reg. fallos</th></tr></thead><tbody id="invoExploracionBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Supervivencia de patrones</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Un patrón repetido puede ser coincidencia; un patrón que sobrevive nuevos casos es evidencia más fuerte.</strong> Misma lista de fórmulas que en exploración; sin nuevas fórmulas. La mitad <em>posterior</em> de registros (por # de registro) se usa como bloque «nuevo» frente a la mitad anterior.</p>
+        <p class="invo-muted">supervivencia = aciertos / total_registros_evaluables · persistencia/fragilidad solo en ese bloque nuevo · índice_estabilidad = persistencia / (persistencia + fragilidad).</p>
+        <div class="invo-table-wrap" style="max-height:280px">
+          <table class="invo-table"><thead><tr><th>FORMULA</th><th>DESTINO</th><th>%</th><th>TOTAL</th><th>ESTABILIDAD</th><th>CLASIFICACION</th><th>ACIERTA</th><th>FALLA</th></tr></thead><tbody id="invoSupervivenciaBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Consenso entre patrones</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Los consensos muestran patrones que sobreviven juntos en múltiples registros. No implican una regla matemática definitiva.</strong> Solo filas del ranking con validez suficiente y % ≥ 70; pares y ternas que aciertan el mismo registro. cohesión = apariciones juntas / registros evaluables totales.</p>
+        <div class="invo-table-wrap" style="max-height:280px">
+          <table class="invo-table"><thead><tr><th>FORMULAS</th><th>COHESION</th><th>CLASIFICACION</th><th>REGISTROS</th></tr></thead><tbody id="invoConsensoBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Fragilidad de patrones</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Un patrón fuerte puede desaparecer al incorporar nuevos registros. Esta sección mide estabilidad temporal, no validez matemática.</strong> Registros ordenados por índice; primera vs segunda mitad. Precisión = aciertos / registros del bloque (misma regla que el contraste).</p>
+        <div class="invo-table-wrap" style="max-height:260px">
+          <table class="invo-table"><thead><tr><th>FORMULA</th><th>INICIO</th><th>FINAL</th><th>DELTA</th><th>FRAGILIDAD</th><th>CLASIFICACION</th></tr></thead><tbody id="invoFragilidadBody"></tbody></table>
+        </div>
+        <p class="invo-muted" style="margin-top:10px">Rupturas de <strong>CONSENSO_FUERTE</strong>: combinaciones con aciertos simultáneos en la primera mitad y ninguno en la segunda.</p>
+        <div class="invo-table-wrap" style="max-height:180px">
+          <table class="invo-table"><thead><tr><th>FORMULAS</th><th>JUNTAS_INICIO</th><th>JUNTAS_FINAL</th><th>COHESION_GLOBAL</th></tr></thead><tbody id="invoRupturaConsensoBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Dependencia entre patrones</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Dos patrones pueden parecer fuertes pero uno puede existir únicamente cuando otro también acierta.</strong> Mismo subconjunto que consenso (% ≥ 70 y muestra suficiente). co_dependencia máxima respecto a otro patrón Q = aciertos conjuntos / apariciones_P; autonomía = 1 − esa co_dependencia. «Patrón dominante»: presencia en &gt;80% de combinaciones <strong>CONSENSO_FUERTE</strong>.</p>
+        <div class="invo-table-wrap" style="max-height:260px">
+          <table class="invo-table"><thead><tr><th>FORMULA</th><th>AUTONOMIA</th><th>DEPENDENCIA</th><th>CLASIFICACION</th><th>PATRON_DOMINANTE</th></tr></thead><tbody id="invoDependenciaBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Jerarquía de evidencia</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Una coincidencia frecuente no implica evidencia fuerte; la evidencia surge cuando un patrón persiste, resiste cambios y conserva autonomía.</strong> Índice unificado (0–1): 25% frecuencia + 25% estabilidad (supervivencia) + 20% consenso (cohesión máx.) + 15% autonomía + 15% (1 − fragilidad temporal). Si validez del ranking es muestra insuficiente, la clasificación se fija en MUESTRA_INSUFICIENTE. <em>Solo medición.</em></p>
+        <div class="invo-table-wrap" style="max-height:320px">
+          <table class="invo-table"><thead><tr><th>FORMULA</th><th>DESTINO</th><th>INDICE</th><th>CLASIFICACION</th><th>FRECUENCIA</th><th>ESTABILIDAD</th><th>CONSENSO</th><th>AUTONOMIA</th><th>FRAGILIDAD</th></tr></thead><tbody id="invoJerarquiaBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Árboles estructurales detectados</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Una ruta estructural representa una cadena de transformaciones observadas. No implica causalidad ni fórmula definitiva.</strong> Rutas por orden estricto A1→A2→B1→B2: en cada registro todos los pasos deben acertar a la vez. Ramas: hasta 10 patrones por destino (muestra suficiente, mejor %). Profundidad máxima 4. Score: 35% frecuencia media + 25% estabilidad + 20% consenso + 20% autonomía (desde jerarquía de evidencia).</p>
+        <div class="invo-table-wrap" style="max-height:280px">
+          <table class="invo-table"><thead><tr><th>RUTA</th><th>PROFUNDIDAD</th><th>REGISTROS</th><th>SCORE</th><th>CLASIFICACION</th></tr></thead><tbody id="invoArbolesBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>ADN estructural detectado</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Esto no identifica reglas matemáticas. Solo mide qué elementos sobreviven repetidamente entre patrones fuertes.</strong> Tokens extraídos de las fórmulas del ranking (e·/s·, mod10, abs, envoltorios, pares/triples de suma, etc.) solo en patrones con muestra suficiente y evidencia jerárquica alta; si faltan filas se amplía a EVIDENCIA_MEDIA. Peso = frecuencia × estabilidad media × autonomía media (jerarquía) entre patrones que comparten el token o la co-ocurrencia.</p>
+        <div class="invo-table-wrap" style="max-height:300px">
+          <table class="invo-table"><thead><tr><th>COMPONENTE</th><th>FRECUENCIA</th><th>ESTABILIDAD</th><th>AUTONOMIA</th><th>PESO</th><th>CLASIFICACION</th></tr></thead><tbody id="invoADNInversoBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Cirugía matemática</h3>
+        <p class="invo-muted" style="margin-bottom:10px"><strong>Las transformaciones observadas representan únicamente frecuencia matemática dentro del conjunto analizado y no implican una regla descubierta.</strong> Explorador combinatorio recursivo (profundidad ≤ 4, hasta 5000 fórmulas únicas): suma/resta mod 10, abs, espejo, equivalencia, escalera, doble, triple y rotaciones cíclicas de semilla indicadas como [ρk]. Densidad = (aciertos/registros) × (1/profundidad) × (1/máx(1, n_operaciones)). Sin predicción.</p>
+        <div class="invo-table-wrap" style="max-height:300px">
+          <table class="invo-table"><thead><tr><th>FORMULA</th><th>DESTINO</th><th>%</th><th>PROF</th><th>OPERACIONES</th><th>DENSIDAD</th><th>CLASIFICACION</th></tr></thead><tbody id="invoCirugiaMatematicaBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Depuración de falsos positivos</h3>
+        <p class="invo-muted" style="margin-bottom:10px">Una coincidencia frecuente puede surgir por tamaño de muestra o complejidad excesiva; este módulo intenta reducir supervivencias accidentales.</p>
+        <div class="invo-table-wrap" style="max-height:300px">
+          <table class="invo-table"><thead><tr><th>FORMULA</th><th>DESTINO</th><th>CONFIANZA</th><th>SIMPLICIDAD</th><th>CLASIFICACION</th><th>PENALIZACIONES</th></tr></thead><tbody id="invoDepuracionFalsosBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Prueba ciega</h3>
+        <p class="invo-muted" style="margin-bottom:10px">Una fórmula fuerte debe conservar comportamiento cuando se evalúa fuera de los registros utilizados para detectarla.</p>
+        <div class="invo-table-wrap" style="max-height:300px">
+          <table class="invo-table"><thead><tr><th>FORMULA</th><th>DESTINO</th><th>TRAIN</th><th>TEST</th><th>DELTA</th><th>GENERALIZA</th><th>TRANSFERENCIA</th><th>CLASIFICACION</th></tr></thead><tbody id="invoPruebaCiegaBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Genoma de patrones</h3>
+        <p class="invo-muted" style="margin-bottom:10px">Fórmulas distintas pueden explicar los mismos registros. Este módulo agrupa supervivencias matemáticas equivalentes.</p>
+        <div class="invo-table-wrap" style="max-height:300px">
+          <table class="invo-table"><thead><tr><th>CLUSTER</th><th>TAMAÑO</th><th>REPRESENTANTE</th><th>DIVERSIDAD</th><th>TIPO</th></tr></thead><tbody id="invoGenomaPatronesBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Ancestros matemáticos</h3>
+        <p class="invo-muted" style="margin-bottom:10px">Diferentes fórmulas pueden compartir una estructura base común. Este módulo busca raíces matemáticas ancestrales.</p>
+        <div class="invo-table-wrap" style="max-height:300px">
+          <table class="invo-table"><thead><tr><th>ANCESTRO</th><th>DESCENDIENTES</th><th>FAMILIAS</th><th>SUPERVIVENCIA</th><th>TIPO</th></tr></thead><tbody id="invoAncestroMatematicoBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
+        <h3>Auditoría de realidad</h3>
+        <p class="invo-muted" style="margin-bottom:10px">Este módulo no busca patrones nuevos. Evalúa si lo encontrado parece sobrevivir fuera del ruido estadístico.</p>
+        <div class="invo-table-wrap" style="max-height:320px">
+          <table class="invo-table"><thead><tr><th>METRICA</th><th>VALOR</th></tr></thead><tbody id="invoAuditoriaRealidadBody"></tbody></table>
+        </div>
+      </div>
+      <div class="invo-section">
         <h3>Patrones con frecuencia observada &gt; 90%</h3>
         <p class="invo-muted">Sobre registros con semilla 4 cifras, equivalente 3 cifras e inicios A/B válidos (2 cifras cada uno).</p>
         <div class="invo-table-wrap">
@@ -4399,8 +4507,40 @@
       /* /MODO_ANALISIS_CORRELACIONAL_AB */
 
       /* MODO_INVESTIGACION_ORIGEN_AB */
+      const INVO_MIN_MUESTRAS = 4;
+      const INVO_NOTA_SUPERVIVENCIA =
+        "Un patrón repetido puede ser coincidencia; un patrón que sobrevive nuevos casos es evidencia más fuerte.";
+      const INVO_NOTA_CONSENSO =
+        "Los consensos muestran patrones que sobreviven juntos en múltiples registros. No implican una regla matemática definitiva.";
+      const INVO_NOTA_FRAGILIDAD =
+        "Un patrón fuerte puede desaparecer al incorporar nuevos registros. Esta sección mide estabilidad temporal, no validez matemática.";
+      const INVO_NOTA_DEPENDENCIA =
+        "Dos patrones pueden parecer fuertes pero uno puede existir únicamente cuando otro también acierta.";
+      const INVO_NOTA_JERARQUIA =
+        "Una coincidencia frecuente no implica evidencia fuerte; la evidencia surge cuando un patrón persiste, resiste cambios y conserva autonomía.";
+      const INVO_NOTA_ARBOLES =
+        "Una ruta estructural representa una cadena de transformaciones observadas. No implica causalidad ni fórmula definitiva.";
+      const INVO_NOTA_ADN_INVERSO =
+        "Esto no identifica reglas matemáticas. Solo mide qué elementos sobreviven repetidamente entre patrones fuertes.";
+      const INVO_NOTA_CIRUGIA_MATEMATICA =
+        "Las transformaciones observadas representan únicamente frecuencia matemática dentro del conjunto analizado y no implican una regla descubierta.";
+      const INVO_NOTA_DEPURACION_FALSOS_POSITIVOS =
+        "Una coincidencia frecuente puede surgir por tamaño de muestra o complejidad excesiva; este módulo intenta reducir supervivencias accidentales.";
+      const INVO_PRUEBA_CIEGA_SEED = "AB2026";
+      const INVO_NOTA_PRUEBA_CIEGA =
+        "Una fórmula fuerte debe conservar comportamiento cuando se evalúa fuera de los registros utilizados para detectarla.";
+      const INVO_NOTA_GENOMA_PATRONES =
+        "Fórmulas distintas pueden explicar los mismos registros. Este módulo agrupa supervivencias matemáticas equivalentes.";
+      const INVO_NOTA_ANCESTRO_MATEMATICO =
+        "Diferentes fórmulas pueden compartir una estructura base común. Este módulo busca raíces matemáticas ancestrales.";
+      const INVO_NOTA_AUDITORIA_REALIDAD =
+        "Este módulo no busca patrones nuevos. Evalúa si lo encontrado parece sobrevivir fuera del ruido estadístico.";
+      const INVO_CIRUGIA_MAX_FORMULAS = 5000;
+      const INVO_CIRUGIA_MAX_PROFUNDIDAD = 4;
       let invoLastExport = null;
       let invoLastExploracionExport = null;
+      let invoLastADNInversoExport = null;
+      let invoLastUiSnapshot = null;
 
       function invoM10(n) {
         return ((Math.round(Number(n)) % 10) + 10) % 10;
@@ -4637,19 +4777,29 @@
               }
             });
             const fallos = n - aciertos;
-            const pct = n ? (100 * aciertos) / n : 0;
+            const totalEvaluados = aciertos + fallos;
+            const pct = totalEvaluados ? (100 * aciertos) / totalEvaluados : 0;
             let marca_estadistica_observada = null;
-            if (pct > 90) marca_estadistica_observada = "PATRON FUERTE";
-            else if (pct > 80) marca_estadistica_observada = "PATRON CANDIDATO";
+            let validez = "MUESTRA_SUFICIENTE";
+            if (totalEvaluados < INVO_MIN_MUESTRAS) {
+              validez = "MUESTRA_INSUFICIENTE";
+              marca_estadistica_observada = null;
+            } else {
+              if (pct > 90) marca_estadistica_observada = "PATRON FUERTE";
+              else if (pct > 80) marca_estadistica_observada = "PATRON CANDIDATO";
+              else if (pct > 70) marca_estadistica_observada = "PATRON DEBIL";
+            }
             rows.push({
               formula: F.formula,
               destino: dest,
               aciertos: aciertos,
               fallos: fallos,
+              total_evaluados: totalEvaluados,
               porcentaje: Number(pct.toFixed(4)),
               porcentaje_texto: pct.toFixed(2) + "%",
               registros_acertados: okIdx.slice(),
               registros_fallados: failIdx.slice(),
+              validez: validez,
               marca_estadistica_observada: marca_estadistica_observada,
               nota: "Solo frecuencia observada en el dataset; no implica regla ni descubrimiento."
             });
@@ -4664,10 +4814,2227 @@
           modulo: "MODO_INVESTIGACION_ORIGEN_AB",
           fase: "CAZA_FORMULA_MADRE_AB",
           nota: "Exploración masiva: contrastes formula×destino sobre semilla+equivalente vs inicioA/inicioB. Sin conclusiones automáticas.",
+          min_muestras_marca: INVO_MIN_MUESTRAS,
           n_formulas_generadas: formulasList.length,
           n_contrastes: rows.length,
           n_registros_evaluables: n,
           ranking: rows
+        };
+      }
+
+      function invoCirugiaMergeRot(ra, rb) {
+        if (ra == null && rb == null) return null;
+        if (ra == null) return rb;
+        if (rb == null) return ra;
+        if (ra !== rb) return null;
+        return ra;
+      }
+
+      function invoCirugiaRotLabel(inner, rot) {
+        if (rot == null || rot === 0) return inner;
+        if (/^[es]\d$/.test(inner)) {
+          return "[ρ" + rot + "]" + inner;
+        }
+        return "[ρ" + rot + "](" + inner + ")";
+      }
+
+      function invoCirugiaSubParen(inner) {
+        if (/^[es]\d$/.test(inner)) return inner;
+        return "(" + inner + ")";
+      }
+
+      function invoCirugiaGenerarFormulasRecursivo() {
+        const MAXF = INVO_CIRUGIA_MAX_FORMULAS;
+        const MAXP = INVO_CIRUGIA_MAX_PROFUNDIDAD;
+        const seen = new Set();
+        const formulas = [];
+        const basis = [];
+        function addForm(inner, rot, prof, nOp, ev) {
+          if (formulas.length >= MAXF) return false;
+          const rKey = rot == null ? "n" : String(rot);
+          const key = rKey + "|" + inner;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          const disp = invoCirugiaRotLabel(inner, rot);
+          formulas.push({
+            formula: disp,
+            profundidad: prof,
+            n_operaciones: nOp,
+            ev: ev
+          });
+          if (prof < MAXP) {
+            basis.push({ inner: inner, rot: rot, prof: prof, nOp: nOp, ev: ev });
+          }
+          return true;
+        }
+        let si;
+        for (si = 1; si <= 4; si++) {
+          let rt;
+          for (rt = 0; rt < 4; rt++) {
+            (function (i, rot) {
+              const inner = "s" + i;
+              const ev = function (s, e) {
+                return s[(rot + i - 1 + 8) % 4];
+              };
+              addForm(inner, rot, 1, 0, ev);
+            })(si, rt);
+          }
+        }
+        let ej;
+        for (ej = 1; ej <= 3; ej++) {
+          (function (j) {
+            const inner = "e" + j;
+            const ev = function (s, e) {
+              return e[j - 1];
+            };
+            addForm(inner, null, 1, 0, ev);
+          })(ej);
+        }
+        let round = 0;
+        while (formulas.length < MAXF && round < 24) {
+          round++;
+          const snap = basis.slice();
+          let grew = false;
+          let ai;
+          for (ai = 0; ai < snap.length; ai++) {
+            const a = snap[ai];
+            if (1 + a.prof > MAXP) continue;
+            const p = invoCirugiaSubParen(a.inner);
+            const unaries = [
+              {
+                inner: "espejo(" + p + ")",
+                ev: function (s, e) {
+                  return espejoMap[invoM10(a.ev(s, e))];
+                }
+              },
+              {
+                inner: "equivalencia(" + p + ")",
+                ev: function (s, e) {
+                  return equivalenciaMap[invoM10(a.ev(s, e))];
+                }
+              },
+              {
+                inner: "escalera(" + p + ")",
+                ev: function (s, e) {
+                  return tablaA[invoM10(a.ev(s, e))];
+                }
+              },
+              {
+                inner: "(" + p + "+" + p + ")%10",
+                ev: function (s, e) {
+                  const v = a.ev(s, e);
+                  return invoM10(v + v);
+                }
+              },
+              {
+                inner: "(" + p + "+" + p + "+" + p + ")%10",
+                ev: function (s, e) {
+                  const v = a.ev(s, e);
+                  return invoM10(v + v + v);
+                }
+              }
+            ];
+            let ui;
+            for (ui = 0; ui < unaries.length; ui++) {
+              (function (node, spec) {
+                const innerU = spec.inner;
+                const evU = spec.ev;
+                if (addForm(innerU, node.rot, 1 + node.prof, 1 + node.nOp, evU)) {
+                  grew = true;
+                }
+              })(a, unaries[ui]);
+            }
+          }
+          let bi;
+          for (bi = 0; bi < snap.length; bi++) {
+            let bj;
+            for (bj = 0; bj < snap.length; bj++) {
+              if (formulas.length >= MAXF) break;
+              const L = snap[bi];
+              const R = snap[bj];
+              const rM = invoCirugiaMergeRot(L.rot, R.rot);
+              if (rM === null) continue;
+              const newProf = 1 + (L.prof > R.prof ? L.prof : R.prof);
+              if (newProf > MAXP) continue;
+              const newN = 1 + L.nOp + R.nOp;
+              const pl = invoCirugiaSubParen(L.inner);
+              const pr = invoCirugiaSubParen(R.inner);
+              const bins = [
+                {
+                  inner: "(" + pl + "+" + pr + ")%10",
+                  ev: function (s, e) {
+                    return invoM10(L.ev(s, e) + R.ev(s, e));
+                  }
+                },
+                {
+                  inner: "(" + pl + "-" + pr + "+10)%10",
+                  ev: function (s, e) {
+                    return invoM10(L.ev(s, e) - R.ev(s, e));
+                  }
+                },
+                {
+                  inner: "abs(" + pl + "-" + pr + ")",
+                  ev: function (s, e) {
+                    return Math.abs(L.ev(s, e) - R.ev(s, e));
+                  }
+                }
+              ];
+              let bx;
+              let bx;
+              for (bx = 0; bx < bins.length; bx++) {
+                (function (specb, rTok) {
+                  if (addForm(specb.inner, rTok, newProf, newN, specb.ev)) {
+                    grew = true;
+                  }
+                })(bins[bx], rM);
+              }
+            }
+          }
+          if (!grew) break;
+        }
+        return formulas;
+      }
+
+      function invoClasificarDensidadCirugia(d) {
+        if (d > 0.8) return "CIRUGIA_MUY_FUERTE";
+        if (d >= 0.65) return "CIRUGIA_FUERTE";
+        if (d >= 0.5) return "CIRUGIA_MEDIA";
+        return "DESCARTAR";
+      }
+
+      function invoCirugiaMatematicaOrigen(evaluables) {
+        const defs = invoCirugiaGenerarFormulasRecursivo();
+        const destinos = ["A1", "A2", "B1", "B2"];
+        const n = evaluables.length;
+        const rows = [];
+        let fi;
+        for (fi = 0; fi < defs.length; fi++) {
+          const F = defs[fi];
+          let di;
+          for (di = 0; di < destinos.length; di++) {
+            const dest = destinos[di];
+            let aciertos = 0;
+            const okIdx = [];
+            const failIdx = [];
+            evaluables.forEach(function (rec) {
+              let v;
+              try {
+                v = F.ev(rec.s1s2s3s4, rec.e1e2e3);
+              } catch (err) {
+                v = NaN;
+              }
+              const tv =
+                dest === "A1"
+                  ? rec.inicioA_digitos[0]
+                  : dest === "A2"
+                    ? rec.inicioA_digitos[1]
+                    : dest === "B1"
+                      ? rec.inicioB_digitos[0]
+                      : rec.inicioB_digitos[1];
+              const vr = Math.round(Number(v));
+              if (!Number.isFinite(vr) || tv == null) {
+                failIdx.push(rec.indice);
+                return;
+              }
+              if (vr === tv) {
+                aciertos++;
+                okIdx.push(rec.indice);
+              } else {
+                failIdx.push(rec.indice);
+              }
+            });
+            const fallos = n - aciertos;
+            const totalEvaluados = aciertos + fallos;
+            const pct = totalEvaluados ? (100 * aciertos) / totalEvaluados : 0;
+            let validez = "MUESTRA_SUFICIENTE";
+            let marca_estadistica_observada = null;
+            if (totalEvaluados < INVO_MIN_MUESTRAS) {
+              validez = "MUESTRA_INSUFICIENTE";
+              marca_estadistica_observada = null;
+            } else {
+              if (pct > 90) marca_estadistica_observada = "PATRON FUERTE";
+              else if (pct > 80) marca_estadistica_observada = "PATRON CANDIDATO";
+              else if (pct > 70) marca_estadistica_observada = "PATRON DEBIL";
+            }
+            const pHit = totalEvaluados ? aciertos / totalEvaluados : 0;
+            const denomOp = F.n_operaciones < 1 ? 1 : F.n_operaciones;
+            const densidadOk = Number((pHit * (1 / F.profundidad) * (1 / denomOp)).toFixed(6));
+            rows.push({
+              formula: F.formula,
+              destino: dest,
+              profundidad: F.profundidad,
+              n_operaciones: F.n_operaciones,
+              aciertos: aciertos,
+              fallos: fallos,
+              total_evaluados: totalEvaluados,
+              porcentaje: Number(pct.toFixed(4)),
+              porcentaje_texto: pct.toFixed(2) + "%",
+              registros_acertados: okIdx.slice(),
+              registros_fallados: failIdx.slice(),
+              validez: validez,
+              marca_estadistica_observada: marca_estadistica_observada,
+              densidad_explicativa: densidadOk,
+              densidad_explicativa_texto: densidadOk.toFixed(4),
+              clasificacion_cirugia: invoClasificarDensidadCirugia(densidadOk),
+              nota: "Solo medición de frecuencia en el dataset; sin predicción ni conclusión automática."
+            });
+          }
+        }
+        rows.sort(function (a, b) {
+          if (b.densidad_explicativa !== a.densidad_explicativa) {
+            return b.densidad_explicativa - a.densidad_explicativa;
+          }
+          if (b.porcentaje !== a.porcentaje) return b.porcentaje - a.porcentaje;
+          if (b.aciertos !== a.aciertos) return b.aciertos - a.aciertos;
+          return (a.formula + "|" + a.destino).localeCompare(b.formula + "|" + b.destino);
+        });
+        return {
+          modulo: "MODO_INVESTIGACION_ORIGEN_AB",
+          fase: "CIRUGIA_MATEMATICA_ORIGEN_AB",
+          nota: INVO_NOTA_CIRUGIA_MATEMATICA,
+          min_muestras_marca: INVO_MIN_MUESTRAS,
+          max_formulas: INVO_CIRUGIA_MAX_FORMULAS,
+          max_profundidad: INVO_CIRUGIA_MAX_PROFUNDIDAD,
+          densidad_formula: "(aciertos/total_evaluados) × (1/profundidad) × (1/max(1,n_operaciones))",
+          n_formulas_generadas: defs.length,
+          n_contrastes: rows.length,
+          n_registros_evaluables: n,
+          ranking: rows
+        };
+      }
+
+      function invoClasificarConfianzaDepuracionFalsos(x) {
+        if (x >= 0.9) return "FORMULA_MUY_SOLIDA";
+        if (x >= 0.75) return "FORMULA_SOLIDA";
+        if (x >= 0.6) return "FORMULA_OBSERVAR";
+        return "POSIBLE_FALSO_POSITIVO";
+      }
+
+      function invoDepuracionFalsosPositivos(
+        cirugiaRanking,
+        supervivenciaPatrones,
+        fragilidadPatronesPack,
+        dependenciaPatronesPack,
+        jerarquiaEvidenciaPack
+      ) {
+        const ranking = cirugiaRanking && Array.isArray(cirugiaRanking) ? cirugiaRanking : [];
+        const supByPk = {};
+        (supervivenciaPatrones || []).forEach(function (s) {
+          supByPk[s.formula + "||" + s.destino] = s;
+        });
+        const fragByPk = {};
+        if (fragilidadPatronesPack && fragilidadPatronesPack.filas) {
+          fragilidadPatronesPack.filas.forEach(function (fr) {
+            fragByPk[fr.formula + "||" + fr.destino] = fr;
+          });
+        }
+        const depByPk = {};
+        if (dependenciaPatronesPack && dependenciaPatronesPack.filas) {
+          dependenciaPatronesPack.filas.forEach(function (d) {
+            const pk = d.patron_key || d.formula + "||" + d.destino;
+            depByPk[pk] = d;
+          });
+        }
+        const jerByPk = {};
+        if (jerarquiaEvidenciaPack && jerarquiaEvidenciaPack.filas) {
+          jerarquiaEvidenciaPack.filas.forEach(function (j) {
+            jerByPk[j.patron_key] = j;
+          });
+        }
+        const filasOut = [];
+        let ri;
+        for (ri = 0; ri < ranking.length; ri++) {
+          const cr = ranking[ri];
+          const pk = cr.formula + "||" + cr.destino;
+          const prof = cr.profundidad != null ? cr.profundidad : 1;
+          const nOp = cr.n_operaciones != null ? cr.n_operaciones : 0;
+          const denomSim = prof + nOp;
+          const simplicidad = denomSim > 0 ? 1 / denomSim : 0;
+          const motivosPen = [];
+          if (cr.validez === "MUESTRA_INSUFICIENTE") {
+            motivosPen.push("MUESTRA_INSUFICIENTE → índice forzado a 0");
+            filasOut.push({
+              formula: cr.formula,
+              destino: cr.destino,
+              indice_confianza_real: 0,
+              indice_confianza_real_texto: "0.0000",
+              indice_simplicidad: Number(simplicidad.toFixed(6)),
+              indice_simplicidad_texto: simplicidad.toFixed(4),
+              clasificacion: "POSIBLE_FALSO_POSITIVO",
+              motivos_penalizacion: motivosPen,
+              nota: "Solo medición en el dataset analizado; sin conclusión automática ni predicción."
+            });
+            continue;
+          }
+          const f = Math.min(1, Math.max(0, (cr.porcentaje != null ? cr.porcentaje : 0) / 100));
+          const sup = supByPk[pk];
+          let est = 0;
+          if (sup && sup.indice_estabilidad != null && Number.isFinite(sup.indice_estabilidad)) {
+            est = sup.indice_estabilidad;
+            if (est < 0) est = 0;
+            if (est > 1) est = 1;
+          }
+          const dep = depByPk[pk];
+          let aut = 0;
+          if (dep && dep.autonomia != null && Number.isFinite(dep.autonomia)) {
+            aut = dep.autonomia;
+            if (aut < 0) aut = 0;
+            if (aut > 1) aut = 1;
+          }
+          const jer = jerByPk[pk];
+          let cons = 0;
+          if (jer && jer.componente_consenso != null && Number.isFinite(jer.componente_consenso)) {
+            cons = jer.componente_consenso;
+            if (cons < 0) cons = 0;
+            if (cons > 1) cons = 1;
+          }
+          const fr = fragByPk[pk];
+          let fragVal = 0;
+          if (fr && fr.fragilidad != null && Number.isFinite(fr.fragilidad)) {
+            fragVal = fr.fragilidad;
+            if (fragVal < 0) fragVal = 0;
+            if (fragVal > 1) fragVal = 1;
+          }
+          const base =
+            0.3 * f + 0.25 * est + 0.2 * aut + 0.15 * cons + 0.1 * (1 - fragVal);
+          let pen = 0;
+          if (prof >= 4) {
+            pen += 0.1;
+            motivosPen.push("profundidad>=4 (−0.10)");
+          }
+          if (nOp >= 8) {
+            pen += 0.1;
+            motivosPen.push("operaciones>=8 (−0.10)");
+          }
+          if (dep && dep.clasificacion_dependencia === "DEPENDIENTE") {
+            pen += 0.15;
+            motivosPen.push("dependencia=DEPENDIENTE (−0.15)");
+          }
+          if (fr && fr.clasificacion_fragilidad === "COLAPSO") {
+            pen += 0.2;
+            motivosPen.push("clasificacion_fragilidad=COLAPSO (−0.20)");
+          }
+          let idx = base - pen;
+          if (idx < 0) idx = 0;
+          if (idx > 1) idx = 1;
+          filasOut.push({
+            formula: cr.formula,
+            destino: cr.destino,
+            indice_confianza_real: Number(idx.toFixed(6)),
+            indice_confianza_real_texto: idx.toFixed(4),
+            indice_simplicidad: Number(simplicidad.toFixed(6)),
+            indice_simplicidad_texto: simplicidad.toFixed(4),
+            clasificacion: invoClasificarConfianzaDepuracionFalsos(idx),
+            motivos_penalizacion: motivosPen,
+            nota: "Solo medición en el dataset analizado; sin conclusión automática ni predicción."
+          });
+        }
+        filasOut.sort(function (a, b) {
+          if (b.indice_confianza_real !== a.indice_confianza_real) {
+            return b.indice_confianza_real - a.indice_confianza_real;
+          }
+          return (a.formula + "|" + a.destino).localeCompare(b.formula + "|" + b.destino);
+        });
+        return {
+          modulo: "MODO_INVESTIGACION_ORIGEN_AB",
+          fase: "DEPURACION_FALSOS_POSITIVOS_AB",
+          nota: INVO_NOTA_DEPURACION_FALSOS_POSITIVOS,
+          formula_indice_confianza:
+            "0.30×frecuencia + 0.25×estabilidad + 0.20×autonomía + 0.15×consenso + 0.10×(1−fragilidad) − penalizaciones; clamp [0,1]; contraste cirugía alineado por formula||destino con supervivencia, fragilidad, dependencia y jerarquía (exploración).",
+          formula_indice_simplicidad: "1 / (profundidad + operaciones)",
+          n_filas: filasOut.length,
+          ranking: filasOut
+        };
+      }
+
+      function invoHashStringToUint32(str) {
+        let h = 1779033703;
+        let i;
+        for (i = 0; i < str.length; i++) {
+          h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+          h = (h << 13) | (h >>> 19);
+        }
+        return h >>> 0;
+      }
+
+      function invoPrngMulberry32FromUint32(seedU32) {
+        let a = seedU32 >>> 0;
+        return function () {
+          let t = (a += 0x6d2b79f5);
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function invoPermutacionShuffleDeterminista(n, randFn) {
+        const a = [];
+        let i;
+        for (i = 0; i < n; i++) {
+          a.push(i);
+        }
+        for (i = n - 1; i > 0; i--) {
+          const j = Math.floor(randFn() * (i + 1));
+          const t = a[i];
+          a[i] = a[j];
+          a[j] = t;
+        }
+        return a;
+      }
+
+      function invoClasificarPruebaCiega(delta, generalizacion) {
+        if (delta < 0.1 && generalizacion > 0.85) return "GENERALIZA_MUY_BIEN";
+        if (delta < 0.2) return "GENERALIZA";
+        if (delta < 0.35) return "OBSERVAR";
+        return "COLAPSO_FUERA_MUESTRA";
+      }
+
+      function invoContarAciertosFormulaDestino(evFn, destino, recs) {
+        let aciertos = 0;
+        let tot = 0;
+        let ri;
+        for (ri = 0; ri < recs.length; ri++) {
+          const rec = recs[ri];
+          tot++;
+          if (!evFn) continue;
+          let v;
+          try {
+            v = evFn(rec.s1s2s3s4, rec.e1e2e3);
+          } catch (err) {
+            v = NaN;
+          }
+          const tv = invoValorDestinoExploracion(rec, destino);
+          const vr = Math.round(Number(v));
+          if (Number.isFinite(vr) && tv != null && vr === tv) {
+            aciertos++;
+          }
+        }
+        return { aciertos: aciertos, total: tot };
+      }
+
+      function invoPruebaCiega(depuracionFalsosPositivosPack, evaluablesOrdenados) {
+        const rankingDep =
+          depuracionFalsosPositivosPack && depuracionFalsosPositivosPack.ranking
+            ? depuracionFalsosPositivosPack.ranking
+            : [];
+        const sorted = (evaluablesOrdenados || []).slice().sort(function (a, b) {
+          return a.indice - b.indice;
+        });
+        const n = sorted.length;
+        const defsCirugia = invoCirugiaGenerarFormulasRecursivo();
+        const evPorFormula = {};
+        let di;
+        for (di = 0; di < defsCirugia.length; di++) {
+          evPorFormula[defsCirugia[di].formula] = defsCirugia[di].ev;
+        }
+        let perm = [];
+        let trainN = 0;
+        let testN = 0;
+        let trainRecs = [];
+        let testRecs = [];
+        if (n > 0) {
+          const rand = invoPrngMulberry32FromUint32(invoHashStringToUint32(INVO_PRUEBA_CIEGA_SEED));
+          perm = invoPermutacionShuffleDeterminista(n, rand);
+          trainN = Math.floor(0.7 * n);
+          testN = n - trainN;
+          let pi;
+          for (pi = 0; pi < trainN; pi++) {
+            trainRecs.push(sorted[perm[pi]]);
+          }
+          for (pi = trainN; pi < n; pi++) {
+            testRecs.push(sorted[perm[pi]]);
+          }
+        }
+        const filasOut = [];
+        for (di = 0; di < rankingDep.length; di++) {
+          const dr = rankingDep[di];
+          const evFn = evPorFormula[dr.formula] || null;
+          const tr = invoContarAciertosFormulaDestino(evFn, dr.destino, trainRecs);
+          const te = invoContarAciertosFormulaDestino(evFn, dr.destino, testRecs);
+          const trainPrec = tr.total ? tr.aciertos / tr.total : 0;
+          const testPrec = te.total ? te.aciertos / te.total : 0;
+          const delta = Math.abs(trainPrec - testPrec);
+          const generalizacion = testPrec / (trainPrec + 0.0001);
+          const conf =
+            dr.indice_confianza_real != null && Number.isFinite(dr.indice_confianza_real)
+              ? dr.indice_confianza_real
+              : 0;
+          const transferencia = Number((testPrec * generalizacion * conf).toFixed(8));
+          filasOut.push({
+            formula: dr.formula,
+            destino: dr.destino,
+            train_n: tr.total,
+            test_n: te.total,
+            train_precision: Number(trainPrec.toFixed(6)),
+            test_precision: Number(testPrec.toFixed(6)),
+            train_precision_texto: (100 * trainPrec).toFixed(2) + "%",
+            test_precision_texto: (100 * testPrec).toFixed(2) + "%",
+            delta: Number(delta.toFixed(6)),
+            delta_texto: delta.toFixed(4),
+            generalizacion: Number(generalizacion.toFixed(6)),
+            generalizacion_texto: generalizacion.toFixed(4),
+            indice_transferencia: transferencia,
+            indice_transferencia_texto: transferencia.toFixed(6),
+            indice_confianza_real_usado: conf,
+            clasificacion: invoClasificarPruebaCiega(delta, generalizacion),
+            nota: "Solo medición; división 70/30 reproducible con semilla fija; sin conclusión automática ni predicción."
+          });
+        }
+        filasOut.sort(function (a, b) {
+          if (b.indice_transferencia !== a.indice_transferencia) {
+            return b.indice_transferencia - a.indice_transferencia;
+          }
+          if (b.test_precision !== a.test_precision) return b.test_precision - a.test_precision;
+          return (a.formula + "|" + a.destino).localeCompare(b.formula + "|" + b.destino);
+        });
+        return {
+          modulo: "MODO_INVESTIGACION_ORIGEN_AB",
+          fase: "PRUEBA_CIEGA_AB",
+          nota: INVO_NOTA_PRUEBA_CIEGA,
+          semilla_orden: INVO_PRUEBA_CIEGA_SEED,
+          prng: "Mulberry32 sobre semilla derivada de cadena (sin Math.random)",
+          proporcion_entrenamiento: 0.7,
+          n_registros_evaluables: n,
+          train_n_global: trainN,
+          test_n_global: testN,
+          formulas_medidas: rankingDep.length,
+          ranking: filasOut
+        };
+      }
+
+      function invoJaccardConjuntosAciertos(setA, setB) {
+        const a = setA && setA.size !== undefined ? setA : new Set();
+        const b = setB && setB.size !== undefined ? setB : new Set();
+        if (a.size === 0 && b.size === 0) {
+          return 1;
+        }
+        let inter = 0;
+        a.forEach(function (x) {
+          if (b.has(x)) {
+            inter++;
+          }
+        });
+        const uni = a.size + b.size - inter;
+        return uni ? inter / uni : 0;
+      }
+
+      function invoGenomaClasificarTamanoCluster(sz) {
+        if (sz === 1) return "AISLADO";
+        if (sz < 5) return "FAMILIA_PEQUEÑA";
+        if (sz < 10) return "FAMILIA_MEDIA";
+        return "FAMILIA_DOMINANTE";
+      }
+
+      function invoGenomaPatrones(pruebaCiegaRanking, depuracionFilas) {
+        const pr =
+          pruebaCiegaRanking && Array.isArray(pruebaCiegaRanking) ? pruebaCiegaRanking : [];
+        const dep = depuracionFilas && Array.isArray(depuracionFilas) ? depuracionFilas : [];
+        const depByPk = {};
+        let i;
+        for (i = 0; i < dep.length; i++) {
+          const d = dep[i];
+          depByPk[d.formula + "||" + d.destino] = d;
+        }
+        const items = [];
+        for (i = 0; i < pr.length; i++) {
+          const p = pr[i];
+          const pk = p.formula + "||" + p.destino;
+          const d = depByPk[pk];
+          if (!d) {
+            continue;
+          }
+          const acArr = d.registros_acertados;
+          const failArr = d.registros_fallados;
+          const acSet = new Set(Array.isArray(acArr) ? acArr : []);
+          const huella = {
+            destino: d.destino,
+            profundidad: d.profundidad != null ? d.profundidad : null,
+            operaciones: d.n_operaciones != null ? d.n_operaciones : null,
+            clasificacion: d.clasificacion,
+            registros_acertados: Array.isArray(acArr) ? acArr.slice() : [],
+            registros_fallados: Array.isArray(failArr) ? failArr.slice() : []
+          };
+          const transfer =
+            p.indice_transferencia != null && Number.isFinite(p.indice_transferencia)
+              ? p.indice_transferencia
+              : 0;
+          items.push({
+            pk: pk,
+            formula: p.formula,
+            destino: p.destino,
+            huella: huella,
+            acSet: acSet,
+            indice_transferencia: transfer
+          });
+        }
+        const m = items.length;
+        const parent = [];
+        for (i = 0; i < m; i++) {
+          parent[i] = i;
+        }
+        function findGen(x) {
+          if (parent[x] !== x) {
+            parent[x] = findGen(parent[x]);
+          }
+          return parent[x];
+        }
+        function uniteGen(a, b) {
+          const ra = findGen(a);
+          const rb = findGen(b);
+          if (ra !== rb) {
+            parent[ra] = rb;
+          }
+        }
+        let ii;
+        let jj;
+        for (ii = 0; ii < m; ii++) {
+          for (jj = ii + 1; jj < m; jj++) {
+            if (items[ii].destino !== items[jj].destino) {
+              continue;
+            }
+            const sim = invoJaccardConjuntosAciertos(items[ii].acSet, items[jj].acSet);
+            if (sim > 0.8) {
+              uniteGen(ii, jj);
+            }
+          }
+        }
+        const membersByRoot = {};
+        for (i = 0; i < m; i++) {
+          const r = findGen(i);
+          if (!membersByRoot[r]) {
+            membersByRoot[r] = [];
+          }
+          membersByRoot[r].push(i);
+        }
+        const clusters = [];
+        const roots = Object.keys(membersByRoot);
+        for (ii = 0; ii < roots.length; ii++) {
+          const membIdx = membersByRoot[roots[ii]];
+          const size = membIdx.length;
+          let bestF = "";
+          let bestT = -1;
+          const formulasUnicasSet = {};
+          const miembros = [];
+          let k;
+          for (k = 0; k < membIdx.length; k++) {
+            const it = items[membIdx[k]];
+            if (it.indice_transferencia > bestT) {
+              bestT = it.indice_transferencia;
+              bestF = it.formula;
+            }
+            formulasUnicasSet[it.formula] = true;
+            miembros.push({
+              formula: it.formula,
+              destino: it.destino,
+              indice_transferencia: it.indice_transferencia,
+              huella: it.huella
+            });
+          }
+          if (!bestF && membIdx.length) {
+            bestF = items[membIdx[0]].formula;
+          }
+          const formulasUnicas = Object.keys(formulasUnicasSet).length;
+          const diversidad = size ? formulasUnicas / size : 0;
+          clusters.push({
+            cluster_size: size,
+            formula_representante: bestF,
+            diversidad_cluster: Number(diversidad.toFixed(6)),
+            diversidad_cluster_texto: diversidad.toFixed(4),
+            tipo: invoGenomaClasificarTamanoCluster(size),
+            miembros: miembros,
+            criterio_agrupacion:
+              "Mismo destino; Jaccard(aciertos)=|A∩B|/|A∪B|>0.80; union-find para transitividad."
+          });
+        }
+        clusters.sort(function (a, b) {
+          if (b.cluster_size !== a.cluster_size) {
+            return b.cluster_size - a.cluster_size;
+          }
+          return (a.formula_representante || "").localeCompare(b.formula_representante || "");
+        });
+        for (i = 0; i < clusters.length; i++) {
+          clusters[i].cluster_id = "G-" + (i + 1);
+        }
+        return {
+          modulo: "MODO_INVESTIGACION_ORIGEN_AB",
+          fase: "GENOMA_PATRONES_AB",
+          nota: INVO_NOTA_GENOMA_PATRONES,
+          similitud_jaccard_sobre: "registros_acertados (índices de registro)",
+          umbral_arista: 0.8,
+          n_formulas_clusterizadas: m,
+          ranking: clusters,
+          nota_datos:
+            "registros_acertados/fallados y profundidad/operaciones se alinean con cirugía por formula||destino solo para este cálculo; export depuración sin cambios."
+        };
+      }
+
+      function invoNormalizarFormulaAncestro(formula) {
+        let s = String(formula || "");
+        s = s.replace(/\[ρ[0-3]\]/g, "");
+        const wrapRe = /(espejo|equivalencia|escalera|doble|triple)\(([^()]*)\)/g;
+        let changed = true;
+        while (changed) {
+          const next = s.replace(wrapRe, "$2");
+          changed = next !== s;
+          s = next;
+        }
+        const tok = [
+          ["s4", "W"],
+          ["s3", "Z"],
+          ["s2", "Y"],
+          ["s1", "X"],
+          ["e3", "Z"],
+          ["e2", "Y"],
+          ["e1", "X"]
+        ];
+        let ti;
+        for (ti = 0; ti < tok.length; ti++) {
+          s = s.split(tok[ti][0]).join(tok[ti][1]);
+        }
+        return s;
+      }
+
+      function invoClasificarAncestroMatematico(nDesc) {
+        const n = nDesc;
+        if (n === 1) return "MUTACION_UNICA";
+        if (n < 5) return "ANCESTRO_LOCAL";
+        if (n < 15) return "ANCESTRO_RELEVANTE";
+        return "ANCESTRO_DOMINANTE";
+      }
+
+      function invoAncestroMatematico(genomaPatronesPack, metricasPorPk) {
+        const clusters =
+          genomaPatronesPack && genomaPatronesPack.ranking ? genomaPatronesPack.ranking : [];
+        const met = metricasPorPk || {};
+        const porEstructura = {};
+        let ci;
+        for (ci = 0; ci < clusters.length; ci++) {
+          const cl = clusters[ci];
+          const clusterId = cl.cluster_id || "G-?";
+          const miembros = cl.miembros || [];
+          let mi;
+          for (mi = 0; mi < miembros.length; mi++) {
+            const m = miembros[mi];
+            const f = m.formula;
+            const pk = f + "||" + m.destino;
+            const estruct = invoNormalizarFormulaAncestro(f);
+            if (!porEstructura[estruct]) {
+              porEstructura[estruct] = {
+                ancestro: estruct,
+                descendientes: [],
+                clusterSet: {}
+              };
+            }
+            const metPk = met[pk] || {};
+            let sup = metPk.supervivencia;
+            if (sup == null || !Number.isFinite(sup)) sup = 0;
+            if (sup < 0) sup = 0;
+            if (sup > 1) sup = 1;
+            let trans = metPk.transferencia;
+            if (trans == null || !Number.isFinite(trans)) trans = m.indice_transferencia;
+            if (trans == null || !Number.isFinite(trans)) trans = 0;
+            let dens = metPk.densidad;
+            if (dens == null || !Number.isFinite(dens)) dens = 0;
+            porEstructura[estruct].descendientes.push({
+              formula: f,
+              formula_original: f,
+              destino: m.destino,
+              cluster_origen: clusterId,
+              supervivencia: sup,
+              transferencia: trans,
+              densidad: dens
+            });
+            porEstructura[estruct].clusterSet[clusterId] = true;
+          }
+        }
+        const ranking = [];
+        const keys = Object.keys(porEstructura).sort();
+        let ki;
+        for (ki = 0; ki < keys.length; ki++) {
+          const g = porEstructura[keys[ki]];
+          const desc = g.descendientes;
+          const n = desc.length;
+          const clusterOrigenes = Object.keys(g.clusterSet).sort();
+          let sumS = 0;
+          let sumT = 0;
+          let sumD = 0;
+          let di;
+          for (di = 0; di < n; di++) {
+            sumS += desc[di].supervivencia;
+            sumT += desc[di].transferencia;
+            sumD += desc[di].densidad;
+          }
+          const supM = n ? sumS / n : 0;
+          const transM = n ? sumT / n : 0;
+          const densM = n ? sumD / n : 0;
+          ranking.push({
+            ancestro: g.ancestro,
+            estructura_normalizada: g.ancestro,
+            n_descendientes: n,
+            cluster_origenes: clusterOrigenes,
+            familias_involucradas: clusterOrigenes.length,
+            supervivencia_media: Number(supM.toFixed(6)),
+            supervivencia_media_texto: (100 * supM).toFixed(2) + "%",
+            transferencia_media: Number(transM.toFixed(6)),
+            transferencia_media_texto: transM.toFixed(6),
+            densidad_media: Number(densM.toFixed(6)),
+            densidad_media_texto: densM.toFixed(4),
+            clasificacion: invoClasificarAncestroMatematico(n),
+            descendientes: desc.map(function (d) {
+              return {
+                formula: d.formula,
+                destino: d.destino,
+                cluster_origen: d.cluster_origen
+              };
+            }),
+            nota: "Solo medición de estructura normalizada; sin conclusión automática ni predicción."
+          });
+        }
+        ranking.sort(function (a, b) {
+          if (b.n_descendientes !== a.n_descendientes) {
+            return b.n_descendientes - a.n_descendientes;
+          }
+          return (a.ancestro || "").localeCompare(b.ancestro || "");
+        });
+        return {
+          modulo: "MODO_INVESTIGACION_ORIGEN_AB",
+          fase: "ANCESTRO_MATEMATICO_AB",
+          nota: INVO_NOTA_ANCESTRO_MATEMATICO,
+          normalizacion:
+            "Quita espejo/equivalencia/escalera/doble/triple, [ρ0-3], sustituye s1..s4,e1..e3→X,Y,Z,W; agrupa por cadena resultante.",
+          n_estructuras_ancestrales: ranking.length,
+          ranking: ranking
+        };
+      }
+
+      function invoClasificarIndiceRealidadAuditoria(x) {
+        if (x > 0.85) return "EVIDENCIA_FUERTE";
+        if (x >= 0.7) return "EVIDENCIA_MEDIA";
+        if (x >= 0.5) return "OBSERVAR";
+        return "RUIDO_ESTADISTICO";
+      }
+
+      function invoAuditoriaRealidad(
+        exploracionRanking,
+        supervivenciaPatrones,
+        consensoPack,
+        fragilidadPack,
+        dependenciaPack,
+        jerarquiaPack,
+        pruebaCiegaPack,
+        ancestrosMatematicosPack,
+        depuracionFalsosPositivosPack,
+        evaluables,
+        aciertosPorPatronPk
+      ) {
+        void supervivenciaPatrones;
+        void consensoPack;
+        void dependenciaPack;
+        const VIVO = {
+          FORMULA_SOLIDA: true,
+          FORMULA_MUY_SOLIDA: true,
+          GENERALIZA: true,
+          GENERALIZA_MUY_BIEN: true,
+          EVIDENCIA_ALTA: true,
+          EVIDENCIA_MUY_ALTA: true
+        };
+        const COLAPSO = {
+          COLAPSO: true,
+          COLAPSO_FUERA_MUESTRA: true,
+          POSIBLE_FALSO_POSITIVO: true
+        };
+        const porPk = {};
+        function ensurePk(formula, destino) {
+          const pk = formula + "||" + destino;
+          if (!porPk[pk]) {
+            porPk[pk] = {
+              patron_key: pk,
+              formula: formula,
+              destino: destino,
+              vivo: false,
+              colapsado: false,
+              etiquetas_vivo: [],
+              etiquetas_colapso: []
+            };
+          }
+          return porPk[pk];
+        }
+        function tagVivo(row, etiqueta) {
+          if (!VIVO[etiqueta]) return;
+          row.vivo = true;
+          if (row.etiquetas_vivo.indexOf(etiqueta) === -1) {
+            row.etiquetas_vivo.push(etiqueta);
+          }
+        }
+        function tagColapso(row, etiqueta) {
+          if (!COLAPSO[etiqueta]) return;
+          row.colapsado = true;
+          if (row.etiquetas_colapso.indexOf(etiqueta) === -1) {
+            row.etiquetas_colapso.push(etiqueta);
+          }
+        }
+        const expl = exploracionRanking && Array.isArray(exploracionRanking) ? exploracionRanking : [];
+        let ei;
+        for (ei = 0; ei < expl.length; ei++) {
+          ensurePk(expl[ei].formula, expl[ei].destino);
+        }
+        if (jerarquiaPack && jerarquiaPack.filas) {
+          jerarquiaPack.filas.forEach(function (j) {
+            const row = ensurePk(j.formula, j.destino);
+            const cj = j.clasificacion_jerarquia;
+            if (cj === "EVIDENCIA_ALTA" || cj === "EVIDENCIA_MUY_ALTA") {
+              tagVivo(row, cj);
+            }
+          });
+        }
+        if (fragilidadPack && fragilidadPack.filas) {
+          fragilidadPack.filas.forEach(function (fr) {
+            const row = ensurePk(fr.formula, fr.destino);
+            if (fr.clasificacion_fragilidad === "COLAPSO") {
+              tagColapso(row, "COLAPSO");
+            }
+          });
+        }
+        const pruebaRank =
+          pruebaCiegaPack && pruebaCiegaPack.ranking ? pruebaCiegaPack.ranking : [];
+        for (ei = 0; ei < pruebaRank.length; ei++) {
+          const pr = pruebaRank[ei];
+          const row = ensurePk(pr.formula, pr.destino);
+          const cp = pr.clasificacion;
+          if (cp === "GENERALIZA" || cp === "GENERALIZA_MUY_BIEN") {
+            tagVivo(row, cp);
+          }
+          if (cp === "COLAPSO_FUERA_MUESTRA") {
+            tagColapso(row, cp);
+          }
+        }
+        const depRank =
+          depuracionFalsosPositivosPack && depuracionFalsosPositivosPack.ranking
+            ? depuracionFalsosPositivosPack.ranking
+            : [];
+        for (ei = 0; ei < depRank.length; ei++) {
+          const dr = depRank[ei];
+          const row = ensurePk(dr.formula, dr.destino);
+          const cd = dr.clasificacion;
+          if (cd === "FORMULA_SOLIDA" || cd === "FORMULA_MUY_SOLIDA") {
+            tagVivo(row, cd);
+          }
+          if (cd === "POSIBLE_FALSO_POSITIVO") {
+            tagColapso(row, cd);
+          }
+        }
+        if (aciertosPorPatronPk) {
+          Object.keys(aciertosPorPatronPk).forEach(function (pk) {
+            const sep = pk.indexOf("||");
+            if (sep > 0) {
+              ensurePk(pk.slice(0, sep), pk.slice(sep + 2));
+            }
+          });
+        }
+        const keysPk = Object.keys(porPk);
+        const patronesVivos = [];
+        const patronesColapsados = [];
+        for (ei = 0; ei < keysPk.length; ei++) {
+          const row = porPk[keysPk[ei]];
+          if (row.vivo) {
+            patronesVivos.push({
+              patron_key: row.patron_key,
+              formula: row.formula,
+              destino: row.destino,
+              etiquetas: row.etiquetas_vivo.slice()
+            });
+          }
+          if (row.colapsado) {
+            patronesColapsados.push({
+              patron_key: row.patron_key,
+              formula: row.formula,
+              destino: row.destino,
+              etiquetas: row.etiquetas_colapso.slice()
+            });
+          }
+        }
+        const totalPatrones = keysPk.length;
+        const ratioSupervivencia = totalPatrones ? patronesVivos.length / totalPatrones : 0;
+        const ancestroRank =
+          ancestrosMatematicosPack && ancestrosMatematicosPack.ranking
+            ? ancestrosMatematicosPack.ranking
+            : [];
+        const topAncestros = ancestroRank
+          .slice()
+          .sort(function (a, b) {
+            return b.n_descendientes - a.n_descendientes;
+          })
+          .slice(0, 10)
+          .map(function (a) {
+            return {
+              ancestro: a.ancestro,
+              n_descendientes: a.n_descendientes,
+              familias_involucradas: a.familias_involucradas,
+              clasificacion: a.clasificacion
+            };
+          });
+        const aciertosMap = aciertosPorPatronPk || {};
+        const evals = evaluables && Array.isArray(evaluables) ? evaluables : [];
+        const nReg = evals.length;
+        let registrosSinExplicacion = 0;
+        let registrosCon1 = 0;
+        let registrosCon2a5 = 0;
+        let registrosCon5mas = 0;
+        const coberturaPorRegistro = [];
+        let ri;
+        for (ri = 0; ri < nReg; ri++) {
+          const rec = evals[ri];
+          const idx = rec.indice;
+          let cuenta = 0;
+          let vi;
+          for (vi = 0; vi < patronesVivos.length; vi++) {
+            const pkV = patronesVivos[vi].patron_key;
+            const acList = aciertosMap[pkV];
+            if (!acList || !acList.length) continue;
+            let ai;
+            for (ai = 0; ai < acList.length; ai++) {
+              if (acList[ai] === idx) {
+                cuenta++;
+                break;
+              }
+            }
+          }
+          coberturaPorRegistro.push({ indice: idx, n_patrones_vivos: cuenta });
+          if (cuenta === 0) registrosSinExplicacion++;
+          else if (cuenta === 1) registrosCon1++;
+          else if (cuenta <= 5) registrosCon2a5++;
+          else registrosCon5mas++;
+        }
+        const coberturaReal =
+          nReg > 0 ? (nReg - registrosSinExplicacion) / nReg : 0;
+        let nGenPrueba = 0;
+        let nGenOk = 0;
+        for (ei = 0; ei < pruebaRank.length; ei++) {
+          const pr = pruebaRank[ei];
+          const pk = pr.formula + "||" + pr.destino;
+          const row = porPk[pk];
+          if (!row || !row.vivo) continue;
+          nGenPrueba++;
+          if (pr.clasificacion === "GENERALIZA" || pr.clasificacion === "GENERALIZA_MUY_BIEN") {
+            nGenOk++;
+          }
+        }
+        const generalizacion = nGenPrueba ? nGenOk / nGenPrueba : 0;
+        let indiceRealidad =
+          0.35 * ratioSupervivencia + 0.35 * coberturaReal + 0.3 * generalizacion;
+        if (indiceRealidad < 0) indiceRealidad = 0;
+        if (indiceRealidad > 1) indiceRealidad = 1;
+        indiceRealidad = Number(indiceRealidad.toFixed(6));
+        const clasificacionRealidad = invoClasificarIndiceRealidadAuditoria(indiceRealidad);
+        const tablaMetricas = [
+          { metrica: "Patrones vivos", valor: String(patronesVivos.length) },
+          { metrica: "Patrones colapsados", valor: String(patronesColapsados.length) },
+          { metrica: "Total patrones medidos", valor: String(totalPatrones) },
+          {
+            metrica: "Ratio supervivencia (vivos/total)",
+            valor: (100 * ratioSupervivencia).toFixed(2) + "%"
+          },
+          { metrica: "Índice realidad", valor: indiceRealidad.toFixed(4) },
+          { metrica: "Clasificación realidad", valor: clasificacionRealidad },
+          {
+            metrica: "Cobertura real (registros con ≥1 patrón vivo)",
+            valor: (100 * coberturaReal).toFixed(2) + "%"
+          },
+          {
+            metrica: "Generalización (vivos con GENERALIZA*)",
+            valor: (100 * generalizacion).toFixed(2) + "%"
+          },
+          { metrica: "Registros sin explicación", valor: String(registrosSinExplicacion) },
+          { metrica: "Registros con 1 patrón vivo", valor: String(registrosCon1) },
+          { metrica: "Registros con 2–5 patrones vivos", valor: String(registrosCon2a5) },
+          { metrica: "Registros con 5+ patrones vivos", valor: String(registrosCon5mas) }
+        ];
+        topAncestros.forEach(function (a, ti) {
+          tablaMetricas.push({
+            metrica: "Top ancestro " + (ti + 1),
+            valor:
+              a.ancestro +
+              " (desc=" +
+              a.n_descendientes +
+              ", fam=" +
+              a.familias_involucradas +
+              ")"
+          });
+        });
+        return {
+          modulo: "MODO_INVESTIGACION_ORIGEN_AB",
+          fase: "AUDITORIA_REALIDAD_AB",
+          nota: INVO_NOTA_AUDITORIA_REALIDAD,
+          formula_indice_realidad:
+            "0.35×ratio_supervivencia + 0.35×cobertura_real + 0.30×generalización; clamp [0,1].",
+          patrones_vivos: patronesVivos,
+          patrones_colapsados: patronesColapsados,
+          n_patrones_vivos: patronesVivos.length,
+          n_patrones_colapsados: patronesColapsados.length,
+          n_patrones_total: totalPatrones,
+          ratio_supervivencia: Number(ratioSupervivencia.toFixed(6)),
+          ratio_supervivencia_texto: (100 * ratioSupervivencia).toFixed(2) + "%",
+          top_ancestros: topAncestros,
+          cobertura_real: {
+            n_registros_evaluables: nReg,
+            registros_sin_explicacion: registrosSinExplicacion,
+            registros_con_1: registrosCon1,
+            registros_con_2_5: registrosCon2a5,
+            registros_con_5_mas: registrosCon5mas,
+            proporcion_con_explicacion: Number(coberturaReal.toFixed(6)),
+            proporcion_con_explicacion_texto: (100 * coberturaReal).toFixed(2) + "%",
+            por_registro: coberturaPorRegistro
+          },
+          componente_supervivencia: Number(ratioSupervivencia.toFixed(6)),
+          componente_cobertura: Number(coberturaReal.toFixed(6)),
+          componente_generalizacion: Number(generalizacion.toFixed(6)),
+          indice_realidad: indiceRealidad,
+          indice_realidad_texto: indiceRealidad.toFixed(4),
+          clasificacion_realidad: clasificacionRealidad,
+          tabla_metricas: tablaMetricas
+        };
+      }
+
+      function invoValorDestinoExploracion(rec, dest) {
+        if (dest === "A1") return rec.inicioA_digitos[0];
+        if (dest === "A2") return rec.inicioA_digitos[1];
+        if (dest === "B1") return rec.inicioB_digitos[0];
+        if (dest === "B2") return rec.inicioB_digitos[1];
+        return null;
+      }
+
+      function invoSupervivenciaPatrones(evalOrdenados, formulasList, rankingRows) {
+        const n = evalOrdenados.length;
+        const corte = n >= 2 ? Math.floor(n / 2) : n;
+        const nuevosRecs = n >= 2 ? evalOrdenados.slice(corte) : [];
+        return rankingRows.map(function (r) {
+          let Fdef = null;
+          for (let fi = 0; fi < formulasList.length; fi++) {
+            if (formulasList[fi].formula === r.formula) {
+              Fdef = formulasList[fi];
+              break;
+            }
+          }
+          let persistencia = 0;
+          let fragilidad = 0;
+          if (Fdef && nuevosRecs.length) {
+            nuevosRecs.forEach(function (rec) {
+              let v;
+              try {
+                v = Fdef.ev(rec.s1s2s3s4, rec.e1e2e3);
+              } catch (err) {
+                v = NaN;
+              }
+              const tv = invoValorDestinoExploracion(rec, r.destino);
+              const vr = Math.round(Number(v));
+              if (!Number.isFinite(vr) || tv == null) {
+                fragilidad++;
+                return;
+              }
+              if (vr === tv) persistencia++;
+              else fragilidad++;
+            });
+          }
+          const denom = persistencia + fragilidad;
+          let indice_estabilidad = null;
+          if (denom > 0) indice_estabilidad = persistencia / denom;
+          let clasificacion_supervivencia = "N/A";
+          if (denom > 0 && indice_estabilidad != null) {
+            if (indice_estabilidad > 0.8) clasificacion_supervivencia = "ESTABLE";
+            else if (indice_estabilidad >= 0.6) clasificacion_supervivencia = "OBSERVAR";
+            else clasificacion_supervivencia = "DESCARTAR";
+          }
+          const te = r.total_evaluados || 0;
+          const sup = te ? r.aciertos / te : 0;
+          return {
+            formula: r.formula,
+            destino: r.destino,
+            porcentaje: r.porcentaje,
+            porcentaje_texto: r.porcentaje_texto,
+            total_registros_evaluables: te,
+            total_evaluados: te,
+            supervivencia: Number(sup.toFixed(6)),
+            supervivencia_texto: (100 * sup).toFixed(2) + "%",
+            persistencia: persistencia,
+            fragilidad: fragilidad,
+            registros_nuevos_en_bloque: nuevosRecs.length,
+            indice_corte_mitad: corte,
+            indice_estabilidad: indice_estabilidad != null ? Number(indice_estabilidad.toFixed(4)) : null,
+            indice_estabilidad_texto: indice_estabilidad != null ? indice_estabilidad.toFixed(3) : "n/d",
+            clasificacion_supervivencia: clasificacion_supervivencia,
+            aciertos: r.aciertos,
+            fallos: r.fallos,
+            validez_contraste: r.validez,
+            marca_contraste: r.marca_estadistica_observada
+          };
+        });
+      }
+
+      function invoConsensoPatrones(evaluables, formulasList, rankingRows) {
+        const nTotal = evaluables.length;
+        const formulaEv = {};
+        for (let fi = 0; fi < formulasList.length; fi++) {
+          formulaEv[formulasList[fi].formula] = formulasList[fi].ev;
+        }
+        const filtrados = rankingRows.filter(function (r) {
+          return r.validez === "MUESTRA_SUFICIENTE" && r.porcentaje >= 70;
+        });
+        const m = filtrados.length;
+        const etiquetaPatron = function (row) {
+          return row.formula + "→" + row.destino;
+        };
+        const counts = {};
+        evaluables.forEach(function (rec) {
+          const hitIdx = [];
+          for (let j = 0; j < m; j++) {
+            const row = filtrados[j];
+            const evFn = formulaEv[row.formula];
+            if (!evFn) continue;
+            let v;
+            try {
+              v = evFn(rec.s1s2s3s4, rec.e1e2e3);
+            } catch (err) {
+              v = NaN;
+            }
+            const tv = invoValorDestinoExploracion(rec, row.destino);
+            const vr = Math.round(Number(v));
+            if (Number.isFinite(vr) && tv != null && vr === tv) {
+              hitIdx.push(j);
+            }
+          }
+          hitIdx.sort(function (a, b) {
+            return a - b;
+          });
+          const h = hitIdx.length;
+          if (h < 2) return;
+          let a;
+          let b;
+          let c;
+          for (a = 0; a < h; a++) {
+            for (b = a + 1; b < h; b++) {
+              const ia = hitIdx[a];
+              const ib = hitIdx[b];
+              const pair = [ia, ib];
+              const partes = pair.map(function (ii) {
+                return etiquetaPatron(filtrados[ii]);
+              });
+              const partesKeys = pair.map(function (ii) {
+                return filtrados[ii].formula + "||" + filtrados[ii].destino;
+              });
+              const comboKey = partesKeys.join(" + ");
+              if (!counts[comboKey]) {
+                counts[comboKey] = {
+                  tam_combo: 2,
+                  formulas: partesKeys.map(function (pk, k) {
+                    const bits = pk.split("||");
+                    return { formula: bits[0], destino: bits[1], etiqueta: partes[k] };
+                  }),
+                  formulas_texto: partes.join(" + "),
+                  apariciones_juntas: 0,
+                  registros_coincidencia: []
+                };
+              }
+              counts[comboKey].apariciones_juntas++;
+              counts[comboKey].registros_coincidencia.push(rec.indice);
+            }
+          }
+          for (a = 0; a < h; a++) {
+            for (b = a + 1; b < h; b++) {
+              for (c = b + 1; c < h; c++) {
+                const tri = [hitIdx[a], hitIdx[b], hitIdx[c]];
+                const partes = tri.map(function (ii) {
+                  return etiquetaPatron(filtrados[ii]);
+                });
+                const partesKeys = tri.map(function (ii) {
+                  return filtrados[ii].formula + "||" + filtrados[ii].destino;
+                });
+                const comboKey = partesKeys.join(" + ");
+                if (!counts[comboKey]) {
+                  counts[comboKey] = {
+                    tam_combo: 3,
+                    formulas: partesKeys.map(function (pk, k) {
+                      const bits = pk.split("||");
+                      return { formula: bits[0], destino: bits[1], etiqueta: partes[k] };
+                    }),
+                    formulas_texto: partes.join(" + "),
+                    apariciones_juntas: 0,
+                    registros_coincidencia: []
+                  };
+                }
+                counts[comboKey].apariciones_juntas++;
+                counts[comboKey].registros_coincidencia.push(rec.indice);
+              }
+            }
+          }
+        });
+        const apariciones_totales = nTotal;
+        const out = Object.keys(counts).map(function (k) {
+          const row = counts[k];
+          const coh = apariciones_totales ? row.apariciones_juntas / apariciones_totales : 0;
+          const cohesion = Number(coh.toFixed(6));
+          let clasificacion = "DESCARTAR";
+          if (coh > 0.85) clasificacion = "CONSENSO_FUERTE";
+          else if (coh >= 0.7) clasificacion = "CONSENSO_MEDIO";
+          else if (coh >= 0.5) clasificacion = "CONSENSO_DEBIL";
+          return {
+            formulas_texto: row.formulas_texto,
+            formulas: row.formulas,
+            tam_combo: row.tam_combo,
+            apariciones_juntas: row.apariciones_juntas,
+            apariciones_totales: apariciones_totales,
+            cohesion: cohesion,
+            cohesion_texto: (100 * coh).toFixed(2) + "%",
+            clasificacion_consenso: clasificacion,
+            registros_coincidencia: row.registros_coincidencia.slice(),
+            registros_texto: row.registros_coincidencia.join(", ")
+          };
+        });
+        out.sort(function (x, y) {
+          if (y.cohesion !== x.cohesion) return y.cohesion - x.cohesion;
+          if (y.apariciones_juntas !== x.apariciones_juntas) return y.apariciones_juntas - x.apariciones_juntas;
+          return (x.formulas_texto || "").localeCompare(y.formulas_texto || "");
+        });
+        return {
+          criterio_filtro_ranking: "validez=MUESTRA_SUFICIENTE y porcentaje>=70",
+          n_patrones_base: m,
+          apariciones_totales_denominador: apariciones_totales,
+          combinaciones: out
+        };
+      }
+
+      function invoPrecisionPatronEnBloque(records, evFn, destino) {
+        const n = records.length;
+        let aciertos = 0;
+        for (let i = 0; i < n; i++) {
+          const rec = records[i];
+          let v;
+          try {
+            v = evFn(rec.s1s2s3s4, rec.e1e2e3);
+          } catch (err) {
+            v = NaN;
+          }
+          const tv = invoValorDestinoExploracion(rec, destino);
+          const vr = Math.round(Number(v));
+          if (!Number.isFinite(vr) || tv == null) {
+            continue;
+          }
+          if (vr === tv) {
+            aciertos++;
+          }
+        }
+        const precision = n ? aciertos / n : 0;
+        return {
+          n: n,
+          aciertos: aciertos,
+          precision: precision,
+          precision_texto: (100 * precision).toFixed(2) + "%"
+        };
+      }
+
+      function invoConsensoJointEnBloque(records, formulaEv, combo) {
+        let count = 0;
+        const n = records.length;
+        for (let i = 0; i < n; i++) {
+          const rec = records[i];
+          let ok = true;
+          for (let k = 0; k < combo.formulas.length; k++) {
+            const pf = combo.formulas[k];
+            const evFn = formulaEv[pf.formula];
+            if (!evFn) {
+              ok = false;
+              break;
+            }
+            let v;
+            try {
+              v = evFn(rec.s1s2s3s4, rec.e1e2e3);
+            } catch (err) {
+              v = NaN;
+            }
+            const tv = invoValorDestinoExploracion(rec, pf.destino);
+            const vr = Math.round(Number(v));
+            if (!Number.isFinite(vr) || tv == null || vr !== tv) {
+              ok = false;
+              break;
+            }
+          }
+          if (ok) count++;
+        }
+        return count;
+      }
+
+      function invoFragilidadPatrones(evalOrdenados, formulasList, rankingRows, supervivenciaPatrones, consensoPack) {
+        const n = evalOrdenados.length;
+        const corte = n >= 2 ? Math.floor(n / 2) : 0;
+        const bloqueInicial = n >= 2 ? evalOrdenados.slice(0, corte) : [];
+        const bloqueFinal = n >= 2 ? evalOrdenados.slice(corte) : [];
+        const formulaEv = {};
+        for (let fi = 0; fi < formulasList.length; fi++) {
+          formulaEv[formulasList[fi].formula] = formulasList[fi].ev;
+        }
+        const filas = rankingRows.map(function (r, idx) {
+          const evFn = formulaEv[r.formula];
+          const supRef = supervivenciaPatrones && supervivenciaPatrones[idx] ? supervivenciaPatrones[idx] : null;
+          let precision_inicio = null;
+          let precision_final = null;
+          let precision_inicio_texto = "n/d";
+          let precision_final_texto = "n/d";
+          if (evFn && n >= 2) {
+            const stI = invoPrecisionPatronEnBloque(bloqueInicial, evFn, r.destino);
+            const stF = invoPrecisionPatronEnBloque(bloqueFinal, evFn, r.destino);
+            precision_inicio = Number(stI.precision.toFixed(6));
+            precision_final = Number(stF.precision.toFixed(6));
+            precision_inicio_texto = stI.precision_texto;
+            precision_final_texto = stF.precision_texto;
+          }
+          let delta_precision = null;
+          let fragilidad = null;
+          let fragilidad_texto = "n/d";
+          let clasificacion_fragilidad = "N/A";
+          if (precision_inicio != null && precision_final != null) {
+            delta_precision = Number((precision_final - precision_inicio).toFixed(6));
+            fragilidad = Number(Math.abs(delta_precision).toFixed(6));
+            fragilidad_texto = fragilidad.toFixed(3);
+            const f = fragilidad;
+            if (f < 0.1) clasificacion_fragilidad = "MUY_ESTABLE";
+            else if (f < 0.25) clasificacion_fragilidad = "OBSERVAR";
+            else if (f <= 0.5) clasificacion_fragilidad = "INESTABLE";
+            else clasificacion_fragilidad = "COLAPSO";
+          }
+          return {
+            formula: r.formula,
+            destino: r.destino,
+            formula_display: r.formula + "→" + r.destino,
+            n_bloque_inicial: bloqueInicial.length,
+            n_bloque_final: bloqueFinal.length,
+            precision_inicio: precision_inicio,
+            precision_final: precision_final,
+            precision_inicio_texto: precision_inicio_texto,
+            precision_final_texto: precision_final_texto,
+            delta_precision: delta_precision,
+            delta_precision_texto: delta_precision != null ? delta_precision.toFixed(3) : "n/d",
+            fragilidad: fragilidad,
+            fragilidad_texto: fragilidad_texto,
+            clasificacion_fragilidad: clasificacion_fragilidad,
+            total_evaluados_ranking: r.total_evaluados,
+            validez_ranking: r.validez,
+            referencia_supervivencia_clasificacion: supRef ? supRef.clasificacion_supervivencia : null
+          };
+        });
+        filas.sort(function (a, b) {
+          const fa = a.fragilidad != null ? a.fragilidad : -1;
+          const fb = b.fragilidad != null ? b.fragilidad : -1;
+          if (fb !== fa) return fb - fa;
+          return (a.formula + "|" + a.destino).localeCompare(b.formula + "|" + b.destino);
+        });
+        const rupturas = [];
+        (consensoPack && consensoPack.combinaciones ? consensoPack.combinaciones : []).forEach(function (combo) {
+          if (combo.clasificacion_consenso !== "CONSENSO_FUERTE") return;
+          const ji = invoConsensoJointEnBloque(bloqueInicial, formulaEv, combo);
+          const jf = invoConsensoJointEnBloque(bloqueFinal, formulaEv, combo);
+          if (jf === 0 && ji > 0) {
+            rupturas.push({
+              formulas_texto: combo.formulas_texto,
+              tam_combo: combo.tam_combo,
+              cohesion_global: combo.cohesion,
+              cohesion_texto_global: combo.cohesion_texto,
+              apariciones_juntas_total: combo.apariciones_juntas,
+              apariciones_juntas_bloque_inicial: ji,
+              apariciones_juntas_bloque_final: jf,
+              criterio_ruptura: "CONSENSO_FUERTE con coincidencias simultáneas en bloque_inicial y ninguna en bloque_final"
+            });
+          }
+        });
+        rupturas.sort(function (x, y) {
+          return (y.apariciones_juntas_bloque_inicial || 0) - (x.apariciones_juntas_bloque_inicial || 0);
+        });
+        return {
+          indice_corte_mitad: corte,
+          n_registros_evaluables: n,
+          n_bloque_inicial: bloqueInicial.length,
+          n_bloque_final: bloqueFinal.length,
+          filas: filas,
+          rupturas_consenso: rupturas
+        };
+      }
+
+      function invoDependenciaPatrones(evaluables, formulasList, rankingRows, consensoPack, fragilidadPack) {
+        const filtrados = rankingRows.filter(function (r) {
+          return r.validez === "MUESTRA_SUFICIENTE" && r.porcentaje >= 70;
+        });
+        const m = filtrados.length;
+        const formulaEv = {};
+        for (let fi = 0; fi < formulasList.length; fi++) {
+          formulaEv[formulasList[fi].formula] = formulasList[fi].ev;
+        }
+        const fragMap = {};
+        if (fragilidadPack && fragilidadPack.filas) {
+          fragilidadPack.filas.forEach(function (fr) {
+            fragMap[fr.formula + "||" + fr.destino] = fr.clasificacion_fragilidad;
+          });
+        }
+        const fuertes = (consensoPack && consensoPack.combinaciones ? consensoPack.combinaciones : []).filter(function (c) {
+          return c.clasificacion_consenso === "CONSENSO_FUERTE";
+        });
+        const nFuertes = fuertes.length;
+        const countInFuertes = {};
+        fuertes.forEach(function (combo) {
+          (combo.formulas || []).forEach(function (pf) {
+            const kk = pf.formula + "||" + pf.destino;
+            countInFuertes[kk] = (countInFuertes[kk] || 0) + 1;
+          });
+        });
+        const patronesDominantesRelacionales = [];
+        Object.keys(countInFuertes).forEach(function (k) {
+          const cnt = countInFuertes[k];
+          const ratio = nFuertes ? cnt / nFuertes : 0;
+          if (nFuertes > 0 && ratio > 0.8) {
+            const bits = k.split("||");
+            patronesDominantesRelacionales.push({
+              patron_key: k,
+              formula: bits[0],
+              destino: bits[1],
+              etiqueta: bits[0] + "→" + bits[1],
+              apariciones_en_consenso_fuerte: cnt,
+              n_consenso_fuerte_total: nFuertes,
+              ratio_en_consenso_fuerte: Number(ratio.toFixed(6)),
+              ratio_texto: (100 * ratio).toFixed(1) + "%",
+              criterio: "ratio > 0.80 entre combinaciones CONSENSO_FUERTE"
+            });
+          }
+        });
+        patronesDominantesRelacionales.sort(function (a, b) {
+          return b.ratio_en_consenso_fuerte - a.ratio_en_consenso_fuerte;
+        });
+        const ap = new Array(m).fill(0);
+        const joint = [];
+        let j;
+        let k;
+        for (j = 0; j < m; j++) {
+          joint[j] = new Array(m).fill(0);
+        }
+        evaluables.forEach(function (rec) {
+          const hit = new Array(m);
+          for (j = 0; j < m; j++) {
+            const prow = filtrados[j];
+            const evFn = formulaEv[prow.formula];
+            let okHit = false;
+            if (evFn) {
+              let v;
+              try {
+                v = evFn(rec.s1s2s3s4, rec.e1e2e3);
+              } catch (err) {
+                v = NaN;
+              }
+              const tv = invoValorDestinoExploracion(rec, prow.destino);
+              const vr = Math.round(Number(v));
+              okHit = Number.isFinite(vr) && tv != null && vr === tv;
+            }
+            hit[j] = okHit;
+            if (okHit) {
+              ap[j]++;
+            }
+          }
+          for (j = 0; j < m; j++) {
+            if (!hit[j]) continue;
+            for (k = j + 1; k < m; k++) {
+              if (hit[k]) {
+                joint[j][k]++;
+                joint[k][j]++;
+              }
+            }
+          }
+        });
+        const filas = [];
+        for (j = 0; j < m; j++) {
+          const row = filtrados[j];
+          const pk = row.formula + "||" + row.destino;
+          const apP = ap[j];
+          let maxCoDependencia = 0;
+          let bestK = -1;
+          for (k = 0; k < m; k++) {
+            if (k === j) continue;
+            if (apP <= 0) continue;
+            const co = joint[j][k] / apP;
+            if (co > maxCoDependencia) {
+              maxCoDependencia = co;
+              bestK = k;
+            }
+          }
+          const autonomia = Number((1 - maxCoDependencia).toFixed(6));
+          let clasificacion_dependencia = "DEPENDIENTE";
+          if (autonomia > 0.8) clasificacion_dependencia = "AUTONOMO";
+          else if (autonomia >= 0.6) clasificacion_dependencia = "SEMIAUTONOMO";
+          else if (autonomia >= 0.4) clasificacion_dependencia = "DEPENDENCIA_MEDIA";
+          const ratioDom = nFuertes ? (countInFuertes[pk] || 0) / nFuertes : 0;
+          const patronDominanteConsenso = nFuertes > 0 && ratioDom > 0.8;
+          let etiquetaCoMax = null;
+          if (bestK >= 0 && maxCoDependencia > 0) {
+            const qr = filtrados[bestK];
+            etiquetaCoMax = qr.formula + "→" + qr.destino;
+          }
+          filas.push({
+            formula: row.formula,
+            destino: row.destino,
+            formula_display: row.formula + "→" + row.destino,
+            patron_key: pk,
+            apariciones_P: apP,
+            co_dependencia_max: Number(maxCoDependencia.toFixed(6)),
+            co_dependencia_max_texto: (100 * maxCoDependencia).toFixed(1) + "%",
+            patron_co_dependencia_max: etiquetaCoMax,
+            autonomia: autonomia,
+            autonomia_texto: (100 * autonomia).toFixed(1) + "%",
+            clasificacion_dependencia: clasificacion_dependencia,
+            apariciones_en_consenso_fuerte: countInFuertes[pk] || 0,
+            n_consenso_fuerte_total: nFuertes,
+            ratio_presencia_fuertes: Number(ratioDom.toFixed(6)),
+            patron_dominante_consensos_fuertes: patronDominanteConsenso,
+            patron_dominante_ui: patronDominanteConsenso ? "SÍ" : "NO",
+            referencia_fragilidad_clasificacion: fragMap[pk] || null
+          });
+        }
+        filas.sort(function (a, b) {
+          if (a.autonomia !== b.autonomia) return a.autonomia - b.autonomia;
+          return (a.formula + "|" + a.destino).localeCompare(b.formula + "|" + b.destino);
+        });
+        return {
+          criterio_filtro_ranking: "validez=MUESTRA_SUFICIENTE y porcentaje>=70 (mismo universo que consenso)",
+          n_patrones_en_analisis: m,
+          n_consenso_fuerte_observados: nFuertes,
+          filas: filas,
+          patrones_dominantes_relacionales: patronesDominantesRelacionales
+        };
+      }
+
+      function invoJerarquiaEvidencia(rankingRows, supervivenciaPatrones, consensoPack, fragilidadPack, dependenciaPack) {
+        const maxCohesionPorPatron = {};
+        (consensoPack && consensoPack.combinaciones ? consensoPack.combinaciones : []).forEach(function (combo) {
+          const coh = typeof combo.cohesion === "number" ? combo.cohesion : 0;
+          (combo.formulas || []).forEach(function (pf) {
+            const pk = pf.formula + "||" + pf.destino;
+            if (maxCohesionPorPatron[pk] == null || coh > maxCohesionPorPatron[pk]) {
+              maxCohesionPorPatron[pk] = coh;
+            }
+          });
+        });
+        const fragilidadPorPatron = {};
+        const fragInvPorPatron = {};
+        if (fragilidadPack && fragilidadPack.filas) {
+          fragilidadPack.filas.forEach(function (fr) {
+            const pk = fr.formula + "||" + fr.destino;
+            const fg = fr.fragilidad;
+            fragilidadPorPatron[pk] = fg;
+            if (fg != null && Number.isFinite(fg)) {
+              const inv = 1 - fg;
+              fragInvPorPatron[pk] = inv < 0 ? 0 : inv > 1 ? 1 : inv;
+            } else {
+              fragInvPorPatron[pk] = 0;
+            }
+          });
+        }
+        const autonomiaPorPatron = {};
+        if (dependenciaPack && dependenciaPack.filas) {
+          dependenciaPack.filas.forEach(function (df) {
+            const pk = df.patron_key || df.formula + "||" + df.destino;
+            const au = df.autonomia;
+            autonomiaPorPatron[pk] = typeof au === "number" && Number.isFinite(au) ? au : 0;
+          });
+        }
+        const filas = [];
+        const n = rankingRows.length;
+        let i;
+        for (i = 0; i < n; i++) {
+          const row = rankingRows[i];
+          const pk = row.formula + "||" + row.destino;
+          const sup = supervivenciaPatrones && supervivenciaPatrones[i] ? supervivenciaPatrones[i] : null;
+          const frecuencia = Math.min(1, Math.max(0, (row.porcentaje != null ? row.porcentaje : 0) / 100));
+          let estabilidad = 0;
+          if (sup && sup.indice_estabilidad != null && Number.isFinite(sup.indice_estabilidad)) {
+            estabilidad = sup.indice_estabilidad;
+            if (estabilidad < 0) estabilidad = 0;
+            if (estabilidad > 1) estabilidad = 1;
+          }
+          let consenso = maxCohesionPorPatron[pk];
+          if (consenso == null || !Number.isFinite(consenso)) consenso = 0;
+          if (consenso < 0) consenso = 0;
+          if (consenso > 1) consenso = 1;
+          let autonomia = autonomiaPorPatron[pk];
+          if (autonomia == null || !Number.isFinite(autonomia)) autonomia = 0;
+          if (autonomia < 0) autonomia = 0;
+          if (autonomia > 1) autonomia = 1;
+          let fragilidad_inversa = fragInvPorPatron[pk];
+          if (fragilidad_inversa == null || !Number.isFinite(fragilidad_inversa)) fragilidad_inversa = 0;
+          if (fragilidad_inversa < 0) fragilidad_inversa = 0;
+          if (fragilidad_inversa > 1) fragilidad_inversa = 1;
+          const indice_unificado = Number(
+            (
+              frecuencia * 0.25 +
+              estabilidad * 0.25 +
+              consenso * 0.2 +
+              autonomia * 0.15 +
+              fragilidad_inversa * 0.15
+            ).toFixed(6)
+          );
+          let clasificacion_jerarquia = "EVIDENCIA_BAJA";
+          if (row.validez === "MUESTRA_INSUFICIENTE") {
+            clasificacion_jerarquia = "MUESTRA_INSUFICIENTE";
+          } else {
+            if (indice_unificado >= 0.85) clasificacion_jerarquia = "EVIDENCIA_MUY_ALTA";
+            else if (indice_unificado >= 0.7) clasificacion_jerarquia = "EVIDENCIA_ALTA";
+            else if (indice_unificado >= 0.5) clasificacion_jerarquia = "EVIDENCIA_MEDIA";
+            else clasificacion_jerarquia = "EVIDENCIA_BAJA";
+          }
+          filas.push({
+            patron_key: pk,
+            formula: row.formula,
+            destino: row.destino,
+            validez_ranking: row.validez,
+            componente_frecuencia: Number(frecuencia.toFixed(6)),
+            componente_estabilidad: Number(estabilidad.toFixed(6)),
+            componente_consenso: Number(consenso.toFixed(6)),
+            componente_autonomia: Number(autonomia.toFixed(6)),
+            fragilidad_medida: fragilidadPorPatron[pk] != null ? fragilidadPorPatron[pk] : null,
+            componente_fragilidad_inversa: Number(fragilidad_inversa.toFixed(6)),
+            indice_unificado: indice_unificado,
+            indice_unificado_texto: indice_unificado.toFixed(3),
+            clasificacion_jerarquia: clasificacion_jerarquia,
+            frecuencia_texto: (100 * frecuencia).toFixed(2) + "%",
+            estabilidad_texto: (100 * estabilidad).toFixed(1) + "%",
+            consenso_texto: (100 * consenso).toFixed(1) + "%",
+            autonomia_texto: (100 * autonomia).toFixed(1) + "%",
+            fragilidad_inversa_texto: (100 * fragilidad_inversa).toFixed(1) + "%"
+          });
+        }
+        filas.sort(function (a, b) {
+          if (b.indice_unificado !== a.indice_unificado) return b.indice_unificado - a.indice_unificado;
+          return (a.formula + "|" + a.destino).localeCompare(b.formula + "|" + b.destino);
+        });
+        return {
+          pesos_componentes: {
+            frecuencia: 0.25,
+            estabilidad: 0.25,
+            consenso: 0.2,
+            autonomia: 0.15,
+            fragilidad_inversa: 0.15
+          },
+          filas: filas
+        };
+      }
+
+      function invoArbolConstruccion(
+        evaluables,
+        formulasList,
+        rankingRows,
+        supervivenciaPatrones,
+        consensoPack,
+        fragilidadPack,
+        dependenciaPack,
+        jerarquiaPack
+      ) {
+        void consensoPack;
+        void fragilidadPack;
+        void dependenciaPack;
+        const NEXT_DEST = { A1: "A2", A2: "B1", B1: "B2", B2: null };
+        const PROF_MAX = 4;
+        const MAX_BRANCH = 10;
+        const nEv = evaluables.length;
+        const formulaEv = {};
+        formulasList.forEach(function (f) {
+          formulaEv[f.formula] = f.ev;
+        });
+        const jByKey = {};
+        (jerarquiaPack && jerarquiaPack.filas ? jerarquiaPack.filas : []).forEach(function (j) {
+          jByKey[j.patron_key] = j;
+        });
+        function metricsForRankingIndex(idx) {
+          const row = rankingRows[idx];
+          const pk = row.formula + "||" + row.destino;
+          const j = jByKey[pk];
+          if (j) {
+            return {
+              f: j.componente_frecuencia,
+              e: j.componente_estabilidad,
+              c: j.componente_consenso,
+              a: j.componente_autonomia
+            };
+          }
+          const sup = supervivenciaPatrones && supervivenciaPatrones[idx] ? supervivenciaPatrones[idx] : null;
+          let est = 0;
+          if (sup && sup.indice_estabilidad != null && Number.isFinite(sup.indice_estabilidad)) {
+            est = Math.min(1, Math.max(0, sup.indice_estabilidad));
+          }
+          return {
+            f: Math.min(1, Math.max(0, (row.porcentaje != null ? row.porcentaje : 0) / 100)),
+            e: est,
+            c: 0,
+            a: 0
+          };
+        }
+        const nRows = rankingRows.length;
+        const hitMat = [];
+        let ri;
+        let ei;
+        for (ri = 0; ri < nRows; ri++) {
+          const row = rankingRows[ri];
+          const evFn = formulaEv[row.formula];
+          const dest = row.destino;
+          const rowHits = [];
+          for (ei = 0; ei < nEv; ei++) {
+            const rec = evaluables[ei];
+            let hit = 0;
+            if (evFn) {
+              let v;
+              try {
+                v = evFn(rec.s1s2s3s4, rec.e1e2e3);
+              } catch (err) {
+                v = NaN;
+              }
+              const tv = invoValorDestinoExploracion(rec, dest);
+              const vr = Math.round(Number(v));
+              if (Number.isFinite(vr) && tv != null && vr === tv) {
+                hit = 1;
+              }
+            }
+            rowHits.push(hit);
+          }
+          hitMat.push(rowHits);
+        }
+        function jointCount(chainIdx) {
+          let c = 0;
+          for (ei = 0; ei < nEv; ei++) {
+            let ok = 1;
+            for (let t = 0; t < chainIdx.length; t++) {
+              if (!hitMat[chainIdx[t]][ei]) {
+                ok = 0;
+                break;
+              }
+            }
+            c += ok;
+          }
+          return c;
+        }
+        const byDest = { A1: [], A2: [], B1: [], B2: [] };
+        for (ri = 0; ri < nRows; ri++) {
+          if (rankingRows[ri].validez === "MUESTRA_SUFICIENTE") {
+            byDest[rankingRows[ri].destino].push(ri);
+          }
+        }
+        ["A1", "A2", "B1", "B2"].forEach(function (d) {
+          byDest[d].sort(function (a, b) {
+            return rankingRows[b].porcentaje - rankingRows[a].porcentaje;
+          });
+          if (byDest[d].length > MAX_BRANCH) {
+            byDest[d] = byDest[d].slice(0, MAX_BRANCH);
+          }
+        });
+        const routesAcc = {};
+        function clasifAdn(sc) {
+          if (sc > 0.85) return "ADN_FUERTE";
+          if (sc >= 0.7) return "ADN_MEDIO";
+          if (sc >= 0.5) return "ADN_DEBIL";
+          return "DESCARTAR";
+        }
+        function emitChain(chainIdx) {
+          if (!chainIdx || !chainIdx.length) return;
+          const key = chainIdx.join("-");
+          const joint = jointCount(chainIdx);
+          const pct = nEv ? joint / nEv : 0;
+          const parts = [];
+          const nodos = [];
+          let sf = 0;
+          let se = 0;
+          let sc = 0;
+          let sa = 0;
+          let t;
+          for (t = 0; t < chainIdx.length; t++) {
+            const idx = chainIdx[t];
+            const row = rankingRows[idx];
+            parts.push(row.formula, row.destino);
+            nodos.push({
+              formula: row.formula,
+              destino: row.destino,
+              indice_ranking: idx,
+              formula_usada: row.formula,
+              destino_paso: row.destino
+            });
+            const m = metricsForRankingIndex(idx);
+            sf += m.f;
+            se += m.e;
+            sc += m.c;
+            sa += m.a;
+          }
+          const len = chainIdx.length;
+          const fm = sf / len;
+          const em = se / len;
+          const cm = sc / len;
+          const am = sa / len;
+          const score = Number((0.35 * fm + 0.25 * em + 0.2 * cm + 0.2 * am).toFixed(6));
+          const clas = clasifAdn(score);
+          const entry = {
+            ruta_texto: parts.join(" → "),
+            profundidad: len,
+            nodos: nodos,
+            registros_explicados: joint,
+            porcentaje_explicado: Number(pct.toFixed(6)),
+            porcentaje_explicado_texto: (100 * pct).toFixed(2) + "%",
+            frecuencia_media: Number(fm.toFixed(6)),
+            estabilidad_media: Number(em.toFixed(6)),
+            consenso_medio: Number(cm.toFixed(6)),
+            autonomia_media: Number(am.toFixed(6)),
+            score_ruta: score,
+            score_ruta_texto: score.toFixed(3),
+            clasificacion_adn: clas,
+            pesos_score: { frecuencia: 0.35, estabilidad: 0.25, consenso: 0.2, autonomia: 0.2 }
+          };
+          const prev = routesAcc[key];
+          if (
+            !prev ||
+            prev.registros_explicados < joint ||
+            (prev.registros_explicados === joint && prev.score_ruta < score)
+          ) {
+            routesAcc[key] = entry;
+          }
+        }
+        function dfs(chainIdx) {
+          emitChain(chainIdx);
+          if (chainIdx.length >= PROF_MAX) return;
+          const last = rankingRows[chainIdx[chainIdx.length - 1]];
+          const nd = NEXT_DEST[last.destino];
+          if (!nd) return;
+          const cand = byDest[nd];
+          let ci;
+          for (ci = 0; ci < cand.length; ci++) {
+            dfs(chainIdx.concat([cand[ci]]));
+          }
+        }
+        for (ri = 0; ri < nRows; ri++) {
+          dfs([ri]);
+        }
+        const rutas = Object.keys(routesAcc)
+          .map(function (k) {
+            return routesAcc[k];
+          })
+          .sort(function (a, b) {
+            if (b.score_ruta !== a.score_ruta) return b.score_ruta - a.score_ruta;
+            if (b.registros_explicados !== a.registros_explicados) return b.registros_explicados - a.registros_explicados;
+            return (a.ruta_texto || "").localeCompare(b.ruta_texto || "");
+          });
+        return {
+          profundidad_maxima: PROF_MAX,
+          n_rutas: rutas.length,
+          nota: INVO_NOTA_ARBOLES,
+          criterio_encadenamiento:
+            "Cadena por orden de destinos A1→A2→B1→B2 en el mismo registro evaluable; cada paso es una fila del ranking (sin ciclos de destino). Las fórmulas de exploración no incluyen literales A1… en su expresión: el vínculo es el orden estructural observado de aciertos.",
+          ramificacion_max_por_destino: MAX_BRANCH,
+          rutas: rutas
+        };
+      }
+
+      function invoExtraerTokensEstructuraFormula(fid) {
+        const f = String(fid || "");
+        const tokens = new Set();
+        let m;
+        const reE = /\be([123])\b/g;
+        while ((m = reE.exec(f)) !== null) {
+          tokens.add("e" + m[1]);
+        }
+        const reS = /\bs([1234])\b/g;
+        while ((m = reS.exec(f)) !== null) {
+          tokens.add("s" + m[1]);
+        }
+        if (f.indexOf("%10") !== -1) {
+          tokens.add("mod10");
+        }
+        if (/abs\s*\(/i.test(f)) {
+          tokens.add("abs");
+        }
+        if (f.indexOf("*") !== -1) {
+          tokens.add("*");
+        }
+        if (/[es]\d\-[es]\d/.test(f) || /\+10\)%10/.test(f)) {
+          tokens.add("resta");
+        }
+        if (f.indexOf("espejo") !== -1) {
+          tokens.add("espejo");
+        }
+        if (f.indexOf("equivalencia") !== -1) {
+          tokens.add("equivalencia");
+        }
+        if (f.indexOf("escalera") !== -1) {
+          tokens.add("escalera");
+        }
+        if (/\([es]\d\+[es]\d\+[es]\d/.test(f)) {
+          tokens.add("triple_suma");
+        } else if (/\([es]\d\+[es]\d\)/.test(f)) {
+          tokens.add("par_suma");
+        }
+        return Array.from(tokens).sort();
+      }
+
+      function invoClasificarPesoADNInverso(peso) {
+        const p = peso;
+        if (p > 0.85) return "ADN_CENTRAL";
+        if (p >= 0.7) return "ADN_IMPORTANTE";
+        if (p >= 0.5) return "ADN_SECUNDARIO";
+        return "RUIDO";
+      }
+
+      function invoADNInverso(rankingRows, supervivenciaPatrones, consensoPack, dependenciaPack, jerarquiaPack) {
+        void rankingRows;
+        void supervivenciaPatrones;
+        void consensoPack;
+        void dependenciaPack;
+        const filasJ = jerarquiaPack && jerarquiaPack.filas ? jerarquiaPack.filas : [];
+        const porJerarquia = {};
+        filasJ.forEach(function (j) {
+          porJerarquia[j.patron_key] = j;
+        });
+        const altaOMuy = filasJ.filter(function (j) {
+          return (
+            j.validez_ranking === "MUESTRA_SUFICIENTE" &&
+            (j.clasificacion_jerarquia === "EVIDENCIA_MUY_ALTA" || j.clasificacion_jerarquia === "EVIDENCIA_ALTA")
+          );
+        });
+        let seleccion = altaOMuy;
+        let niveles_uso = "EVIDENCIA_MUY_ALTA|EVIDENCIA_ALTA";
+        if (altaOMuy.length < INVO_MIN_MUESTRAS) {
+          seleccion = filasJ.filter(function (j) {
+            return (
+              j.validez_ranking === "MUESTRA_SUFICIENTE" &&
+              (j.clasificacion_jerarquia === "EVIDENCIA_MUY_ALTA" ||
+                j.clasificacion_jerarquia === "EVIDENCIA_ALTA" ||
+                j.clasificacion_jerarquia === "EVIDENCIA_MEDIA")
+            );
+          });
+          niveles_uso += "|EVIDENCIA_MEDIA";
+        }
+        const nPat = seleccion.length;
+        const patronTokens = [];
+        let pi;
+        for (pi = 0; pi < seleccion.length; pi++) {
+          const j = seleccion[pi];
+          const toks = invoExtraerTokensEstructuraFormula(j.formula);
+          patronTokens.push({ patron_key: j.patron_key, jerarquia: j, tokens: toks });
+        }
+        const compMap = {};
+        const coMap = {};
+        function ensureComp(c) {
+          if (!compMap[c]) {
+            compMap[c] = { patrones: [] };
+          }
+        }
+        function ensureCo(a, b) {
+          return a + "+" + b;
+        }
+        for (pi = 0; pi < patronTokens.length; pi++) {
+          const pt = patronTokens[pi];
+          const pkey = pt.patron_key;
+          const toks = pt.tokens;
+          let ti;
+          for (ti = 0; ti < toks.length; ti++) {
+            ensureComp(toks[ti]);
+            if (compMap[toks[ti]].patrones.indexOf(pkey) === -1) {
+              compMap[toks[ti]].patrones.push(pkey);
+            }
+          }
+          for (ti = 0; ti < toks.length; ti++) {
+            let tj;
+            for (tj = ti + 1; tj < toks.length; tj++) {
+              const par = ensureCo(toks[ti], toks[tj]);
+              if (!coMap[par]) {
+                coMap[par] = { par: par, patrones: [] };
+              }
+              if (coMap[par].patrones.indexOf(pkey) === -1) {
+                coMap[par].patrones.push(pkey);
+              }
+            }
+          }
+        }
+        function agregaMetricas(keysPatrones) {
+          let se = 0;
+          let sa = 0;
+          let nk = 0;
+          let ki;
+          for (ki = 0; ki < keysPatrones.length; ki++) {
+            const j = porJerarquia[keysPatrones[ki]];
+            if (!j) continue;
+            se += j.componente_estabilidad != null ? j.componente_estabilidad : 0;
+            sa += j.componente_autonomia != null ? j.componente_autonomia : 0;
+            nk++;
+          }
+          if (!nk) {
+            return { est: 0, aut: 0 };
+          }
+          return { est: se / nk, aut: sa / nk };
+        }
+        function construirEntrada(id, keysList, nBase) {
+          const uq = [];
+          const seen = {};
+          let i;
+          for (i = 0; i < keysList.length; i++) {
+            if (!seen[keysList[i]]) {
+              seen[keysList[i]] = true;
+              uq.push(keysList[i]);
+            }
+          }
+          const nc = uq.length;
+          const frec = nBase ? nc / nBase : 0;
+          const m = agregaMetricas(uq);
+          const peso = Number((frec * m.est * m.aut).toFixed(6));
+          return {
+            id: id,
+            n_patrones: nc,
+            frecuencia: Number(frec.toFixed(6)),
+            frecuencia_texto: (100 * frec).toFixed(1) + "%",
+            estabilidad_media: Number(m.est.toFixed(6)),
+            estabilidad_texto: (100 * m.est).toFixed(1) + "%",
+            autonomia_media: Number(m.aut.toFixed(6)),
+            autonomia_texto: (100 * m.aut).toFixed(1) + "%",
+            peso_estructural: peso,
+            peso_estructural_texto: peso.toFixed(3),
+            clasificacion: invoClasificarPesoADNInverso(peso)
+          };
+        }
+        const componentes = [];
+        const claves = Object.keys(compMap).sort();
+        for (pi = 0; pi < claves.length; pi++) {
+          const c = claves[pi];
+          const row = construirEntrada(c, compMap[c].patrones, nPat);
+          row.componente = c;
+          componentes.push(row);
+        }
+        componentes.sort(function (a, b) {
+          if (b.peso_estructural !== a.peso_estructural) return b.peso_estructural - a.peso_estructural;
+          return (a.componente || "").localeCompare(b.componente || "");
+        });
+        const coocurrencias = [];
+        const coKeys = Object.keys(coMap).sort();
+        for (pi = 0; pi < coKeys.length; pi++) {
+          const ck = coKeys[pi];
+          const rowC = construirEntrada(ck, coMap[ck].patrones, nPat);
+          rowC.coocurrencia = ck;
+          coocurrencias.push(rowC);
+        }
+        coocurrencias.sort(function (a, b) {
+          if (b.peso_estructural !== a.peso_estructural) return b.peso_estructural - a.peso_estructural;
+          return (a.coocurrencia || "").localeCompare(b.coocurrencia || "");
+        });
+        return {
+          nota: INVO_NOTA_ADN_INVERSO,
+          criterio_patrones:
+            "Patrones con validez MUESTRA_SUFICIENTE y clasificación jerárquica ALTA/MUY_ALTA; si hay menos de " +
+            INVO_MIN_MUESTRAS +
+            ", se incluye también EVIDENCIA_MEDIA.",
+          niveles_jerarquia_usados: niveles_uso,
+          n_patrones_filtrados: nPat,
+          patron_keys_muestra: seleccion.map(function (s) {
+            return s.patron_key;
+          }),
+          componentes: componentes,
+          coocurrencias: coocurrencias,
+          pesos: {
+            formula_peso: "peso_estructural = frecuencia × estabilidad_media × autonomia_media",
+            frecuencia: "patrones que contienen el token / n_patrones_filtrados"
+          }
         };
       }
 
@@ -4893,13 +7260,27 @@
         };
       }
 
-      function invoRenderRows(tbody, rows, n) {
+      function invoRenderRows(tbody, rows, nGlobal, mostrarInsuficientes) {
         if (!tbody) return;
-        if (!rows || !rows.length) {
-          tbody.innerHTML = '<tr><td colspan="4" class="invo-muted">(ninguno en este tramo)</td></tr>';
+        const minN = INVO_MIN_MUESTRAS;
+        if (!nGlobal || nGlobal < minN) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" class="invo-muted">Muestra global insuficiente (&lt; ' +
+            minN +
+            " registros evaluables). Las tablas por tramo de % no son representativas.</td></tr>";
           return;
         }
-        tbody.innerHTML = rows
+        const filas = (rows || []).filter(function (r) {
+          return mostrarInsuficientes || r.frecuencia_absoluta >= minN;
+        });
+        if (!filas.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" class="invo-muted">(ninguno en este tramo con frecuencia ≥ ' +
+            minN +
+            '; active «Mostrar muestras insuficientes» para ver el resto)</td></tr>';
+          return;
+        }
+        tbody.innerHTML = filas
           .map(function (r) {
             return (
               "<tr><td>" +
@@ -4914,6 +7295,641 @@
             );
           })
           .join("");
+      }
+
+      function invoRenderExploracionBody(ranking, mostrarInsuficientes) {
+        const tb = document.getElementById("invoExploracionBody");
+        if (!tb) return;
+        const minN = INVO_MIN_MUESTRAS;
+        const filas = (ranking || []).filter(function (r) {
+          return mostrarInsuficientes || (r.total_evaluados != null && r.total_evaluados >= minN);
+        });
+        const maxFilas = 150;
+        const slice = filas.slice(0, maxFilas);
+        if (!slice.length) {
+          tb.innerHTML =
+            '<tr><td colspan="10" class="invo-muted">(ninguna fila con total evaluado ≥ ' +
+            minN +
+            "; marque «Mostrar muestras insuficientes» para ver contrastes con menos de " +
+            minN +
+            " registros)</td></tr>";
+          return;
+        }
+        tb.innerHTML = slice
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.formula) +
+              "</td><td>" +
+              escapeHtml(r.destino) +
+              "</td><td>" +
+              r.aciertos +
+              "</td><td>" +
+              r.fallos +
+              "</td><td>" +
+              escapeHtml(r.porcentaje_texto) +
+              "</td><td>" +
+              r.total_evaluados +
+              "</td><td>" +
+              escapeHtml(r.validez) +
+              "</td><td>" +
+              escapeHtml(r.marca_estadistica_observada || "—") +
+              "</td><td>" +
+              escapeHtml((r.registros_acertados || []).join(", ")) +
+              "</td><td>" +
+              escapeHtml((r.registros_fallados || []).join(", ")) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxFilas) {
+          tb.innerHTML +=
+            '<tr><td colspan="10" class="invo-muted">… mostrando las primeras ' +
+            maxFilas +
+            " de " +
+            filas.length +
+            " filas visibles (orden por %).</td></tr>";
+        }
+      }
+
+      function invoRenderSupervivenciaBody(rows, mostrarInsuficientes) {
+        const tb = document.getElementById("invoSupervivenciaBody");
+        if (!tb) return;
+        const minN = INVO_MIN_MUESTRAS;
+        const filas = (rows || []).filter(function (r) {
+          return mostrarInsuficientes || (r.total_evaluados != null && r.total_evaluados >= minN);
+        });
+        const maxFilas = 150;
+        const slice = filas.slice(0, maxFilas);
+        if (!slice.length) {
+          tb.innerHTML =
+            '<tr><td colspan="8" class="invo-muted">(ninguna fila con total evaluado ≥ ' +
+            minN +
+            "; marque «Mostrar muestras insuficientes» para ver el resto)</td></tr>";
+          return;
+        }
+        tb.innerHTML = slice
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.formula) +
+              "</td><td>" +
+              escapeHtml(r.destino) +
+              "</td><td>" +
+              escapeHtml(r.porcentaje_texto) +
+              "</td><td>" +
+              r.total_evaluados +
+              "</td><td>" +
+              escapeHtml(r.indice_estabilidad_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion_supervivencia) +
+              "</td><td>" +
+              r.aciertos +
+              "</td><td>" +
+              r.fallos +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxFilas) {
+          tb.innerHTML +=
+            '<tr><td colspan="8" class="invo-muted">… mostrando las primeras ' +
+            maxFilas +
+            " de " +
+            filas.length +
+            " filas (orden igual que exploración).</td></tr>";
+        }
+      }
+
+      function invoRenderConsensoBody(rows, mostrarInsuficientes) {
+        const tb = document.getElementById("invoConsensoBody");
+        if (!tb) return;
+        const minN = INVO_MIN_MUESTRAS;
+        const filas = (rows || []).filter(function (r) {
+          return mostrarInsuficientes || (r.apariciones_juntas != null && r.apariciones_juntas >= minN);
+        });
+        const maxFilas = 150;
+        const slice = filas.slice(0, maxFilas);
+        if (!slice.length) {
+          tb.innerHTML =
+            '<tr><td colspan="4" class="invo-muted">(ningún consenso con al menos ' +
+            minN +
+            " registros coincidentes; marque «Mostrar muestras insuficientes» para ver el resto)</td></tr>";
+          return;
+        }
+        tb.innerHTML = slice
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.formulas_texto) +
+              "</td><td>" +
+              escapeHtml(r.cohesion_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion_consenso) +
+              "</td><td>" +
+              escapeHtml(r.registros_texto) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxFilas) {
+          tb.innerHTML +=
+            '<tr><td colspan="4" class="invo-muted">… mostrando las primeras ' +
+            maxFilas +
+            " de " +
+            filas.length +
+            " combinaciones (orden por cohesión).</td></tr>";
+        }
+      }
+
+      function invoRenderFragilidadBody(rows, mostrarInsuficientes) {
+        const tb = document.getElementById("invoFragilidadBody");
+        if (!tb) return;
+        const minN = INVO_MIN_MUESTRAS;
+        const filas = (rows || []).filter(function (r) {
+          return mostrarInsuficientes || (r.total_evaluados_ranking != null && r.total_evaluados_ranking >= minN);
+        });
+        const maxFilas = 150;
+        const slice = filas.slice(0, maxFilas);
+        if (!slice.length) {
+          tb.innerHTML =
+            '<tr><td colspan="6" class="invo-muted">(ninguna fila con total evaluado ≥ ' +
+            minN +
+            " en el ranking; marque «Mostrar muestras insuficientes» para ver el resto)</td></tr>";
+          return;
+        }
+        tb.innerHTML = slice
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.formula_display) +
+              "</td><td>" +
+              escapeHtml(r.precision_inicio_texto) +
+              "</td><td>" +
+              escapeHtml(r.precision_final_texto) +
+              "</td><td>" +
+              escapeHtml(r.delta_precision_texto) +
+              "</td><td>" +
+              escapeHtml(r.fragilidad_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion_fragilidad) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxFilas) {
+          tb.innerHTML +=
+            '<tr><td colspan="6" class="invo-muted">… primeras ' +
+            maxFilas +
+            " de " +
+            filas.length +
+            " (orden por fragilidad descendente).</td></tr>";
+        }
+      }
+
+      function invoRenderRupturaConsensoBody(rows) {
+        const tb = document.getElementById("invoRupturaConsensoBody");
+        if (!tb) return;
+        const filas = rows || [];
+        if (!filas.length) {
+          tb.innerHTML =
+            '<tr><td colspan="4" class="invo-muted">(ninguna ruptura de CONSENSO_FUERTE bajo este criterio)</td></tr>';
+          return;
+        }
+        const maxF = 80;
+        const sl = filas.slice(0, maxF);
+        tb.innerHTML = sl
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.formulas_texto) +
+              "</td><td>" +
+              r.apariciones_juntas_bloque_inicial +
+              "</td><td>" +
+              r.apariciones_juntas_bloque_final +
+              "</td><td>" +
+              escapeHtml(r.cohesion_texto_global) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxF) {
+          tb.innerHTML +=
+            '<tr><td colspan="4" class="invo-muted">… mostrando ' + maxF + " de " + filas.length + ".</td></tr>";
+        }
+      }
+
+      function invoRenderDependenciaBody(rows, mostrarInsuficientes) {
+        const tb = document.getElementById("invoDependenciaBody");
+        if (!tb) return;
+        const minN = INVO_MIN_MUESTRAS;
+        const filas = (rows || []).filter(function (r) {
+          return mostrarInsuficientes || (r.apariciones_P != null && r.apariciones_P >= minN);
+        });
+        const maxFilas = 150;
+        const slice = filas.slice(0, maxFilas);
+        if (!slice.length) {
+          tb.innerHTML =
+            '<tr><td colspan="5" class="invo-muted">(ningún patrón con al menos ' +
+            minN +
+            " aciertos en este subconjunto; marque «Mostrar muestras insuficientes»)</td></tr>";
+          return;
+        }
+        tb.innerHTML = slice
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.formula_display) +
+              "</td><td>" +
+              escapeHtml(r.autonomia_texto) +
+              "</td><td>" +
+              escapeHtml(r.co_dependencia_max_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion_dependencia) +
+              "</td><td>" +
+              escapeHtml(r.patron_dominante_ui) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxFilas) {
+          tb.innerHTML +=
+            '<tr><td colspan="5" class="invo-muted">… primeras ' +
+            maxFilas +
+            " de " +
+            filas.length +
+            " (orden por autonomía ascendente).</td></tr>";
+        }
+      }
+
+      function invoRenderJerarquiaEvidenciaBody(rows) {
+        const tb = document.getElementById("invoJerarquiaBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxFilas = 200;
+        const slice = filas.slice(0, maxFilas);
+        if (!slice.length) {
+          tb.innerHTML = '<tr><td colspan="9" class="invo-muted">(sin filas; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = slice
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.formula) +
+              "</td><td>" +
+              escapeHtml(r.destino) +
+              "</td><td>" +
+              escapeHtml(r.indice_unificado_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion_jerarquia) +
+              "</td><td>" +
+              escapeHtml(r.frecuencia_texto) +
+              "</td><td>" +
+              escapeHtml(r.estabilidad_texto) +
+              "</td><td>" +
+              escapeHtml(r.consenso_texto) +
+              "</td><td>" +
+              escapeHtml(r.autonomia_texto) +
+              "</td><td>" +
+              escapeHtml(r.fragilidad_inversa_texto) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxFilas) {
+          tb.innerHTML +=
+            '<tr><td colspan="9" class="invo-muted">… mostrando ' +
+            maxFilas +
+            " de " +
+            filas.length +
+            " filas (todas incluidas en export JSON).</td></tr>";
+        }
+      }
+
+      function invoRenderArbolesEstructuralesBody(rows) {
+        const tb = document.getElementById("invoArbolesBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxFilas = 150;
+        const slice = filas.slice(0, maxFilas);
+        if (!slice.length) {
+          tb.innerHTML =
+            '<tr><td colspan="5" class="invo-muted">(sin rutas; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = slice
+          .map(function (r) {
+            return (
+              "<tr><td style=\"max-width:340px;word-break:break-word\">" +
+              escapeHtml(r.ruta_texto) +
+              "</td><td>" +
+              r.profundidad +
+              "</td><td>" +
+              r.registros_explicados +
+              "</td><td>" +
+              escapeHtml(r.score_ruta_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion_adn) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxFilas) {
+          tb.innerHTML +=
+            '<tr><td colspan="5" class="invo-muted">… ' +
+            maxFilas +
+            " de " +
+            filas.length +
+            " rutas (todas en JSON).</td></tr>";
+        }
+      }
+
+      function invoRenderADNInversoComponentesBody(rows) {
+        const tb = document.getElementById("invoADNInversoBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxF = 200;
+        const sl = filas.slice(0, maxF);
+        if (!sl.length) {
+          tb.innerHTML =
+            '<tr><td colspan="6" class="invo-muted">(sin componentes; falta evidencia jerárquica suficiente o ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = sl
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.componente) +
+              "</td><td>" +
+              escapeHtml(r.frecuencia_texto) +
+              "</td><td>" +
+              escapeHtml(r.estabilidad_texto) +
+              "</td><td>" +
+              escapeHtml(r.autonomia_texto) +
+              "</td><td>" +
+              escapeHtml(r.peso_estructural_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxF) {
+          tb.innerHTML +=
+            '<tr><td colspan="6" class="invo-muted">… ' + maxF + " de " + filas.length + " (export JSON completo).</td></tr>";
+        }
+      }
+
+      function invoRenderCirugiaMatematicaBody(rows) {
+        const tb = document.getElementById("invoCirugiaMatematicaBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxF = 250;
+        const sl = filas.slice(0, maxF);
+        if (!sl.length) {
+          tb.innerHTML =
+            '<tr><td colspan="7" class="invo-muted">(sin filas; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = sl
+          .map(function (r) {
+            return (
+              "<tr><td style=\"max-width:280px;word-break:break-word\">" +
+              escapeHtml(r.formula) +
+              "</td><td>" +
+              escapeHtml(r.destino) +
+              "</td><td>" +
+              escapeHtml(r.porcentaje_texto) +
+              "</td><td>" +
+              r.profundidad +
+              "</td><td>" +
+              r.n_operaciones +
+              "</td><td>" +
+              escapeHtml(r.densidad_explicativa_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion_cirugia) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxF) {
+          tb.innerHTML +=
+            '<tr><td colspan="7" class="invo-muted">… ' +
+            maxF +
+            " de " +
+            filas.length +
+            " (ranking completo en JSON).</td></tr>";
+        }
+      }
+
+      function invoRenderDepuracionFalsosPositivosBody(rows) {
+        const tb = document.getElementById("invoDepuracionFalsosBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxF = 250;
+        const sl = filas.slice(0, maxF);
+        if (!sl.length) {
+          tb.innerHTML =
+            '<tr><td colspan="6" class="invo-muted">(sin filas; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = sl
+          .map(function (r) {
+            const pen = (r.motivos_penalizacion && r.motivos_penalizacion.length
+              ? r.motivos_penalizacion.join("; ")
+              : "—");
+            return (
+              "<tr><td style=\"max-width:240px;word-break:break-word\">" +
+              escapeHtml(r.formula) +
+              "</td><td>" +
+              escapeHtml(r.destino) +
+              "</td><td>" +
+              escapeHtml(r.indice_confianza_real_texto) +
+              "</td><td>" +
+              escapeHtml(r.indice_simplicidad_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion) +
+              "</td><td style=\"max-width:220px;word-break:break-word\">" +
+              escapeHtml(pen) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxF) {
+          tb.innerHTML +=
+            '<tr><td colspan="6" class="invo-muted">… ' +
+            maxF +
+            " de " +
+            filas.length +
+            " (ranking completo en JSON).</td></tr>";
+        }
+      }
+
+      function invoRenderPruebaCiegaBody(rows) {
+        const tb = document.getElementById("invoPruebaCiegaBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxF = 250;
+        const sl = filas.slice(0, maxF);
+        if (!sl.length) {
+          tb.innerHTML =
+            '<tr><td colspan="8" class="invo-muted">(sin filas; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = sl
+          .map(function (r) {
+            return (
+              "<tr><td style=\"max-width:220px;word-break:break-word\">" +
+              escapeHtml(r.formula) +
+              "</td><td>" +
+              escapeHtml(r.destino) +
+              "</td><td>" +
+              escapeHtml(r.train_precision_texto + " (n=" + r.train_n + ")") +
+              "</td><td>" +
+              escapeHtml(r.test_precision_texto + " (n=" + r.test_n + ")") +
+              "</td><td>" +
+              escapeHtml(r.delta_texto) +
+              "</td><td>" +
+              escapeHtml(r.generalizacion_texto) +
+              "</td><td>" +
+              escapeHtml(r.indice_transferencia_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxF) {
+          tb.innerHTML +=
+            '<tr><td colspan="8" class="invo-muted">… ' +
+            maxF +
+            " de " +
+            filas.length +
+            " (ranking completo en JSON).</td></tr>";
+        }
+      }
+
+      function invoRenderGenomaPatronesBody(rows) {
+        const tb = document.getElementById("invoGenomaPatronesBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxF = 200;
+        const sl = filas.slice(0, maxF);
+        if (!sl.length) {
+          tb.innerHTML =
+            '<tr><td colspan="5" class="invo-muted">(sin clústeres; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = sl
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.cluster_id) +
+              "</td><td>" +
+              r.cluster_size +
+              "</td><td style=\"max-width:280px;word-break:break-word\">" +
+              escapeHtml(r.formula_representante) +
+              "</td><td>" +
+              escapeHtml(r.diversidad_cluster_texto) +
+              "</td><td>" +
+              escapeHtml(r.tipo) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxF) {
+          tb.innerHTML +=
+            '<tr><td colspan="5" class="invo-muted">… ' +
+            maxF +
+            " de " +
+            filas.length +
+            " (ranking completo en JSON).</td></tr>";
+        }
+      }
+
+      function invoRenderAncestroMatematicoBody(rows) {
+        const tb = document.getElementById("invoAncestroMatematicoBody");
+        if (!tb) return;
+        const filas = rows || [];
+        const maxF = 200;
+        const sl = filas.slice(0, maxF);
+        if (!sl.length) {
+          tb.innerHTML =
+            '<tr><td colspan="5" class="invo-muted">(sin ancestros; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = sl
+          .map(function (r) {
+            return (
+              "<tr><td style=\"max-width:260px;word-break:break-word\">" +
+              escapeHtml(r.ancestro) +
+              "</td><td>" +
+              r.n_descendientes +
+              "</td><td>" +
+              r.familias_involucradas +
+              "</td><td>" +
+              escapeHtml(r.supervivencia_media_texto) +
+              "</td><td>" +
+              escapeHtml(r.clasificacion) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        if (filas.length > maxF) {
+          tb.innerHTML +=
+            '<tr><td colspan="5" class="invo-muted">… ' +
+            maxF +
+            " de " +
+            filas.length +
+            " (ranking completo en JSON).</td></tr>";
+        }
+      }
+
+      function invoRenderAuditoriaRealidadBody(metricas) {
+        const tb = document.getElementById("invoAuditoriaRealidadBody");
+        if (!tb) return;
+        const filas = metricas || [];
+        if (!filas.length) {
+          tb.innerHTML =
+            '<tr><td colspan="2" class="invo-muted">(sin métricas; ejecute el análisis)</td></tr>';
+          return;
+        }
+        tb.innerHTML = filas
+          .map(function (r) {
+            return (
+              "<tr><td>" +
+              escapeHtml(r.metrica) +
+              '</td><td style="max-width:420px;word-break:break-word">' +
+              escapeHtml(r.valor) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+      }
+
+      function invoRefreshInvoUiTablas() {
+        if (!invoLastUiSnapshot) return;
+        const chk = document.getElementById("invoMostrarMuestrasInsuficientes");
+        const mostrar = chk && chk.checked;
+        invoRenderRows(document.getElementById("invoBody90"), invoLastUiSnapshot.patrones90, invoLastUiSnapshot.nEv, mostrar);
+        invoRenderRows(document.getElementById("invoBody80"), invoLastUiSnapshot.patrones80, invoLastUiSnapshot.nEv, mostrar);
+        invoRenderRows(document.getElementById("invoBody70"), invoLastUiSnapshot.patrones70, invoLastUiSnapshot.nEv, mostrar);
+        invoRenderExploracionBody(invoLastUiSnapshot.explRanking, mostrar);
+        invoRenderSupervivenciaBody(invoLastUiSnapshot.supervivenciaRows, mostrar);
+        invoRenderConsensoBody(invoLastUiSnapshot.consensoRows, mostrar);
+        invoRenderFragilidadBody(invoLastUiSnapshot.fragilidadRows, mostrar);
+        invoRenderRupturaConsensoBody(invoLastUiSnapshot.rupturaRows);
+        invoRenderDependenciaBody(invoLastUiSnapshot.dependenciaRows, mostrar);
+        invoRenderJerarquiaEvidenciaBody(invoLastUiSnapshot.jerarquiaRows);
+        invoRenderArbolesEstructuralesBody(invoLastUiSnapshot.arbolRows);
+        invoRenderADNInversoComponentesBody(invoLastUiSnapshot.adnInversoComponentes);
+        invoRenderCirugiaMatematicaBody(invoLastUiSnapshot.cirugiaMatematicaRows);
+        invoRenderDepuracionFalsosPositivosBody(invoLastUiSnapshot.depuracionFalsosRows);
+        invoRenderPruebaCiegaBody(invoLastUiSnapshot.pruebaCiegaRows);
+        invoRenderGenomaPatronesBody(invoLastUiSnapshot.genomaPatronesRows);
+        invoRenderAncestroMatematicoBody(invoLastUiSnapshot.ancestroMatematicoRows);
+        invoRenderAuditoriaRealidadBody(invoLastUiSnapshot.auditoriaRealidadMetricas);
       }
 
       function invoRunAnalysis() {
@@ -4934,11 +7950,241 @@
             });
             const formulasExpl = invoExploracionFormulas();
             const explContraste = invoExploracionContraste(evalList, formulasExpl);
+            const evalOrdenIndice = evalList.slice().sort(function (a, b) {
+              return a.indice - b.indice;
+            });
+            const supervivenciaPatrones = invoSupervivenciaPatrones(
+              evalOrdenIndice,
+              formulasExpl,
+              explContraste.ranking
+            );
+            const consensoPack = invoConsensoPatrones(evalList, formulasExpl, explContraste.ranking);
+            const fragilidadPack = invoFragilidadPatrones(
+              evalOrdenIndice,
+              formulasExpl,
+              explContraste.ranking,
+              supervivenciaPatrones,
+              consensoPack
+            );
+            const dependenciaPack = invoDependenciaPatrones(
+              evalList,
+              formulasExpl,
+              explContraste.ranking,
+              consensoPack,
+              fragilidadPack
+            );
+            const jerarquiaPack = invoJerarquiaEvidencia(
+              explContraste.ranking,
+              supervivenciaPatrones,
+              consensoPack,
+              fragilidadPack,
+              dependenciaPack
+            );
+            const arbolPack = invoArbolConstruccion(
+              evalList,
+              formulasExpl,
+              explContraste.ranking,
+              supervivenciaPatrones,
+              consensoPack,
+              fragilidadPack,
+              dependenciaPack,
+              jerarquiaPack
+            );
+            const adnInversoPack = invoADNInverso(
+              explContraste.ranking,
+              supervivenciaPatrones,
+              consensoPack,
+              dependenciaPack,
+              jerarquiaPack
+            );
+            const adnInversoNested = {
+              nota: adnInversoPack.nota,
+              criterio_patrones: adnInversoPack.criterio_patrones,
+              niveles_jerarquia_usados: adnInversoPack.niveles_jerarquia_usados,
+              n_patrones_filtrados: adnInversoPack.n_patrones_filtrados,
+              patron_keys_muestra: adnInversoPack.patron_keys_muestra,
+              componentes: adnInversoPack.componentes,
+              coocurrencias: adnInversoPack.coocurrencias,
+              pesos: adnInversoPack.pesos,
+              clasificaciones: {
+                por_componente: adnInversoPack.componentes.map(function (c) {
+                  return {
+                    componente: c.componente,
+                    clasificacion: c.clasificacion,
+                    peso_estructural: c.peso_estructural
+                  };
+                }),
+                por_coocurrencia: adnInversoPack.coocurrencias.map(function (c) {
+                  return {
+                    coocurrencia: c.coocurrencia,
+                    clasificacion: c.clasificacion,
+                    peso_estructural: c.peso_estructural
+                  };
+                })
+              }
+            };
+            invoLastADNInversoExport = Object.assign(
+              {
+                exportado: new Date().toISOString(),
+                modulo: "MODO_INVESTIGACION_ORIGEN_AB",
+                fase: "ADN_INVERSO",
+                app_version: APP_VERSION,
+                min_muestras_marca: INVO_MIN_MUESTRAS
+              },
+              adnInversoNested
+            );
+            const cirugiaPack = invoCirugiaMatematicaOrigen(evalList);
+            const cirugiaMatematicaNested = {
+              nota: cirugiaPack.nota,
+              fase: cirugiaPack.fase,
+              min_muestras_marca: cirugiaPack.min_muestras_marca,
+              max_formulas: cirugiaPack.max_formulas,
+              max_profundidad: cirugiaPack.max_profundidad,
+              densidad_formula: cirugiaPack.densidad_formula,
+              n_formulas_generadas: cirugiaPack.n_formulas_generadas,
+              n_contrastes: cirugiaPack.n_contrastes,
+              n_registros_evaluables: cirugiaPack.n_registros_evaluables,
+              ranking: cirugiaPack.ranking
+            };
+            const depuracionFalsosPack = invoDepuracionFalsosPositivos(
+              cirugiaPack.ranking,
+              supervivenciaPatrones,
+              fragilidadPack,
+              dependenciaPack,
+              jerarquiaPack
+            );
+            const depuracionFalsosPositivosNested = {
+              nota: depuracionFalsosPack.nota,
+              fase: depuracionFalsosPack.fase,
+              formula_indice_confianza: depuracionFalsosPack.formula_indice_confianza,
+              formula_indice_simplicidad: depuracionFalsosPack.formula_indice_simplicidad,
+              n_filas: depuracionFalsosPack.n_filas,
+              ranking: depuracionFalsosPack.ranking
+            };
+            const evalOrdenadoPruebaCiega = evalList.slice().sort(function (a, b) {
+              return a.indice - b.indice;
+            });
+            const pruebaCiegaPack = invoPruebaCiega(depuracionFalsosPack, evalOrdenadoPruebaCiega);
+            const pruebaCiegaNested = {
+              nota: pruebaCiegaPack.nota,
+              fase: pruebaCiegaPack.fase,
+              semilla_orden: pruebaCiegaPack.semilla_orden,
+              prng: pruebaCiegaPack.prng,
+              proporcion_entrenamiento: pruebaCiegaPack.proporcion_entrenamiento,
+              n_registros_evaluables: pruebaCiegaPack.n_registros_evaluables,
+              train_n_global: pruebaCiegaPack.train_n_global,
+              test_n_global: pruebaCiegaPack.test_n_global,
+              formulas_medidas: pruebaCiegaPack.formulas_medidas,
+              ranking: pruebaCiegaPack.ranking
+            };
+            const cirugiaPorPkGenoma = {};
+            cirugiaPack.ranking.forEach(function (r) {
+              cirugiaPorPkGenoma[r.formula + "||" + r.destino] = r;
+            });
+            const depFilasParaGenoma = depuracionFalsosPack.ranking.map(function (d) {
+              const pkG = d.formula + "||" + d.destino;
+              const cg = cirugiaPorPkGenoma[pkG] || {};
+              return Object.assign({}, d, {
+                profundidad: cg.profundidad,
+                n_operaciones: cg.n_operaciones,
+                registros_acertados: (cg.registros_acertados || []).slice(),
+                registros_fallados: (cg.registros_fallados || []).slice()
+              });
+            });
+            const genomaPack = invoGenomaPatrones(pruebaCiegaPack.ranking, depFilasParaGenoma);
+            const genomaPatronesNested = {
+              nota: genomaPack.nota,
+              fase: genomaPack.fase,
+              similitud_jaccard_sobre: genomaPack.similitud_jaccard_sobre,
+              umbral_arista: genomaPack.umbral_arista,
+              n_formulas_clusterizadas: genomaPack.n_formulas_clusterizadas,
+              nota_datos: genomaPack.nota_datos,
+              ranking: genomaPack.ranking
+            };
+            const metricasPorPkAncestro = {};
+            supervivenciaPatrones.forEach(function (s) {
+              const pkA = s.formula + "||" + s.destino;
+              if (!metricasPorPkAncestro[pkA]) {
+                metricasPorPkAncestro[pkA] = {};
+              }
+              let supA = s.indice_estabilidad;
+              if (supA == null || !Number.isFinite(supA)) {
+                supA = s.supervivencia;
+              }
+              if (supA == null || !Number.isFinite(supA)) {
+                supA = 0;
+              }
+              metricasPorPkAncestro[pkA].supervivencia = supA;
+            });
+            pruebaCiegaPack.ranking.forEach(function (p) {
+              const pkA = p.formula + "||" + p.destino;
+              if (!metricasPorPkAncestro[pkA]) {
+                metricasPorPkAncestro[pkA] = {};
+              }
+              metricasPorPkAncestro[pkA].transferencia = p.indice_transferencia;
+            });
+            cirugiaPack.ranking.forEach(function (c) {
+              const pkA = c.formula + "||" + c.destino;
+              if (!metricasPorPkAncestro[pkA]) {
+                metricasPorPkAncestro[pkA] = {};
+              }
+              metricasPorPkAncestro[pkA].densidad = c.densidad_explicativa;
+            });
+            const ancestroPack = invoAncestroMatematico(genomaPack, metricasPorPkAncestro);
+            const ancestrosMatematicosNested = {
+              nota: ancestroPack.nota,
+              fase: ancestroPack.fase,
+              normalizacion: ancestroPack.normalizacion,
+              n_estructuras_ancestrales: ancestroPack.n_estructuras_ancestrales,
+              ranking: ancestroPack.ranking
+            };
+            const aciertosPorPkAuditoria = {};
+            cirugiaPack.ranking.forEach(function (c) {
+              aciertosPorPkAuditoria[c.formula + "||" + c.destino] = (
+                c.registros_acertados || []
+              ).slice();
+            });
+            const auditoriaPack = invoAuditoriaRealidad(
+              explContraste.ranking,
+              supervivenciaPatrones,
+              consensoPack,
+              fragilidadPack,
+              dependenciaPack,
+              jerarquiaPack,
+              pruebaCiegaPack,
+              ancestroPack,
+              depuracionFalsosPack,
+              evalList,
+              aciertosPorPkAuditoria
+            );
+            const auditoriaRealidadNested = {
+              nota: auditoriaPack.nota,
+              fase: auditoriaPack.fase,
+              formula_indice_realidad: auditoriaPack.formula_indice_realidad,
+              patrones_vivos: auditoriaPack.patrones_vivos,
+              patrones_colapsados: auditoriaPack.patrones_colapsados,
+              n_patrones_vivos: auditoriaPack.n_patrones_vivos,
+              n_patrones_colapsados: auditoriaPack.n_patrones_colapsados,
+              n_patrones_total: auditoriaPack.n_patrones_total,
+              ratio_supervivencia: auditoriaPack.ratio_supervivencia,
+              ratio_supervivencia_texto: auditoriaPack.ratio_supervivencia_texto,
+              top_ancestros: auditoriaPack.top_ancestros,
+              cobertura_real: auditoriaPack.cobertura_real,
+              componente_supervivencia: auditoriaPack.componente_supervivencia,
+              componente_cobertura: auditoriaPack.componente_cobertura,
+              componente_generalizacion: auditoriaPack.componente_generalizacion,
+              indice_realidad: auditoriaPack.indice_realidad,
+              indice_realidad_texto: auditoriaPack.indice_realidad_texto,
+              clasificacion_realidad: auditoriaPack.clasificacion_realidad,
+              tabla_metricas: auditoriaPack.tabla_metricas
+            };
             const frecExpl = {};
             explContraste.ranking.forEach(function (r) {
               frecExpl[r.formula + "||" + r.destino] = {
                 aciertos: r.aciertos,
                 fallos: r.fallos,
+                total_evaluados: r.total_evaluados,
+                validez: r.validez,
                 porcentaje: r.porcentaje,
                 porcentaje_texto: r.porcentaje_texto,
                 registros_acertados: r.registros_acertados,
@@ -4962,6 +8208,7 @@
               exportado: new Date().toISOString(),
               modulo: "MODO_INVESTIGACION_ORIGEN_AB",
               nota: "Solo mediciones y frecuencias observadas; sin conclusiones automáticas ni reglas inferidas.",
+              min_muestras_marca_ui: INVO_MIN_MUESTRAS,
               app_version: APP_VERSION,
               dataset_original: rawPayload,
               n_registros_totales: agg.n_registros_totales,
@@ -4972,13 +8219,92 @@
               patrones_mayores_90pct: agg.patrones_mayores_90pct,
               patrones_mayores_80pct: agg.patrones_mayores_80pct_excl_90,
               patrones_mayores_70pct: agg.patrones_mayores_70pct_excl_80,
+              supervivencia_patrones: supervivenciaPatrones,
+              nota_supervivencia_patrones: INVO_NOTA_SUPERVIVENCIA,
+              consensos_patrones: {
+                criterio_filtro_ranking: consensoPack.criterio_filtro_ranking,
+                n_patrones_base: consensoPack.n_patrones_base,
+                apariciones_totales_denominador: consensoPack.apariciones_totales_denominador,
+                combinaciones: consensoPack.combinaciones
+              },
+              nota_consenso_patrones: INVO_NOTA_CONSENSO,
+              fragilidad_patrones: {
+                indice_corte_mitad: fragilidadPack.indice_corte_mitad,
+                n_registros_evaluables: fragilidadPack.n_registros_evaluables,
+                n_bloque_inicial: fragilidadPack.n_bloque_inicial,
+                n_bloque_final: fragilidadPack.n_bloque_final,
+                filas: fragilidadPack.filas
+              },
+              rupturas_consenso: fragilidadPack.rupturas_consenso,
+              nota_fragilidad_patrones: INVO_NOTA_FRAGILIDAD,
+              dependencia_patrones: {
+                criterio_filtro_ranking: dependenciaPack.criterio_filtro_ranking,
+                n_patrones_en_analisis: dependenciaPack.n_patrones_en_analisis,
+                n_consenso_fuerte_observados: dependenciaPack.n_consenso_fuerte_observados,
+                filas: dependenciaPack.filas
+              },
+              patrones_dominantes_relacionales: dependenciaPack.patrones_dominantes_relacionales,
+              nota_dependencia_patrones: INVO_NOTA_DEPENDENCIA,
+              jerarquia_evidencia: {
+                nota: INVO_NOTA_JERARQUIA,
+                pesos_componentes: jerarquiaPack.pesos_componentes,
+                filas: jerarquiaPack.filas
+              },
+              arboles_estructurales: arbolPack,
+              adn_inverso: adnInversoNested,
+              cirugia_matematica: cirugiaMatematicaNested,
+              depuracion_falsos_positivos: depuracionFalsosPositivosNested,
+              prueba_ciega: pruebaCiegaNested,
+              genoma_patrones: genomaPatronesNested,
+              ancestros_matematicos: ancestrosMatematicosNested,
+              auditoria_realidad: auditoriaRealidadNested,
               origen_ab_exploracion: {
                 fase: explContraste.fase,
                 nota_exploracion: explContraste.nota,
+                min_muestras_marca: INVO_MIN_MUESTRAS,
                 n_formulas_generadas: explContraste.n_formulas_generadas,
                 n_contrastes: explContraste.n_contrastes,
                 n_registros_evaluables: explContraste.n_registros_evaluables,
-                ranking_patrones: explContraste.ranking
+                ranking_patrones: explContraste.ranking,
+                supervivencia_patrones: supervivenciaPatrones,
+                nota_supervivencia_patrones: INVO_NOTA_SUPERVIVENCIA,
+                consensos_patrones: {
+                  criterio_filtro_ranking: consensoPack.criterio_filtro_ranking,
+                  n_patrones_base: consensoPack.n_patrones_base,
+                  apariciones_totales_denominador: consensoPack.apariciones_totales_denominador,
+                  combinaciones: consensoPack.combinaciones
+                },
+                nota_consenso_patrones: INVO_NOTA_CONSENSO,
+                fragilidad_patrones: {
+                  indice_corte_mitad: fragilidadPack.indice_corte_mitad,
+                  n_registros_evaluables: fragilidadPack.n_registros_evaluables,
+                  n_bloque_inicial: fragilidadPack.n_bloque_inicial,
+                  n_bloque_final: fragilidadPack.n_bloque_final,
+                  filas: fragilidadPack.filas
+                },
+                rupturas_consenso: fragilidadPack.rupturas_consenso,
+                nota_fragilidad_patrones: INVO_NOTA_FRAGILIDAD,
+                dependencia_patrones: {
+                  criterio_filtro_ranking: dependenciaPack.criterio_filtro_ranking,
+                  n_patrones_en_analisis: dependenciaPack.n_patrones_en_analisis,
+                  n_consenso_fuerte_observados: dependenciaPack.n_consenso_fuerte_observados,
+                  filas: dependenciaPack.filas
+                },
+                patrones_dominantes_relacionales: dependenciaPack.patrones_dominantes_relacionales,
+                nota_dependencia_patrones: INVO_NOTA_DEPENDENCIA,
+                jerarquia_evidencia: {
+                  nota: INVO_NOTA_JERARQUIA,
+                  pesos_componentes: jerarquiaPack.pesos_componentes,
+                  filas: jerarquiaPack.filas
+                },
+                arboles_estructurales: arbolPack,
+                adn_inverso: adnInversoNested,
+                cirugia_matematica: cirugiaMatematicaNested,
+                depuracion_falsos_positivos: depuracionFalsosPositivosNested,
+                prueba_ciega: pruebaCiegaNested,
+                genoma_patrones: genomaPatronesNested,
+                ancestros_matematicos: ancestrosMatematicosNested,
+                auditoria_realidad: auditoriaRealidadNested
               }
             };
             invoLastExploracionExport = {
@@ -4986,11 +8312,51 @@
               modulo: "MODO_INVESTIGACION_ORIGEN_AB",
               fase: "CAZA_FORMULA_MADRE_AB",
               nota: "Solo frecuencia observada; sin reglas ni descubrimiento afirmado.",
+              min_muestras_marca: INVO_MIN_MUESTRAS,
               dataset_original: rawPayload,
               n_registros_evaluables: explContraste.n_registros_evaluables,
               transformaciones: transformacionesLigeras,
               frecuencias: frecExpl,
-              ranking_patrones: explContraste.ranking
+              ranking_patrones: explContraste.ranking,
+              supervivencia_patrones: supervivenciaPatrones,
+              nota_supervivencia_patrones: INVO_NOTA_SUPERVIVENCIA,
+              consensos_patrones: {
+                criterio_filtro_ranking: consensoPack.criterio_filtro_ranking,
+                n_patrones_base: consensoPack.n_patrones_base,
+                apariciones_totales_denominador: consensoPack.apariciones_totales_denominador,
+                combinaciones: consensoPack.combinaciones
+              },
+              nota_consenso_patrones: INVO_NOTA_CONSENSO,
+              fragilidad_patrones: {
+                indice_corte_mitad: fragilidadPack.indice_corte_mitad,
+                n_registros_evaluables: fragilidadPack.n_registros_evaluables,
+                n_bloque_inicial: fragilidadPack.n_bloque_inicial,
+                n_bloque_final: fragilidadPack.n_bloque_final,
+                filas: fragilidadPack.filas
+              },
+              rupturas_consenso: fragilidadPack.rupturas_consenso,
+              nota_fragilidad_patrones: INVO_NOTA_FRAGILIDAD,
+              dependencia_patrones: {
+                criterio_filtro_ranking: dependenciaPack.criterio_filtro_ranking,
+                n_patrones_en_analisis: dependenciaPack.n_patrones_en_analisis,
+                n_consenso_fuerte_observados: dependenciaPack.n_consenso_fuerte_observados,
+                filas: dependenciaPack.filas
+              },
+              patrones_dominantes_relacionales: dependenciaPack.patrones_dominantes_relacionales,
+              nota_dependencia_patrones: INVO_NOTA_DEPENDENCIA,
+              jerarquia_evidencia: {
+                nota: INVO_NOTA_JERARQUIA,
+                pesos_componentes: jerarquiaPack.pesos_componentes,
+                filas: jerarquiaPack.filas
+              },
+              arboles_estructurales: arbolPack,
+              adn_inverso: adnInversoNested,
+              cirugia_matematica: cirugiaMatematicaNested,
+              depuracion_falsos_positivos: depuracionFalsosPositivosNested,
+              prueba_ciega: pruebaCiegaNested,
+              genoma_patrones: genomaPatronesNested,
+              ancestros_matematicos: ancestrosMatematicosNested,
+              auditoria_realidad: auditoriaRealidadNested
             };
             const sum = document.getElementById("invoSummaryMount");
             if (sum) {
@@ -5005,12 +8371,44 @@
                 formulasExpl.length +
                 "</strong> fórmulas candidatas × 4 destinos = <strong>" +
                 explContraste.n_contrastes +
-                "</strong> contrastes medidos. Detalle en <code>origen_ab_exploracion.json</code> al exportar (sin nuevos botones).</p>";
+                "</strong> contrastes medidos. Marcas «PATRON …» solo si <strong>total evaluado ≥ " +
+                INVO_MIN_MUESTRAS +
+                "</strong>. Detalle en <code>origen_ab_exploracion.json</code> al exportar.</p>";
             }
-            const nEv = agg.n_registros_evaluables || 1;
-            invoRenderRows(document.getElementById("invoBody90"), agg.patrones_mayores_90pct, nEv);
-            invoRenderRows(document.getElementById("invoBody80"), agg.patrones_mayores_80pct_excl_90, nEv);
-            invoRenderRows(document.getElementById("invoBody70"), agg.patrones_mayores_70pct_excl_80, nEv);
+            const nEv = agg.n_registros_evaluables || 0;
+            invoLastUiSnapshot = {
+              nEv: nEv,
+              patrones90: agg.patrones_mayores_90pct,
+              patrones80: agg.patrones_mayores_80pct_excl_90,
+              patrones70: agg.patrones_mayores_70pct_excl_80,
+              explRanking: explContraste.ranking.slice(),
+              supervivenciaRows: supervivenciaPatrones.slice(),
+              consensoRows: consensoPack.combinaciones.slice(),
+              fragilidadRows: fragilidadPack.filas.slice(),
+              rupturaRows: fragilidadPack.rupturas_consenso.slice(),
+              dependenciaRows: dependenciaPack.filas.slice(),
+              jerarquiaRows: jerarquiaPack.filas.slice(),
+              arbolRows: arbolPack.rutas.slice(),
+              adnInversoComponentes: adnInversoPack.componentes.map(function (c) {
+                return {
+                  componente: c.componente,
+                  frecuencia_texto: c.frecuencia_texto,
+                  estabilidad_texto: c.estabilidad_texto,
+                  autonomia_texto: c.autonomia_texto,
+                  peso_estructural_texto: c.peso_estructural_texto,
+                  clasificacion: c.clasificacion
+                };
+              }),
+              cirugiaMatematicaRows: cirugiaPack.ranking.slice(),
+              depuracionFalsosRows: depuracionFalsosPack.ranking.slice(),
+              pruebaCiegaRows: pruebaCiegaPack.ranking.slice(),
+              genomaPatronesRows: genomaPack.ranking.slice(),
+              ancestroMatematicoRows: ancestroPack.ranking.slice(),
+              auditoriaRealidadMetricas: auditoriaPack.tabla_metricas.slice()
+            };
+            const chkIns = document.getElementById("invoMostrarMuestrasInsuficientes");
+            if (chkIns) chkIns.checked = false;
+            invoRefreshInvoUiTablas();
             const muestra = document.getElementById("invoMuestraPre");
             if (muestra) {
               muestra.textContent = JSON.stringify(transformaciones.filter(function (t) { return t.evaluable; }).slice(0, 3), null, 2);
@@ -5022,7 +8420,9 @@
             }
           })
           .catch(function (err) {
+            invoLastUiSnapshot = null;
             invoLastExploracionExport = null;
+            invoLastADNInversoExport = null;
             const sum = document.getElementById("invoSummaryMount");
             if (sum) {
               sum.innerHTML =
@@ -5030,7 +8430,7 @@
                 escapeHtml(String(err && err.message ? err.message : err)) +
                 "</p>";
             }
-            ["invoBody90", "invoBody80", "invoBody70", "invoMuestraPre"].forEach(function (id) {
+            ["invoBody90", "invoBody80", "invoBody70", "invoExploracionBody", "invoSupervivenciaBody", "invoConsensoBody", "invoFragilidadBody", "invoRupturaConsensoBody", "invoDependenciaBody", "invoJerarquiaBody", "invoArbolesBody", "invoADNInversoBody", "invoCirugiaMatematicaBody", "invoDepuracionFalsosBody", "invoPruebaCiegaBody", "invoGenomaPatronesBody", "invoAncestroMatematicoBody", "invoAuditoriaRealidadBody", "invoMuestraPre"].forEach(function (id) {
               const el = document.getElementById(id);
               if (!el) return;
               if (el.tagName === "PRE") el.textContent = "";
@@ -5099,6 +8499,25 @@
                 URL.revokeObjectURL(url2);
               }, 350);
             }
+            if (invoLastADNInversoExport) {
+              window.setTimeout(function () {
+                const blob3 = new Blob([JSON.stringify(invoLastADNInversoExport, null, 2)], {
+                  type: "application/json;charset=utf-8"
+                });
+                const url3 = URL.createObjectURL(blob3);
+                const a3 = document.createElement("a");
+                a3.href = url3;
+                a3.download = "adn_inverso.json";
+                a3.click();
+                URL.revokeObjectURL(url3);
+              }, 700);
+            }
+          });
+        }
+        const chkMuestra = document.getElementById("invoMostrarMuestrasInsuficientes");
+        if (chkMuestra) {
+          chkMuestra.addEventListener("change", function () {
+            invoRefreshInvoUiTablas();
           });
         }
       }
