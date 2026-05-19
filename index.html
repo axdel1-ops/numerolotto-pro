@@ -133,6 +133,88 @@
     .invo-table th, .invo-table td { border:1px solid #355b79; padding:6px 8px; text-align:left; vertical-align:top; }
     .invo-table th { background:#0d1520; color:#9dc8e2; position:sticky; top:0; }
     /* /MODO_INVESTIGACION_ORIGEN_AB */
+    /* MODO_RECUPERACION_HISTORICA_AB */
+    .recha-overlay { display:none; position:fixed; inset:0; z-index:10004; background:rgba(0,0,0,.84); padding:14px; overflow:auto; box-sizing:border-box; }
+    .recha-inner { max-width:1280px; margin:0 auto; background:#101722; border:1px solid #6a5a2a; border-radius:12px; padding:16px 18px; color:#ecf9ff; }
+    .recha-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+    .recha-head h2 { font-size:1.1rem; margin:0; color:#ffd27d; }
+    .recha-sub { margin:6px 0 0; font-size:12px; color:#9abed6; line-height:1.45; max-width:920px; }
+    .recha-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .recha-kpis { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 4px; }
+    .recha-kpi { background:#0b1219; border:1px solid #355b79; border-radius:8px; padding:8px 12px; font-size:12px; min-width:120px; }
+    .recha-kpi strong { display:block; color:#cdeeff; font-size:11px; margin-bottom:4px; }
+    .recha-section { margin-top:16px; padding-top:12px; border-top:1px solid #355b79; }
+    .recha-muted { color:#7a9aad; font-size:11px; margin-top:6px; line-height:1.45; }
+    .recha-table-wrap { overflow:auto; max-height:420px; border:1px solid #355b79; border-radius:8px; }
+    .recha-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .recha-table th, .recha-table td { border:1px solid #355b79; padding:6px 8px; text-align:left; vertical-align:top; }
+    .recha-table th { background:#0d1520; color:#9dc8e2; position:sticky; top:0; }
+    .recha-estado-recuperado { color:#78ff96; font-weight:700; }
+    .recha-estado-parcial { color:#e6c88a; font-weight:700; }
+    .recha-estado-sin { color:#ff9494; font-weight:700; }
+    .recha-hero { margin:14px 0; padding:16px 18px; background:linear-gradient(135deg,#1a2430 0%,#0f1a12 100%); border:1px solid #6a5a2a; border-radius:10px; text-align:center; }
+    .recha-hero-title { font-size:13px; letter-spacing:.06em; color:#9abed6; margin:0 0 8px; text-transform:uppercase; }
+    .recha-hero-values { font-size:1.55rem; font-weight:700; color:#ffd27d; line-height:1.35; }
+    .recha-hero-sub { font-size:12px; color:#78ff96; margin-top:8px; }
+    .recha-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; align-items:center; }
+    .recha-filters label { font-size:12px; color:#9abed6; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+    .recha-form { display:none; margin-top:12px; padding:12px; background:#0b1219; border:1px solid #355b79; border-radius:8px; }
+    .recha-form.open { display:block; }
+    .recha-form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; margin-bottom:10px; }
+    .recha-form-grid input, .recha-form-grid textarea { width:100%; box-sizing:border-box; border:1px solid #355b79; border-radius:6px; background:#101722; color:#ecf9ff; padding:8px; font-size:12px; }
+    .recha-form-grid textarea { min-height:56px; grid-column:1/-1; font-family:inherit; }
+    .recha-form-grid label { display:block; font-size:11px; color:#9dc8e2; margin-bottom:4px; }
+    .recha-btn-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .recha-row-actions button { font-size:11px; padding:4px 8px; }
+    /* MODO_SALUD_DATASET_AB */
+    .recha-salud-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin:12px 0; }
+    .recha-salud-metric { background:#0b1219; border:1px solid #355b79; border-radius:8px; padding:10px 12px; }
+    .recha-salud-metric strong { display:block; font-size:10px; color:#9dc8e2; letter-spacing:.04em; margin-bottom:6px; }
+    .recha-salud-metric span { font-size:1.15rem; font-weight:700; color:#ffd27d; }
+    .recha-salud-metric span.sub { font-size:11px; color:#9abed6; font-weight:400; display:block; margin-top:4px; }
+    .recha-salud-riesgo { margin:12px 0; padding:12px 14px; border-radius:8px; font-weight:700; text-align:center; font-size:14px; }
+    .recha-salud-riesgo.critica { background:#3a1515; border:1px solid #ff6b6b; color:#ff9494; }
+    .recha-salud-riesgo.pequena { background:#3a2a10; border:1px solid #e6a040; color:#e6c88a; }
+    .recha-salud-riesgo.util { background:#3a3510; border:1px solid #d4c040; color:#e6e088; }
+    .recha-salud-riesgo.robusta { background:#153a20; border:1px solid #4acf7a; color:#78ff96; }
+    .recha-salud-bar-wrap { margin:14px 0 8px; }
+    .recha-salud-bar-labels { display:flex; justify-content:space-between; font-size:10px; color:#7a9aad; margin-bottom:4px; }
+    .recha-salud-bar-track { position:relative; height:22px; border-radius:6px; overflow:hidden; display:flex; border:1px solid #355b79; }
+    .recha-salud-bar-zone { height:100%; }
+    .recha-salud-bar-zone.z-rojo { background:#8b3030; flex:5; }
+    .recha-salud-bar-zone.z-naranja { background:#a66a20; flex:10; }
+    .recha-salud-bar-zone.z-amarillo { background:#a6a020; flex:15; }
+    .recha-salud-bar-zone.z-verde { background:#2a7a45; flex:10; min-width:40px; }
+    .recha-salud-bar-marker { position:absolute; top:-4px; width:3px; height:30px; background:#fff; box-shadow:0 0 6px #fff; transform:translateX(-50%); z-index:2; }
+    .recha-salud-madurez { margin-top:14px; padding:14px; background:#0b1219; border:1px solid #6a5a2a; border-radius:8px; }
+    .recha-salud-madurez strong { color:#cdeeff; }
+    .recha-salud-fuentes { margin-top:12px; }
+    .recha-salud-fuentes table { width:100%; font-size:12px; border-collapse:collapse; }
+    .recha-salud-fuentes th, .recha-salud-fuentes td { border:1px solid #355b79; padding:6px 8px; text-align:left; }
+    .recha-salud-fuentes th { background:#0d1520; color:#9dc8e2; }
+    /* /MODO_SALUD_DATASET_AB */
+    /* MODO_CAPTURA_MASIVA_AB */
+    .recha-captura-textarea { width:100%; min-height:120px; box-sizing:border-box; border:1px solid #355b79; border-radius:8px; background:#0b1219; color:#ecf9ff; padding:10px; font-family:Consolas,monospace; font-size:12px; line-height:1.45; }
+    .recha-captura-resumen { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0; }
+    .recha-dup-modal { display:none; position:fixed; inset:0; z-index:10005; background:rgba(0,0,0,.75); align-items:center; justify-content:center; padding:20px; box-sizing:border-box; }
+    .recha-dup-modal.open { display:flex; }
+    .recha-dup-inner { max-width:480px; width:100%; background:#101722; border:1px solid #c9a227; border-radius:12px; padding:18px; color:#ecf9ff; }
+    .recha-dup-inner h4 { margin:0 0 10px; color:#ffd27d; font-size:1rem; }
+  /* /MODO_CAPTURA_MASIVA_AB */
+    /* MODO_PIPELINE_AUTOMATICO_AB */
+    .recha-pipeline-status { margin:10px 0; padding:12px; background:#0b1219; border:1px solid #355b79; border-radius:8px; }
+    .recha-pipeline-badge { display:inline-block; margin:4px 8px 4px 0; padding:6px 10px; border-radius:6px; font-size:12px; font-weight:700; }
+    .recha-pipeline-badge.ok { background:#153a20; border:1px solid #4acf7a; color:#78ff96; }
+    .recha-pipeline-badge.lock { background:#1a2430; border:1px solid #355b79; color:#7a9aad; }
+    .recha-pipeline-historial { margin-top:12px; max-height:200px; overflow:auto; }
+    /* /MODO_PIPELINE_AUTOMATICO_AB */
+    /* MODO_VALOR_EVIDENCIA_AB */
+    .recha-valor-aporte-critico { color:#78ff96; font-weight:700; }
+    .recha-valor-aporte-alto { color:#a8e6a0; font-weight:700; }
+    .recha-valor-aporte-util { color:#e6c88a; font-weight:700; }
+    .recha-valor-aporte-bajo { color:#9abed6; font-weight:700; }
+    /* /MODO_VALOR_EVIDENCIA_AB */
+    /* /MODO_RECUPERACION_HISTORICA_AB */
   </style>
 </head>
 <body>
@@ -146,6 +228,7 @@
         <button type="button" class="btn-sorteos" id="btnAnalisisEstructural" style="border-color:#3d8f5c">Análisis estructural</button>
         <button type="button" class="btn-sorteos" id="btnAnalisisCorrelacional" style="border-color:#c9a227">Análisis correlacional</button>
         <button type="button" class="btn-sorteos" id="btnInvestigacionOrigenAB" style="border-color:#2a8f6a">Investigación origen A/B</button>
+        <button type="button" class="btn-sorteos" id="btnRecuperacionHistoricaAB" style="border-color:#c9a227">Recuperación histórica A/B</button>
       </div>
     </header>
     <div id="viewMain">
@@ -638,6 +721,165 @@
     </div>
   </div>
   <!-- /MODO_INVESTIGACION_ORIGEN_AB -->
+
+  <!-- MODO_RECUPERACION_HISTORICA_AB -->
+  <div id="recuperacionHistoricaOverlay" class="recha-overlay" aria-hidden="true">
+    <div class="recha-inner">
+      <div class="recha-head">
+        <div>
+          <h2>Recuperación y enriquecimiento histórico A/B</h2>
+          <p class="recha-sub">Solo <code>historicos_maestro.json</code> como dataset base. Consolida inicios desde fuentes documentadas y <strong>evidencia_manual_ab</strong> (entrada humana verificable). Prioridad: maestro → evidencia manual → <code>historicos_ab</code> → auditoría → memoria → observaciones. <strong>No</strong> infiere, calcula ni rellena automáticamente.</p>
+        </div>
+        <div class="recha-actions">
+          <button type="button" id="btnRechaEjecutar" style="border-color:#c9a227">Consolidar históricos</button>
+          <button type="button" id="btnRechaExportar" style="border-color:#6a4a9e">Exportar recuperación</button>
+          <button type="button" id="btnRechaExportarEnriquecimiento" style="border-color:#2a8f6a">Exportar enriquecimiento</button>
+          <button type="button" id="btnRechaExportarSalud" style="border-color:#477fa8">Exportar salud dataset</button>
+          <button type="button" id="btnRechaCerrar">Cerrar</button>
+        </div>
+      </div>
+      <div id="rechaHeroKpi" class="recha-hero"></div>
+      <div id="rechaSummaryMount" class="recha-kpis"></div>
+      <div class="recha-section" id="rechaSaludSection">
+        <h3>Salud del dataset</h3>
+        <p class="recha-muted" style="margin:0 0 8px">Medición del ecosistema sobre <code>historicos_maestro.json</code> tras consolidación. No infiere ni calcula inicios A/B.</p>
+        <div id="rechaSaludMount"></div>
+      </div>
+      <div class="recha-section" id="rechaCapturaMasivaSection">
+        <h3>Captura masiva A/B</h3>
+        <p class="recha-muted" style="margin:0 0 8px">Pegado masivo hacia <code>evidencia_manual_ab</code>. Formato por línea: <code>SEMILLA|EQUIVALENTE|A|B|FUENTE|NOTA</code>. Sin inferencia ni cálculo automático.</p>
+        <label class="recha-muted" style="display:block;margin-bottom:6px" for="rechaCapturaTextarea">Pegar registros:</label>
+        <textarea id="rechaCapturaTextarea" class="recha-captura-textarea" placeholder="3370|730|43|21|captura Boyacá|confirmado&#10;1409|712|10|10|captura marzo|confirmado"></textarea>
+        <div class="recha-btn-row" style="margin-top:10px">
+          <button type="button" id="btnRechaImportarCaptura" style="border-color:#c9a227">Importar evidencia</button>
+          <button type="button" id="btnRechaExportarErroresImport" style="border-color:#6a4a9e">Exportar errores importación</button>
+        </div>
+        <div id="rechaCapturaResumen" class="recha-captura-resumen"></div>
+      </div>
+      <div class="recha-section" id="rechaPipelineSection">
+        <h3>Pipeline automático A/B</h3>
+        <p class="recha-muted" style="margin:0 0 8px">Tras guardar/importar evidencia o consolidar, recalcula recuperación y salud del dataset. <strong>No</strong> ejecuta investigación automáticamente; solo desbloquea etapas.</p>
+        <div id="rechaPipelineStatus" class="recha-pipeline-status"></div>
+        <div class="recha-btn-row" style="margin-top:10px">
+          <button type="button" id="btnPipelineInvEstructural" disabled style="border-color:#3d8f5c">Ejecutar investigación estructural</button>
+          <button type="button" id="btnPipelineInvCompleta" disabled style="border-color:#2a8f6a">Investigación completa</button>
+          <button type="button" id="btnPipelineInvAvanzada" disabled style="border-color:#6a4a9e">Investigación avanzada</button>
+          <button type="button" id="btnRechaExportarPipeline" style="border-color:#477fa8">Exportar pipeline</button>
+        </div>
+        <div class="recha-pipeline-historial">
+          <strong style="display:block;margin:10px 0 6px;color:#cdeeff;font-size:12px">PIPELINE_EVENTOS</strong>
+          <div class="recha-table-wrap" style="max-height:180px">
+            <table class="recha-table">
+              <thead><tr><th>Hora</th><th>Acción</th><th>Eval. antes</th><th>Eval. después</th></tr></thead>
+              <tbody id="rechaPipelineHistorialBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </motion.div>
+      <div class="recha-section" id="rechaValorEvidenciaSection">
+        <h3>Valor de evidencia A/B</h3>
+        <p class="recha-muted" style="margin:0 0 8px">Mide el aporte marginal de cada entrada en <code>evidencia_manual_ab</code> al ecosistema consolidado. No infiere ni calcula A/B.</p>
+        <div class="recha-btn-row" style="margin-bottom:10px">
+          <button type="button" id="btnRechaRecalcularValor" style="border-color:#c9a227">Recalcular valor evidencia</button>
+          <button type="button" id="btnRechaExportarValor" style="border-color:#477fa8">Exportar valor evidencia</button>
+        </motion.div>
+        <div class="recha-table-wrap" style="max-height:280px">
+          <table class="recha-table">
+            <thead>
+              <tr>
+                <th>SEMILLA</th>
+                <th>FUENTE</th>
+                <th>DELTA_EVALUABLES</th>
+                <th>MADUREZ</th>
+                <th>SCORE</th>
+                <th>CLASIFICACION</th>
+              </tr>
+            </thead>
+            <tbody id="rechaValorEvidenciaBody"></tbody>
+          </table>
+        </motion.div>
+      </motion.div>
+      <div id="rechaDupModal" class="recha-dup-modal" aria-hidden="true">
+        <div class="recha-dup-inner">
+          <h4>Registro con evidencia existente</h4>
+          <p id="rechaDupMsg" class="recha-muted" style="margin:0 0 12px;line-height:1.45"></p>
+          <div class="recha-btn-row">
+            <button type="button" id="btnRechaDupIgnorar" style="border-color:#7a9aad">Ignorar</button>
+            <button type="button" id="btnRechaDupDuplicar" style="border-color:#c9a227">Duplicar</button>
+            <button type="button" id="btnRechaDupActualizar" style="border-color:#2a8f6a">Actualizar evidencia</button>
+          </div>
+          <label class="recha-muted" style="display:flex;align-items:center;gap:8px;margin-top:12px;cursor:pointer">
+            <input type="checkbox" id="rechaDupApplyAll" />
+            Aplicar esta decisión a todos los duplicados de esta importación
+          </label>
+        </div>
+      </div>
+      <div class="recha-section">
+        <h3>Registros incompletos</h3>
+        <div class="recha-filters">
+          <span class="recha-muted">Filtrar:</span>
+          <label><input type="radio" name="rechaFiltroIncompletos" value="TODOS" checked /> Todos</label>
+          <label><input type="radio" name="rechaFiltroIncompletos" value="SIN_DATOS" /> Solo SIN_DATOS</label>
+          <label><input type="radio" name="rechaFiltroIncompletos" value="PARCIAL" /> Solo PARCIAL</label>
+          <button type="button" id="btnRechaCompletarEvidencia" style="margin-left:auto;border-color:#2a8f6a">Completar evidencia</button>
+        </div>
+        <div id="rechaFormEvidencia" class="recha-form" aria-hidden="true">
+          <p class="recha-muted" style="margin:0 0 10px">Evidencia documentada (se añade a <code>evidencia_manual_ab</code>; no modifica <code>historicos_maestro.json</code>).</p>
+          <div class="recha-form-grid">
+            <div><label for="rechaEviSemilla">Semilla</label><input id="rechaEviSemilla" type="text" maxlength="4" readonly /></div>
+            <div><label for="rechaEviInicioA">inicioA</label><input id="rechaEviInicioA" type="text" maxlength="2" placeholder="ej. 43" /></div>
+            <div><label for="rechaEviInicioB">inicioB</label><input id="rechaEviInicioB" type="text" maxlength="2" placeholder="ej. 21" /></div>
+            <div style="grid-column:span 2"><label for="rechaEviFuente">fuente</label><input id="rechaEviFuente" type="text" placeholder="ej. captura Boyaca mayo" /></div>
+            <div><label for="rechaEviNota">nota</label><textarea id="rechaEviNota" placeholder="ej. confirmado visualmente"></textarea></div>
+          </div>
+          <div class="recha-btn-row">
+            <button type="button" id="btnRechaGuardarEvidencia" style="border-color:#2a8f6a">Guardar evidencia</button>
+            <button type="button" id="btnRechaCancelarEvidencia">Cancelar</button>
+          </div>
+        </div>
+        <div class="recha-table-wrap" style="max-height:320px;margin-bottom:14px">
+          <table class="recha-table">
+            <thead>
+              <tr>
+                <th>SEMILLA</th>
+                <th>EQUIVALENTE</th>
+                <th>FECHA</th>
+                <th>GANADOR</th>
+                <th>A</th>
+                <th>B</th>
+                <th>FUENTES_ENCONTRADAS</th>
+                <th>ESTADO</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="rechaIncompletosBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="recha-section">
+        <h3>Consolidación completa</h3>
+        <p class="recha-muted" style="margin-bottom:10px">Estados: <span class="recha-estado-recuperado">RECUPERADO</span> (A y B), <span class="recha-estado-parcial">PARCIAL</span> (solo uno), <span class="recha-estado-sin">SIN_DATOS</span> (ninguno). Confianza por fuente: ALTA = campo explícito en JSON histórico; MEDIA = serie documentada, memoria o tablas visibles; BAJA = texto en observaciones con patrón explícito.</p>
+        <div class="recha-table-wrap">
+          <table class="recha-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>SEMILLA</th>
+                <th>EQUIVALENTE</th>
+                <th>A encontrado</th>
+                <th>B encontrado</th>
+                <th>FUENTE</th>
+                <th>CONFIANZA</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody id="rechaBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /MODO_RECUPERACION_HISTORICA_AB -->
 
   <script>
     (function () {
@@ -8523,6 +8765,2005 @@
 
       setupModoInvestigacionOrigenAB();
       /* /MODO_INVESTIGACION_ORIGEN_AB */
+
+      /* MODO_RECUPERACION_HISTORICA_AB · MODO_ENRIQUECIMIENTO_HISTORICO_AB */
+      const RECHA_NOTA =
+        "Solo consolidación de inicios A/B ya documentados en fuentes locales o JSON. Sin inferencia, sin inventar dígitos ni aplicar fórmulas.";
+      const EVIDENCIA_MANUAL_KEY = "numerolotto_pro_v18_evidencia_manual_ab";
+      const ENRIQUECIMIENTO_NOTA =
+        "Enriquecimiento histórico: evidencia humana verificable en evidencia_manual_ab. No modifica historicos_maestro.json.";
+      let rechaLastExport = null;
+      let rechaLastEnriquecimientoExport = null;
+      let rechaLastSaludExport = null;
+      let rechaLastPack = null;
+      let rechaPackAnterior = null;
+      let rechaFiltroIncompletos = "TODOS";
+      let rechaSelectedSemilla = "";
+
+      function loadEvidenciaManualStore() {
+        try {
+          const raw = localStorage.getItem(EVIDENCIA_MANUAL_KEY);
+          if (!raw) return { evidencia_manual_ab: [] };
+          const p = JSON.parse(raw);
+          return p && Array.isArray(p.evidencia_manual_ab)
+            ? p
+            : { evidencia_manual_ab: [] };
+        } catch (_e) {
+          return { evidencia_manual_ab: [] };
+        }
+      }
+
+      function saveEvidenciaManualStore(data) {
+        localStorage.setItem(EVIDENCIA_MANUAL_KEY, JSON.stringify(data));
+      }
+
+      function appendEvidenciaManual(entry) {
+        const store = loadEvidenciaManualStore();
+        store.evidencia_manual_ab.push(entry);
+        saveEvidenciaManualStore(store);
+        return store;
+      }
+
+      function rechaUpdateEvidenciaManualLatest(semilla, fields) {
+        const sem = sanitize4(semilla);
+        const store = loadEvidenciaManualStore();
+        let idx = -1;
+        let tsBest = "";
+        store.evidencia_manual_ab.forEach(function (e, i) {
+          if (!e || sanitize4(e.semilla) !== sem) return;
+          const t = String(e.ts || e.ts_actualizado || "");
+          if (idx < 0 || t > tsBest) {
+            idx = i;
+            tsBest = t;
+          }
+        });
+        if (idx < 0) return false;
+        const prev = store.evidencia_manual_ab[idx];
+        store.evidencia_manual_ab[idx] = Object.assign({}, prev, fields, {
+          ts_actualizado: new Date().toISOString(),
+          origen: prev.origen || "captura_masiva_ab"
+        });
+        saveEvidenciaManualStore(store);
+        return true;
+      }
+
+      function rechaTieneEvidenciaManual(semilla, store, batchMap) {
+        const sem = sanitize4(semilla);
+        if (batchMap && batchMap[sem]) return true;
+        const entries = (store && store.evidencia_manual_ab) || [];
+        for (let i = 0; i < entries.length; i++) {
+          if (entries[i] && sanitize4(entries[i].semilla) === sem) return true;
+        }
+        return false;
+      }
+
+      /* MODO_CAPTURA_MASIVA_AB */
+      let rechaLastErroresImportacion = null;
+      let rechaCapturaDupPolicy = null;
+
+      function rechaParseLineaCapturaMasiva(line, numLinea) {
+        const raw = String(line || "").trim();
+        if (!raw || raw.charAt(0) === "#") {
+          return { ok: false, linea: numLinea, raw: raw, motivo: "linea_vacia" };
+        }
+        const parts = raw.split("|").map(function (p) {
+          return String(p || "").trim();
+        });
+        if (parts.length < 4) {
+          return {
+            ok: false,
+            linea: numLinea,
+            raw: raw,
+            motivo: "formato_invalido",
+            detalle: "Se requieren al menos SEMILLA|EQUIVALENTE|A|B"
+          };
+        }
+        const sem = sanitize4(parts[0]);
+        const eq = sanitize3(parts[1]);
+        const inicioA = rechaInicioValido(parts[2]);
+        const inicioB = rechaInicioValido(parts[3]);
+        const fuente = parts[4] != null ? String(parts[4]).trim() : "";
+        const nota =
+          parts.length > 5
+            ? parts
+                .slice(5)
+                .join("|")
+                .trim()
+            : "";
+        if (!/^\d{4}$/.test(sem)) {
+          return {
+            ok: false,
+            linea: numLinea,
+            raw: raw,
+            motivo: "semilla_invalida",
+            detalle: "La semilla debe tener 4 cifras"
+          };
+        }
+        if (!/^\d{3}$/.test(eq)) {
+          return {
+            ok: false,
+            linea: numLinea,
+            raw: raw,
+            motivo: "equivalente_invalido",
+            detalle: "El equivalente debe tener 3 cifras"
+          };
+        }
+        if (!inicioA) {
+          return {
+            ok: false,
+            linea: numLinea,
+            raw: raw,
+            motivo: "inicioA_invalido",
+            detalle: "A debe ser un par de 2 cifras"
+          };
+        }
+        if (!inicioB) {
+          return {
+            ok: false,
+            linea: numLinea,
+            raw: raw,
+            motivo: "inicioB_invalido",
+            detalle: "B debe ser un par de 2 cifras"
+          };
+        }
+        return {
+          ok: true,
+          linea: numLinea,
+          raw: raw,
+          semilla: sem,
+          equivalente: eq,
+          inicioA: inicioA,
+          inicioB: inicioB,
+          fuente: fuente,
+          nota: nota
+        };
+      }
+
+      function rechaEntryFromCaptura(parsed) {
+        return {
+          id: "evi_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+          ts: new Date().toISOString(),
+          semilla: parsed.semilla,
+          equivalente: parsed.equivalente,
+          inicioA: parsed.inicioA,
+          inicioB: parsed.inicioB,
+          fuente: parsed.fuente || "evidencia_manual_ab",
+          nota: parsed.nota,
+          origen: "captura_masiva_ab"
+        };
+      }
+
+      function rechaAskDupAction(semilla, parsed) {
+        return new Promise(function (resolve) {
+          const modal = document.getElementById("rechaDupModal");
+          const msg = document.getElementById("rechaDupMsg");
+          if (!modal || !msg) {
+            resolve("ignore");
+            return;
+          }
+          msg.textContent =
+            "La semilla " +
+            semilla +
+            " ya tiene evidencia en evidencia_manual_ab (línea " +
+            parsed.linea +
+            "). A=" +
+            parsed.inicioA +
+            " B=" +
+            parsed.inicioB +
+            ". Elija acción:";
+          modal.classList.add("open");
+          modal.setAttribute("aria-hidden", "false");
+          function done(action) {
+            modal.classList.remove("open");
+            modal.setAttribute("aria-hidden", "true");
+            document.getElementById("btnRechaDupIgnorar").removeEventListener("click", onIgn);
+            document.getElementById("btnRechaDupDuplicar").removeEventListener("click", onDup);
+            document.getElementById("btnRechaDupActualizar").removeEventListener("click", onUpd);
+            resolve(action);
+          }
+          function onIgn() {
+            done("ignore");
+          }
+          function onDup() {
+            done("duplicate");
+          }
+          function onUpd() {
+            done("update");
+          }
+          document.getElementById("btnRechaDupIgnorar").addEventListener("click", onIgn);
+          document.getElementById("btnRechaDupDuplicar").addEventListener("click", onDup);
+          document.getElementById("btnRechaDupActualizar").addEventListener("click", onUpd);
+        });
+      }
+
+      function rechaRenderCapturaResumen(resumen) {
+        const mount = document.getElementById("rechaCapturaResumen");
+        if (!mount || !resumen) return;
+        mount.innerHTML =
+          '<div class="recha-kpi"><strong>Importados</strong><span class="recha-estado-recuperado">' +
+          resumen.importados +
+          "</span></div>" +
+          '<div class="recha-kpi"><strong>Rechazados</strong><span class="recha-estado-sin">' +
+          resumen.rechazados +
+          "</span></div>" +
+          '<div class="recha-kpi"><strong>Duplicados</strong><span class="recha-estado-parcial">' +
+          resumen.duplicados +
+          "</span></div>" +
+          '<div class="recha-kpi"><strong>Actualizados</strong><span>' +
+          resumen.actualizados +
+          "</span></div>";
+      }
+
+      function rechaImportarCapturaMasiva() {
+        const ta = document.getElementById("rechaCapturaTextarea");
+        const texto = ta ? ta.value : "";
+        const lineas = String(texto || "").split(/\r?\n/);
+        const resumen = {
+          importados: 0,
+          rechazados: 0,
+          duplicados: 0,
+          actualizados: 0
+        };
+        const errores = [];
+        const rechazados = [];
+        const importadosOk = [];
+        const batchMap = {};
+        rechaCapturaDupPolicy = null;
+        const applyAllChk = document.getElementById("rechaDupApplyAll");
+        if (applyAllChk) applyAllChk.checked = false;
+
+        function procesarLinea(idx) {
+          if (idx >= lineas.length) {
+            rechaLastErroresImportacion = {
+              exportado: new Date().toISOString(),
+              modulo: "MODO_CAPTURA_MASIVA_AB",
+              app_version: APP_VERSION,
+              nota: "Importación masiva a evidencia_manual_ab. Sin inferencia ni cálculo de A/B.",
+              resumen: resumen,
+              importados: importadosOk,
+              rechazados: rechazados,
+              errores: errores
+            };
+            rechaRenderCapturaResumen(resumen);
+            return rechaRunPipeline("IMPORTACION_MASIVA");
+          }
+          const parsed = rechaParseLineaCapturaMasiva(lineas[idx], idx + 1);
+          if (!parsed.ok) {
+            resumen.rechazados++;
+            const errRow = {
+              linea: parsed.linea,
+              raw: parsed.raw,
+              motivo: parsed.motivo,
+              detalle: parsed.detalle || ""
+            };
+            rechazados.push(errRow);
+            errores.push(errRow);
+            return procesarLinea(idx + 1);
+          }
+          const store = loadEvidenciaManualStore();
+          const esDup = rechaTieneEvidenciaManual(parsed.semilla, store, batchMap);
+          function aplicar(accion) {
+            if (accion === "ignore") {
+              resumen.duplicados++;
+              errores.push({
+                linea: parsed.linea,
+                semilla: parsed.semilla,
+                motivo: "duplicado_ignorado",
+                raw: parsed.raw
+              });
+              return procesarLinea(idx + 1);
+            }
+            if (accion === "update") {
+              const ok = rechaUpdateEvidenciaManualLatest(parsed.semilla, {
+                equivalente: parsed.equivalente,
+                inicioA: parsed.inicioA,
+                inicioB: parsed.inicioB,
+                fuente: parsed.fuente || "evidencia_manual_ab",
+                nota: parsed.nota
+              });
+              if (ok) {
+                resumen.actualizados++;
+                batchMap[parsed.semilla] = true;
+                importadosOk.push({
+                  linea: parsed.linea,
+                  semilla: parsed.semilla,
+                  accion: "actualizado"
+                });
+              } else {
+                appendEvidenciaManual(rechaEntryFromCaptura(parsed));
+                resumen.importados++;
+                batchMap[parsed.semilla] = true;
+                importadosOk.push({
+                  linea: parsed.linea,
+                  semilla: parsed.semilla,
+                  accion: "importado_sin_previo"
+                });
+              }
+              return procesarLinea(idx + 1);
+            }
+            appendEvidenciaManual(rechaEntryFromCaptura(parsed));
+            if (esDup) resumen.duplicados++;
+            resumen.importados++;
+            batchMap[parsed.semilla] = true;
+            importadosOk.push({
+              linea: parsed.linea,
+              semilla: parsed.semilla,
+              accion: esDup ? "duplicado_anadido" : "importado"
+            });
+            return procesarLinea(idx + 1);
+          }
+          if (!esDup) {
+            return aplicar("duplicate");
+          }
+          if (rechaCapturaDupPolicy) {
+            return aplicar(rechaCapturaDupPolicy);
+          }
+          return rechaAskDupAction(parsed.semilla, parsed).then(function (accion) {
+            if (applyAllChk && applyAllChk.checked) {
+              rechaCapturaDupPolicy = accion;
+            }
+            return aplicar(accion);
+          });
+        }
+        return procesarLinea(0);
+      }
+      /* /MODO_CAPTURA_MASIVA_AB */
+
+      function rechaEvidenciaManualPorSemilla(seed4, store) {
+        const sem = sanitize4(seed4);
+        const entries = (store && store.evidencia_manual_ab) || [];
+        const rows = entries
+          .filter(function (e) {
+            return e && sanitize4(e.semilla) === sem;
+          })
+          .sort(function (a, b) {
+            return String(b.ts || "").localeCompare(String(a.ts || ""));
+          });
+        let inicioA = "";
+        let inicioB = "";
+        let fuenteA = "";
+        let fuenteB = "";
+        let notaUltima = "";
+        rows.forEach(function (e) {
+          if (!inicioA) {
+            const a = rechaInicioValido(e.inicioA);
+            if (a) {
+              inicioA = a;
+              fuenteA = e.fuente ? String(e.fuente) : "evidencia_manual_ab";
+            }
+          }
+          if (!inicioB) {
+            const b = rechaInicioValido(e.inicioB);
+            if (b) {
+              inicioB = b;
+              fuenteB = e.fuente ? String(e.fuente) : "evidencia_manual_ab";
+            }
+          }
+        });
+        if (rows.length && rows[0].nota) notaUltima = String(rows[0].nota);
+        return {
+          inicioA: inicioA,
+          inicioB: inicioB,
+          fuenteA: fuenteA,
+          fuenteB: fuenteB,
+          notaUltima: notaUltima,
+          entradas: rows.length
+        };
+      }
+
+      function rechaInicioValido(v) {
+        const p = padTwoInicio(v);
+        if (!p) return "";
+        const n = Number(p);
+        if (!Number.isFinite(n) || n < 0 || n > 99) return "";
+        return p;
+      }
+
+      function rechaFirstSerieToken(serie) {
+        if (!Array.isArray(serie) || !serie.length) return "";
+        return rechaInicioValido(serie[0]);
+      }
+
+      function rechaFirstChainToken(text) {
+        const tok = parseSeriesList(text);
+        if (!tok.length) return "";
+        return rechaInicioValido(tok[0]);
+      }
+
+      function rechaCellInicio(cellId) {
+        const el = document.getElementById(cellId);
+        if (!el) return "";
+        const t = String(el.textContent || "").replace(/\s/g, "");
+        if (!t || t === "--" || t === "—") return "";
+        return rechaInicioValido(t);
+      }
+
+      function rechaSnapshotNotaParaSemilla(seed4) {
+        const snaps = loadBoardSnapshots();
+        const keys = Object.keys(snaps || {});
+        let n = 0;
+        keys.forEach(function (k) {
+          const row = snaps[k];
+          if (row && sanitize4(row.seed) === seed4) n++;
+        });
+        if (!n) return { hallado: false, nota: "sin snapshot para esta semilla" };
+        return {
+          hallado: true,
+          nota: "snapshots existen (" + n + ") pero no incluyen campo inicioA/inicioB; no usados"
+        };
+      }
+
+      function rechaParseObservacionesTexto(text, side) {
+        const raw = String(text || "");
+        if (!raw.trim()) return "";
+        const sideU = side === "B" ? "B" : "A";
+        const patterns = [
+          new RegExp("inicio\\s*" + sideU + "\\s*[:=]\\s*(\\d{1,2})", "i"),
+          new RegExp("inicio" + sideU + "\\s*[:=]\\s*(\\d{1,2})", "i")
+        ];
+        let m = null;
+        let i;
+        for (i = 0; i < patterns.length; i++) {
+          m = raw.match(patterns[i]);
+          if (m) break;
+        }
+        if (!m) return "";
+        return rechaInicioValido(m[1]);
+      }
+
+      function rechaBuscarEnObservaciones(seed4, obsStore) {
+        const outA = { valor: "", fuente: "", confianza: "" };
+        const outB = { valor: "", fuente: "", confianza: "" };
+        const entries = obsStore && Array.isArray(obsStore.entries) ? obsStore.entries : [];
+        entries.forEach(function (e) {
+          const sObs = e && e.seed ? sanitize4(e.seed) : "";
+          if (sObs && sObs !== seed4) return;
+          const texto = (e && e.text ? e.text : "") + " " + (e && e.casosLabel ? e.casosLabel : "");
+          if (!outA.valor) {
+            const a = rechaParseObservacionesTexto(texto, "A");
+            if (a) {
+              outA.valor = a;
+              outA.fuente = "observaciones";
+              outA.confianza = "BAJA";
+            }
+          }
+          if (!outB.valor) {
+            const b = rechaParseObservacionesTexto(texto, "B");
+            if (b) {
+              outB.valor = b;
+              outB.fuente = "observaciones";
+              outB.confianza = "BAJA";
+            }
+          }
+        });
+        return { A: outA, B: outB };
+      }
+
+      function rechaCandidatosLado(side, ctx) {
+        const list = [];
+        const fuentesVistas = {};
+        function push(valor, fuente, confianza) {
+          const v = rechaInicioValido(valor);
+          if (!v) return;
+          list.push({ valor: v, fuente: fuente, confianza: confianza });
+          fuentesVistas[fuente] = true;
+        }
+        const rec = ctx.maestro;
+        const ab = ctx.ab;
+        const mem = ctx.memoria;
+        const evi = ctx.evidenciaManual;
+        const isA = side === "A";
+        if (rec) {
+          push(isA ? rec.inicioA : rec.inicioB, "historicos_maestro", "ALTA");
+        }
+        if (evi) {
+          const evVal = isA ? evi.inicioA : evi.inicioB;
+          const evFuente = isA ? evi.fuenteA : evi.fuenteB;
+          if (evVal) {
+            push(evVal, "evidencia_manual_ab" + (evFuente ? ":" + evFuente : ""), "ALTA");
+          }
+        }
+        if (rec) {
+          push(
+            isA ? rechaFirstSerieToken(rec.serieA) : rechaFirstSerieToken(rec.serieB),
+            "historicos_maestro.serie",
+            "MEDIA"
+          );
+          if (rec.observaciones) {
+            const parsed = rechaParseObservacionesTexto(rec.observaciones, side);
+            if (parsed) push(parsed, "historicos_maestro.observaciones", "BAJA");
+          }
+        }
+        if (ab) {
+          push(isA ? ab.inicioA : ab.inicioB, "historicos_ab.json", "ALTA");
+        }
+        if (ctx.audit) {
+          push(isA ? ctx.audit.inicioA : ctx.audit.inicioB, "auditoria_historica", "ALTA");
+        }
+        if (mem) {
+          push(
+            isA ? rechaFirstChainToken(mem.memA) : rechaFirstChainToken(mem.memB),
+            "memoria_local",
+            "MEDIA"
+          );
+        }
+        if (ctx.visible && ctx.visible.seed === ctx.seed) {
+          const v = isA ? ctx.visible.a : ctx.visible.b;
+          if (v) push(v, "tablas_ab_visibles", "MEDIA");
+        }
+        const obsSide = isA ? ctx.obs.A : ctx.obs.B;
+        if (obsSide && obsSide.valor) {
+          push(obsSide.valor, obsSide.fuente || "observaciones", obsSide.confianza || "BAJA");
+        }
+        return { candidatos: list, fuentes: Object.keys(fuentesVistas) };
+      }
+
+      function rechaElegirCandidato(candidatos) {
+        if (!candidatos || !candidatos.length) return { valor: "", fuente: "", confianza: "" };
+        return candidatos[0];
+      }
+
+      function rechaEsEvaluable(semilla, equivalente, inicioA, inicioB) {
+        const s = invoDigits4(semilla);
+        const e = invoDigits3(equivalente);
+        const pa = rechaInicioValido(inicioA);
+        const pb = rechaInicioValido(inicioB);
+        return !!(s && e && pa && pb);
+      }
+
+      function rechaConfianzaCombinada(cA, cB) {
+        const rank = { ALTA: 0, MEDIA: 1, BAJA: 2, "": 9 };
+        const ra = rank[cA] != null ? rank[cA] : 9;
+        const rb = rank[cB] != null ? rank[cB] : 9;
+        const worst = Math.max(ra, rb);
+        if (worst === 0) return "ALTA";
+        if (worst === 1) return "MEDIA";
+        if (worst === 2) return "BAJA";
+        return "—";
+      }
+
+      function rechaEstadoClase(estado) {
+        if (estado === "RECUPERADO") return "recha-estado-recuperado";
+        if (estado === "PARCIAL") return "recha-estado-parcial";
+        return "recha-estado-sin";
+      }
+
+      function rechaProcesarRegistro(rec, idx, ctx) {
+        const sem = sanitize4(rec.semilla);
+        const eq = sanitize3(rec.equivalente);
+        const abRow = ctx.abBySeed[sem] || null;
+        const memRow = ctx.memoriaBySeed[sem] || null;
+        const auditRow = ctx.auditBySeed[sem] || null;
+        const obsPack = rechaBuscarEnObservaciones(sem, ctx.observaciones);
+        if (rec.observaciones && !obsPack.A.valor) {
+          const aObs = rechaParseObservacionesTexto(rec.observaciones, "A");
+          if (aObs) {
+            obsPack.A = { valor: aObs, fuente: "historicos_maestro.observaciones", confianza: "BAJA" };
+          }
+        }
+        if (rec.observaciones && !obsPack.B.valor) {
+          const bObs = rechaParseObservacionesTexto(rec.observaciones, "B");
+          if (bObs) {
+            obsPack.B = { valor: bObs, fuente: "historicos_maestro.observaciones", confianza: "BAJA" };
+          }
+        }
+        const eviManual = rechaEvidenciaManualPorSemilla(sem, ctx.evidenciaStore);
+        const subCtx = {
+          seed: sem,
+          maestro: rec,
+          ab: abRow,
+          memoria: memRow,
+          audit: auditRow,
+          visible: ctx.visible,
+          obs: obsPack,
+          evidenciaManual: eviManual
+        };
+        const packA = rechaCandidatosLado("A", subCtx);
+        const packB = rechaCandidatosLado("B", subCtx);
+        const pickA = rechaElegirCandidato(packA.candidatos);
+        const pickB = rechaElegirCandidato(packB.candidatos);
+        const fuentesSet = {};
+        packA.fuentes.forEach(function (f) {
+          fuentesSet[f] = true;
+        });
+        packB.fuentes.forEach(function (f) {
+          fuentesSet[f] = true;
+        });
+        const fuentesEncontradas = Object.keys(fuentesSet).sort();
+        const snapInfo = rechaSnapshotNotaParaSemilla(sem);
+        let estado = "SIN_DATOS";
+        if (pickA.valor && pickB.valor) estado = "RECUPERADO";
+        else if (pickA.valor || pickB.valor) estado = "PARCIAL";
+        const fuentePartes = [];
+        if (pickA.fuente) fuentePartes.push("A:" + pickA.fuente);
+        if (pickB.fuente) fuentePartes.push("B:" + pickB.fuente);
+        const fuente = fuentePartes.length ? fuentePartes.join(" · ") : "—";
+        const confianza = rechaConfianzaCombinada(pickA.confianza, pickB.confianza);
+        const antesMaestro = rechaEsEvaluable(sem, eq, rec.inicioA, rec.inicioB);
+        const despues = rechaEsEvaluable(sem, eq, pickA.valor, pickB.valor);
+        const gan = ganadorFourFromRecord(rec);
+        return {
+          indice: idx + 1,
+          sorteo: String(rec.sorteo || ""),
+          semilla: sem,
+          equivalente: eq,
+          fecha: String(rec.fecha || ""),
+          ganador: gan || "",
+          inicioA_maestro: String(rec.inicioA != null ? rec.inicioA : ""),
+          inicioB_maestro: String(rec.inicioB != null ? rec.inicioB : ""),
+          inicioA_recuperado: pickA.valor || "",
+          inicioB_recuperado: pickB.valor || "",
+          fuente_A: pickA.fuente || "",
+          fuente_B: pickB.fuente || "",
+          fuente: fuente,
+          fuentes_encontradas: fuentesEncontradas,
+          confianza_A: pickA.confianza || "",
+          confianza_B: pickB.confianza || "",
+          confianza: confianza,
+          estado: estado,
+          evaluable_antes_maestro: antesMaestro,
+          evaluable_despues_consolidacion: despues,
+          evidencia_manual_entradas: eviManual.entradas,
+          snapshots: snapInfo
+        };
+      }
+
+      function rechaIndexBySeed(rows, mapper) {
+        const out = {};
+        (rows || []).forEach(function (r) {
+          const sem = sanitize4(r.semilla);
+          if (!/^\d{4}$/.test(sem)) return;
+          out[sem] = mapper ? mapper(r) : r;
+        });
+        return out;
+      }
+
+      function rechaFetchAbArray() {
+        if (typeof fetch !== "function") return Promise.resolve([]);
+        return fetch("historicos_ab.json", { cache: "no-store" })
+          .then(function (r) {
+            if (!r.ok) throw new Error("no ab");
+            return r.json();
+          })
+          .then(function (arr) {
+            return Array.isArray(arr) ? arr : [];
+          })
+          .catch(function () {
+            return HISTORICOS_AB_EMBED.slice();
+          });
+      }
+
+      function rechaVisibleTablesForSeed(seed4) {
+        const s = sanitize4(seed4);
+        if (sanitize4(state.seed) !== s) return { seed: s, a: "", b: "" };
+        const fromInputA = rechaFirstChainToken(memAInput ? memAInput.value : "");
+        const fromInputB = rechaFirstChainToken(memBInput ? memBInput.value : "");
+        const fromCellA = rechaCellInicio("memA1");
+        const fromCellB = rechaCellInicio("memB1");
+        return {
+          seed: s,
+          a: fromInputA || fromCellA || "",
+          b: fromInputB || fromCellB || ""
+        };
+      }
+
+      function rechaConsolidarPackDesdeDatos(regs, abArr, memAll, obs, evidenciaStore) {
+        const abBySeed = rechaIndexBySeed(abArr);
+        const memoriaBySeed = {};
+        Object.keys(memAll || {}).forEach(function (k) {
+          memoriaBySeed[sanitize4(k)] = memAll[k];
+        });
+        const auditBySeed = rechaIndexBySeed(histAbDataset);
+        const filas = [];
+        let nRec = 0;
+        let nPar = 0;
+        let nSin = 0;
+        let nEvAntes = 0;
+        let nEvDesp = 0;
+        regs.forEach(function (rec, idx) {
+          const sem = sanitize4(rec.semilla);
+          if (!/^\d{4}$/.test(sem)) return;
+          const visible = rechaVisibleTablesForSeed(sem);
+          const row = rechaProcesarRegistro(rec, idx, {
+            abBySeed: abBySeed,
+            memoriaBySeed: memoriaBySeed,
+            auditBySeed: auditBySeed,
+            observaciones: obs,
+            evidenciaStore: evidenciaStore,
+            visible: visible
+          });
+          filas.push(row);
+          if (row.estado === "RECUPERADO") nRec++;
+          else if (row.estado === "PARCIAL") nPar++;
+          else nSin++;
+          if (row.evaluable_antes_maestro) nEvAntes++;
+          if (row.evaluable_despues_consolidacion) nEvDesp++;
+        });
+        return {
+          exportado: new Date().toISOString(),
+          modulo: "MODO_RECUPERACION_HISTORICA_AB",
+          app_version: APP_VERSION,
+          nota: RECHA_NOTA,
+          n_registros_totales: filas.length,
+          n_recuperado: nRec,
+          n_parcial: nPar,
+          n_sin_datos: nSin,
+          n_registros_evaluables_antes_maestro: nEvAntes,
+          n_registros_evaluables_despues_consolidacion: nEvDesp,
+          registros: filas
+        };
+      }
+
+      function rechaRunConsolidacion(opts) {
+        opts = opts || {};
+        return invoFetchMaestro()
+          .then(function (payload) {
+            const regs =
+              payload && Array.isArray(payload.registros)
+                ? payload.registros
+                : Array.isArray(payload)
+                  ? payload
+                  : [];
+            return rechaFetchAbArray().then(function (abArr) {
+              const memAll = loadMemory();
+              const obs = loadObservacionesStore();
+              const evidenciaStore =
+                opts.evidenciaStore != null ? opts.evidenciaStore : loadEvidenciaManualStore();
+              const pack = rechaConsolidarPackDesdeDatos(regs, abArr, memAll, obs, evidenciaStore);
+              pack.fuentes_consultadas = [
+                "historicos_maestro.json",
+                "evidencia_manual_ab",
+                "historicos_ab.json",
+                "auditoria_historica",
+                "memoria_local",
+                "tablas_ab_visibles",
+                "observaciones",
+                "snapshots"
+              ];
+              pack.prioridad_consolidacion = [
+                "historicos_maestro",
+                "evidencia_manual_ab",
+                "historicos_ab.json",
+                "auditoria_historica",
+                "memoria_local",
+                "tablas_ab_visibles",
+                "observaciones"
+              ];
+              if (!opts.silent) {
+                rechaPackAnterior = rechaLastPack;
+                rechaLastPack = pack;
+                rechaLastExport = pack;
+                rechaLastEnriquecimientoExport = rechaBuildEnriquecimientoExport(
+                  pack,
+                  evidenciaStore,
+                  rechaPackAnterior
+                );
+                rechaLastSaludExport = rechaBuildSaludDataset(pack);
+              }
+              return pack;
+            });
+          });
+      }
+
+      /* MODO_SALUD_DATASET_AB */
+      const SALUD_FUENTES_CANONICAS = [
+        "historicos_maestro",
+        "evidencia_manual_ab",
+        "historicos_ab",
+        "auditoria_historica",
+        "memoria_local",
+        "tablas_ab_visibles",
+        "observaciones"
+      ];
+      const SALUD_NOTA =
+        "Medición del estado del ecosistema de datos consolidado. No infiere ni calcula inicios A/B.";
+
+      function rechaCanonicalFuenteKey(fuenteRaw) {
+        const s = String(fuenteRaw || "").toLowerCase();
+        if (!s) return null;
+        if (s.indexOf("evidencia_manual") >= 0) return "evidencia_manual_ab";
+        if (s.indexOf("historicos_ab") >= 0) return "historicos_ab";
+        if (s.indexOf("auditoria") >= 0) return "auditoria_historica";
+        if (s.indexOf("memoria_local") >= 0 || s.indexOf("memoria") >= 0) return "memoria_local";
+        if (s.indexOf("tablas_ab") >= 0) return "tablas_ab_visibles";
+        if (s.indexOf("observaciones") >= 0 || s.indexOf("historicos_maestro.observaciones") >= 0) {
+          return "observaciones";
+        }
+        if (s.indexOf("historicos_maestro") >= 0) return "historicos_maestro";
+        return null;
+      }
+
+      function rechaFuentesEnRegistro(row) {
+        const set = {};
+        function add(raw) {
+          const k = rechaCanonicalFuenteKey(raw);
+          if (k) set[k] = true;
+        }
+        add(row.fuente_A);
+        add(row.fuente_B);
+        (row.fuentes_encontradas || []).forEach(add);
+        return set;
+      }
+
+      function rechaClasificarRiesgoEstadistico(nEval) {
+        const n = Number(nEval) || 0;
+        if (n < 5) {
+          return {
+            codigo: "MUESTRA_CRITICA",
+            etiqueta: "MUESTRA CRITICA",
+            clase: "critica",
+            rango: "evaluables < 5"
+          };
+        }
+        if (n < 15) {
+          return {
+            codigo: "MUESTRA_PEQUENA",
+            etiqueta: "MUESTRA PEQUEÑA",
+            clase: "pequena",
+            rango: "5 ≤ evaluables < 15"
+          };
+        }
+        if (n < 30) {
+          return {
+            codigo: "MUESTRA_UTIL",
+            etiqueta: "MUESTRA UTIL",
+            clase: "util",
+            rango: "15 ≤ evaluables < 30"
+          };
+        }
+        return {
+          codigo: "MUESTRA_ROBUSTA",
+          etiqueta: "MUESTRA ROBUSTA",
+          clase: "robusta",
+          rango: "evaluables ≥ 30"
+        };
+      }
+
+      function rechaClasificarMadurez(indice) {
+        const x = Number(indice);
+        if (x < 0.4) return "INMADURO";
+        if (x < 0.6) return "CRECIENDO";
+        if (x < 0.8) return "UTIL";
+        return "MADURO";
+      }
+
+      function rechaPct(n, total) {
+        if (!total) return 0;
+        return Number(((100 * n) / total).toFixed(2));
+      }
+
+      function rechaBuildSaludDataset(pack) {
+        const filas = pack && pack.registros ? pack.registros : [];
+        const total = filas.length || pack.n_registros_totales || 0;
+        let evaluables = 0;
+        let parciales = 0;
+        let sinDatos = 0;
+        let conA = 0;
+        let conB = 0;
+        const fuenteConteos = {};
+        SALUD_FUENTES_CANONICAS.forEach(function (f) {
+          fuenteConteos[f] = 0;
+        });
+        filas.forEach(function (r) {
+          const tieneA = !!rechaInicioValido(r.inicioA_recuperado);
+          const tieneB = !!rechaInicioValido(r.inicioB_recuperado);
+          if (tieneA) conA++;
+          if (tieneB) conB++;
+          if (r.estado === "RECUPERADO" || r.evaluable_despues_consolidacion) evaluables++;
+          else if (r.estado === "PARCIAL") parciales++;
+          else sinDatos++;
+          const fset = rechaFuentesEnRegistro(r);
+          SALUD_FUENTES_CANONICAS.forEach(function (fk) {
+            if (fset[fk]) fuenteConteos[fk]++;
+          });
+        });
+        const coberturaA = rechaPct(conA, total);
+        const coberturaB = rechaPct(conB, total);
+        const coberturaCompleta = rechaPct(evaluables, total);
+        const coberturaFrac = total ? evaluables / total : 0;
+        const evaluablesRel = total ? evaluables / total : 0;
+        let fuentesActivas = 0;
+        const fuentesUsadas = SALUD_FUENTES_CANONICAS.map(function (fk) {
+          const cnt = fuenteConteos[fk] || 0;
+          if (cnt > 0) fuentesActivas++;
+          return {
+            fuente: fk,
+            registros: cnt,
+            porcentaje: rechaPct(cnt, total),
+            porcentaje_texto: rechaPct(cnt, total) + "%"
+          };
+        });
+        const diversidadFuentes = SALUD_FUENTES_CANONICAS.length
+          ? fuentesActivas / SALUD_FUENTES_CANONICAS.length
+          : 0;
+        const indiceMadurez = Number(
+          (0.4 * coberturaFrac + 0.3 * diversidadFuentes + 0.3 * evaluablesRel).toFixed(4)
+        );
+        const riesgo = rechaClasificarRiesgoEstadistico(evaluables);
+        const barMax = 30;
+        const barPos = Math.min(evaluables, barMax);
+        const barPct = (barPos / barMax) * 100;
+        return {
+          exportado: new Date().toISOString(),
+          modulo: "MODO_SALUD_DATASET_AB",
+          app_version: APP_VERSION,
+          nota: SALUD_NOTA,
+          TOTAL_REGISTROS: total,
+          EVALUABLES_REALES: evaluables,
+          PARCIALES: parciales,
+          SIN_DATOS: sinDatos,
+          COBERTURA_A: coberturaA,
+          COBERTURA_A_texto: coberturaA + "%",
+          COBERTURA_B: coberturaB,
+          COBERTURA_B_texto: coberturaB + "%",
+          COBERTURA_COMPLETA: coberturaCompleta,
+          COBERTURA_COMPLETA_texto: coberturaCompleta + "%",
+          registros_con_A: conA,
+          registros_con_B: conB,
+          FUENTES_USADAS: fuentesUsadas,
+          fuentes_activas: fuentesActivas,
+          diversidad_fuentes: Number(diversidadFuentes.toFixed(4)),
+          evaluables_relativos: Number(evaluablesRel.toFixed(4)),
+          INDICE_MADUREZ_DATASET: indiceMadurez,
+          INDICE_MADUREZ_texto: (indiceMadurez * 100).toFixed(1) + "%",
+          clasificacion_madurez: rechaClasificarMadurez(indiceMadurez),
+          formula_indice_madurez:
+            "0.40*cobertura_completa + 0.30*diversidad_fuentes + 0.30*evaluables_relativos",
+          RIESGO_ESTADISTICO: riesgo.etiqueta,
+          riesgo_estadistico_detalle: riesgo,
+          barra_muestra_evaluables: {
+            valor: evaluables,
+            posicion_pct: Number(barPct.toFixed(2)),
+            zonas: [
+              { rango: "0-5", color: "rojo" },
+              { rango: "5-15", color: "naranja" },
+              { rango: "15-30", color: "amarillo" },
+              { rango: "30+", color: "verde" }
+            ]
+          },
+          listo_para_investigacion_real: evaluables >= 5,
+          n_registros_evaluables_antes_maestro: pack.n_registros_evaluables_antes_maestro || 0,
+          n_registros_evaluables_despues_consolidacion:
+            pack.n_registros_evaluables_despues_consolidacion || evaluables
+        };
+      }
+
+      function rechaRenderSalud(salud) {
+        const mount = document.getElementById("rechaSaludMount");
+        if (!mount) return;
+        if (!salud) {
+          mount.innerHTML =
+            '<p class="recha-muted">Ejecute «Consolidar históricos» para medir la salud del dataset.</p>';
+          return;
+        }
+        const riesgo = salud.riesgo_estadistico_detalle || {};
+        const barPct = salud.barra_muestra_evaluables
+          ? salud.barra_muestra_evaluables.posicion_pct
+          : 0;
+        const fuentesRows = (salud.FUENTES_USADAS || [])
+          .map(function (f) {
+            return (
+              "<tr><td>" +
+              escapeHtml(f.fuente) +
+              "</td><td>" +
+              f.registros +
+              "</td><td>" +
+              escapeHtml(f.porcentaje_texto) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+        mount.innerHTML =
+          '<div class="recha-salud-grid">' +
+          '<div class="recha-salud-metric"><strong>TOTAL_REGISTROS</strong><span>' +
+          salud.TOTAL_REGISTROS +
+          "</span></div>" +
+          '<div class="recha-salud-metric"><strong>EVALUABLES_REALES</strong><span class="recha-estado-recuperado">' +
+          salud.EVALUABLES_REALES +
+          '</span><span class="sub">A y B presentes</span></div>' +
+          '<div class="recha-salud-metric"><strong>PARCIALES</strong><span class="recha-estado-parcial">' +
+          salud.PARCIALES +
+          '</span><span class="sub">solo A o solo B</span></div>' +
+          '<div class="recha-salud-metric"><strong>SIN_DATOS</strong><span class="recha-estado-sin">' +
+          salud.SIN_DATOS +
+          "</span></div>" +
+          '<div class="recha-salud-metric"><strong>COBERTURA_A</strong><span>' +
+          escapeHtml(salud.COBERTURA_A_texto) +
+          '<span class="sub">' +
+          salud.registros_con_A +
+          " / " +
+          salud.TOTAL_REGISTROS +
+          "</span></div>" +
+          '<div class="recha-salud-metric"><strong>COBERTURA_B</strong><span>' +
+          escapeHtml(salud.COBERTURA_B_texto) +
+          '<span class="sub">' +
+          salud.registros_con_B +
+          " / " +
+          salud.TOTAL_REGISTROS +
+          "</span></div>" +
+          '<div class="recha-salud-metric"><strong>COBERTURA_COMPLETA</strong><span>' +
+          escapeHtml(salud.COBERTURA_COMPLETA_texto) +
+          '<span class="sub">A y B</span></div>' +
+          "</div>" +
+          '<div class="recha-salud-riesgo ' +
+          escapeHtml(riesgo.clase || "") +
+          '">RIESGO_ESTADISTICO: ' +
+          escapeHtml(salud.RIESGO_ESTADISTICO || "—") +
+          " · " +
+          escapeHtml(riesgo.rango || "") +
+          "</div>" +
+          '<div class="recha-salud-bar-wrap">' +
+          '<div class="recha-salud-bar-labels"><span>0</span><span>5</span><span>15</span><span>30+</span></div>' +
+          '<div class="recha-salud-bar-track">' +
+          '<div class="recha-salud-bar-zone z-rojo" title="0–5"></div>' +
+          '<div class="recha-salud-bar-zone z-naranja" title="5–15"></div>' +
+          '<div class="recha-salud-bar-zone z-amarillo" title="15–30"></div>' +
+          '<div class="recha-salud-bar-zone z-verde" title="30+"></div>' +
+          '<div class="recha-salud-bar-marker" style="left:' +
+          barPct +
+          '%" title="' +
+          salud.EVALUABLES_REALES +
+          ' evaluables"></div>' +
+          "</div></div>" +
+          '<div class="recha-salud-madurez"><strong>INDICE_MADUREZ_DATASET</strong>: ' +
+          escapeHtml(salud.INDICE_MADUREZ_texto) +
+          " (" +
+          salud.INDICE_MADUREZ_DATASET +
+          ') · <span class="' +
+          (salud.clasificacion_madurez === "MADURO"
+            ? "recha-estado-recuperado"
+            : salud.clasificacion_madurez === "INMADURO"
+              ? "recha-estado-sin"
+              : "recha-estado-parcial") +
+          '">' +
+          escapeHtml(salud.clasificacion_madurez) +
+          "</span>" +
+          '<p class="recha-muted" style="margin:8px 0 0">' +
+          escapeHtml(salud.formula_indice_madurez) +
+          "</p></div>" +
+          '<div class="recha-salud-fuentes"><strong style="display:block;margin-bottom:8px;color:#cdeeff">FUENTES_USADAS</strong>' +
+          '<table><thead><tr><th>Fuente</th><th>Registros</th><th>%</th></tr></thead><tbody>' +
+          (fuentesRows ||
+            '<tr><td colspan="3" class="recha-muted">(ninguna)</td></tr>') +
+          "</tbody></table></div>";
+      }
+      /* /MODO_SALUD_DATASET_AB */
+
+      function rechaBuildEnriquecimientoExport(pack, evidenciaStore, packPrev) {
+        const filas = pack && pack.registros ? pack.registros : [];
+        const faltantes = filas.filter(function (r) {
+          return r.estado === "SIN_DATOS" || r.estado === "PARCIAL";
+        });
+        const completados = filas.filter(function (r) {
+          return r.estado === "RECUPERADO";
+        });
+        const cambios = [];
+        const prevMap = {};
+        if (packPrev && packPrev.registros) {
+          packPrev.registros.forEach(function (r) {
+            prevMap[r.semilla] = r;
+          });
+        }
+        filas.forEach(function (r) {
+          const prev = prevMap[r.semilla];
+          if (!prev) {
+            if (r.evaluable_despues_consolidacion) {
+              cambios.push({
+                semilla: r.semilla,
+                tipo: "nuevo_evaluable",
+                estado_antes: null,
+                estado_despues: r.estado,
+                evaluable_antes: false,
+                evaluable_despues: true
+              });
+            }
+            return;
+          }
+          if (prev.estado !== r.estado || prev.evaluable_despues_consolidacion !== r.evaluable_despues_consolidacion) {
+            cambios.push({
+              semilla: r.semilla,
+              tipo: "cambio_estado",
+              estado_antes: prev.estado,
+              estado_despues: r.estado,
+              evaluable_antes: prev.evaluable_despues_consolidacion,
+              evaluable_despues: r.evaluable_despues_consolidacion,
+              inicioA_antes: prev.inicioA_recuperado,
+              inicioB_antes: prev.inicioB_recuperado,
+              inicioA_despues: r.inicioA_recuperado,
+              inicioB_despues: r.inicioB_recuperado
+            });
+          }
+        });
+        const total = pack.n_registros_totales || filas.length || 1;
+        const despues = pack.n_registros_evaluables_despues_consolidacion || 0;
+        const antes = pack.n_registros_evaluables_antes_maestro || 0;
+        return {
+          exportado: new Date().toISOString(),
+          modulo: "MODO_ENRIQUECIMIENTO_HISTORICO_AB",
+          app_version: APP_VERSION,
+          nota: ENRIQUECIMIENTO_NOTA,
+          n_registros_totales: total,
+          n_registros_evaluables_antes_maestro: antes,
+          n_registros_evaluables_despues_consolidacion: despues,
+          porcentaje_completado_evaluable: Number(((100 * despues) / total).toFixed(2)),
+          faltantes: faltantes,
+          completados: completados,
+          evidencias: (evidenciaStore && evidenciaStore.evidencia_manual_ab) || [],
+          cambios: cambios
+        };
+      }
+
+      function rechaRenderHeroKpi(pack) {
+        const mount = document.getElementById("rechaHeroKpi");
+        if (!mount || !pack) return;
+        const total = pack.n_registros_totales || 1;
+        const antes = pack.n_registros_evaluables_antes_maestro || 0;
+        const despues = pack.n_registros_evaluables_despues_consolidacion || 0;
+        const pct = Number(((100 * despues) / total).toFixed(1));
+        mount.innerHTML =
+          '<p class="recha-hero-title">Registros evaluables</p>' +
+          '<div class="recha-hero-values">antes: ' +
+          antes +
+          " · después: " +
+          despues +
+          "</div>" +
+          '<p class="recha-hero-sub">' +
+          pct +
+          "% del maestro con semilla+equivalente+inicioA+inicioB consolidados</p>";
+      }
+
+      function rechaFilasIncompletas(pack) {
+        const filas = pack && pack.registros ? pack.registros : [];
+        return filas.filter(function (r) {
+          if (r.estado === "RECUPERADO") return false;
+          if (rechaFiltroIncompletos === "SIN_DATOS") return r.estado === "SIN_DATOS";
+          if (rechaFiltroIncompletos === "PARCIAL") return r.estado === "PARCIAL";
+          return r.estado === "SIN_DATOS" || r.estado === "PARCIAL";
+        });
+      }
+
+      function rechaRenderIncompletos(pack) {
+        const tb = document.getElementById("rechaIncompletosBody");
+        if (!tb) return;
+        const filas = rechaFilasIncompletas(pack);
+        if (!filas.length) {
+          tb.innerHTML =
+            '<tr><td colspan="9" class="recha-muted">(ningún registro incompleto con el filtro actual)</td></tr>';
+          return;
+        }
+        tb.innerHTML = filas
+          .map(function (r) {
+            const sel = rechaSelectedSemilla === r.semilla ? " selected-row" : "";
+            return (
+              "<tr data-semilla=\"" +
+              escapeHtml(r.semilla) +
+              "\"" +
+              (sel ? ' style="background:#1a2a20"' : "") +
+              ">" +
+              "<td>" +
+              escapeHtml(r.semilla) +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.equivalente || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.fecha || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.ganador || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.inicioA_recuperado || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.inicioB_recuperado || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml((r.fuentes_encontradas || []).join(", ") || "—") +
+              "</td>" +
+              '<td class="' +
+              rechaEstadoClase(r.estado) +
+              '">' +
+              escapeHtml(r.estado) +
+              "</td>" +
+              '<td class="recha-row-actions"><button type="button" data-recha-evi="' +
+              escapeHtml(r.semilla) +
+              '">Evidencia</button></td>' +
+              "</tr>"
+            );
+          })
+          .join("");
+      }
+
+      function rechaOpenFormEvidencia(semilla, pack) {
+        const form = document.getElementById("rechaFormEvidencia");
+        const inpSem = document.getElementById("rechaEviSemilla");
+        const inpA = document.getElementById("rechaEviInicioA");
+        const inpB = document.getElementById("rechaEviInicioB");
+        const inpF = document.getElementById("rechaEviFuente");
+        const inpN = document.getElementById("rechaEviNota");
+        if (!form || !inpSem) return;
+        const sem = sanitize4(semilla);
+        rechaSelectedSemilla = sem;
+        inpSem.value = sem;
+        let row = null;
+        if (pack && pack.registros) {
+          pack.registros.forEach(function (r) {
+            if (r.semilla === sem) row = r;
+          });
+        }
+        inpA.value = row && row.inicioA_recuperado ? row.inicioA_recuperado : "";
+        inpB.value = row && row.inicioB_recuperado ? row.inicioB_recuperado : "";
+        inpF.value = "";
+        inpN.value = "";
+        form.classList.add("open");
+        form.setAttribute("aria-hidden", "false");
+      }
+
+      function rechaCloseFormEvidencia() {
+        const form = document.getElementById("rechaFormEvidencia");
+        if (form) {
+          form.classList.remove("open");
+          form.setAttribute("aria-hidden", "true");
+        }
+      }
+
+      function rechaGuardarEvidenciaManual() {
+        const sem = sanitize4(
+          document.getElementById("rechaEviSemilla")
+            ? document.getElementById("rechaEviSemilla").value
+            : ""
+        );
+        if (!/^\d{4}$/.test(sem)) {
+          window.alert("Semilla inválida.");
+          return null;
+        }
+        const inicioA = rechaInicioValido(
+          document.getElementById("rechaEviInicioA")
+            ? document.getElementById("rechaEviInicioA").value
+            : ""
+        );
+        const inicioB = rechaInicioValido(
+          document.getElementById("rechaEviInicioB")
+            ? document.getElementById("rechaEviInicioB").value
+            : ""
+        );
+        if (!inicioA && !inicioB) {
+          window.alert("Indique al menos inicioA o inicioB (2 cifras).");
+          return null;
+        }
+        const fuente = String(
+          document.getElementById("rechaEviFuente")
+            ? document.getElementById("rechaEviFuente").value
+            : ""
+        ).trim();
+        const nota = String(
+          document.getElementById("rechaEviNota")
+            ? document.getElementById("rechaEviNota").value
+            : ""
+        ).trim();
+        const entry = {
+          id: "evi_" + Date.now(),
+          ts: new Date().toISOString(),
+          semilla: sem,
+          inicioA: inicioA || "",
+          inicioB: inicioB || "",
+          fuente: fuente || "evidencia_manual_ab",
+          nota: nota
+        };
+        appendEvidenciaManual(entry);
+        rechaCloseFormEvidencia();
+        return entry;
+      }
+
+      function rechaRenderSummary(pack) {
+        const mount = document.getElementById("rechaSummaryMount");
+        if (!mount || !pack) return;
+        mount.innerHTML =
+          '<div class="recha-kpi"><strong>Total registros</strong>' +
+          pack.n_registros_totales +
+          "</div>" +
+          '<div class="recha-kpi"><strong>RECUPERADO</strong><span class="recha-estado-recuperado">' +
+          pack.n_recuperado +
+          "</span></div>" +
+          '<div class="recha-kpi"><strong>PARCIAL</strong><span class="recha-estado-parcial">' +
+          pack.n_parcial +
+          "</span></div>" +
+          '<div class="recha-kpi"><strong>SIN_DATOS</strong><span class="recha-estado-sin">' +
+          pack.n_sin_datos +
+          "</span></div>" +
+          '<div class="recha-kpi"><strong>Evaluables (maestro)</strong>' +
+          pack.n_registros_evaluables_antes_maestro +
+          "</div>" +
+          '<div class="recha-kpi"><strong>Evaluables (consolidado)</strong>' +
+          pack.n_registros_evaluables_despues_consolidacion +
+          "</div>";
+      }
+
+      function rechaRenderTable(pack) {
+        const tb = document.getElementById("rechaBody");
+        if (!tb) return;
+        if (!pack || !pack.registros.length) {
+          tb.innerHTML =
+            '<tr><td colspan="8" class="recha-muted">Sin registros en historicos_maestro.json</td></tr>';
+          return;
+        }
+        tb.innerHTML = pack.registros
+          .map(function (r) {
+            return (
+              "<tr>" +
+              "<td>" +
+              r.indice +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.semilla) +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.equivalente || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.inicioA_recuperado || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.inicioB_recuperado || "—") +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.fuente) +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.confianza) +
+              "</td>" +
+              '<td class="' +
+              rechaEstadoClase(r.estado) +
+              '">' +
+              escapeHtml(r.estado) +
+              "</td>" +
+              "</tr>"
+            );
+          })
+          .join("");
+      }
+
+      function rechaRefreshUi(pack) {
+        rechaRenderHeroKpi(pack);
+        rechaRenderSummary(pack);
+        rechaRenderSalud(rechaLastSaludExport);
+        rechaRenderIncompletos(pack);
+        rechaRenderTable(pack);
+        rechaRenderPipelineUi();
+      }
+
+      /* MODO_PIPELINE_AUTOMATICO_AB */
+      const PIPELINE_AB_KEY = "numerolotto_pro_v18_pipeline_ab";
+      const PIPELINE_NOTA =
+        "Pipeline de recuperación y salud. No ejecuta investigación automáticamente; solo desbloquea etapas.";
+      let rechaLastPipelineExport = null;
+
+      function rechaPipelineHoraLocal() {
+        const d = new Date();
+        const p = function (n) {
+          return String(n).padStart(2, "0");
+        };
+        return (
+          d.getFullYear() +
+          "-" +
+          p(d.getMonth() + 1) +
+          "-" +
+          p(d.getDate()) +
+          " " +
+          p(d.getHours()) +
+          ":" +
+          p(d.getMinutes())
+        );
+      }
+
+      function loadPipelineStore() {
+        try {
+          const raw = localStorage.getItem(PIPELINE_AB_KEY);
+          if (!raw) return { PIPELINE_EVENTOS: [] };
+          const data = JSON.parse(raw);
+          return data && Array.isArray(data.PIPELINE_EVENTOS)
+            ? data
+            : { PIPELINE_EVENTOS: [] };
+        } catch (_e) {
+          return { PIPELINE_EVENTOS: [] };
+        }
+      }
+
+      function savePipelineStore(data) {
+        localStorage.setItem(PIPELINE_AB_KEY, JSON.stringify(data));
+      }
+
+      function rechaGetEvaluablesCount() {
+        if (rechaLastSaludExport && rechaLastSaludExport.EVALUABLES_REALES != null) {
+          return Number(rechaLastSaludExport.EVALUABLES_REALES) || 0;
+        }
+        if (rechaLastPack && rechaLastPack.n_registros_evaluables_despues_consolidacion != null) {
+          return Number(rechaLastPack.n_registros_evaluables_despues_consolidacion) || 0;
+        }
+        return 0;
+      }
+
+      function appendPipelineEvent(accion, evaluablesAntes, evaluablesDespues) {
+        const store = loadPipelineStore();
+        store.PIPELINE_EVENTOS.push({
+          hora: rechaPipelineHoraLocal(),
+          accion: String(accion || ""),
+          evaluables_antes: Number(evaluablesAntes) || 0,
+          evaluables_despues: Number(evaluablesDespues) || 0
+        });
+        if (store.PIPELINE_EVENTOS.length > 200) {
+          store.PIPELINE_EVENTOS = store.PIPELINE_EVENTOS.slice(-200);
+        }
+        savePipelineStore(store);
+        return store;
+      }
+
+      function rechaPipelineDesbloqueos(nEval) {
+        const n = Number(nEval) || 0;
+        return {
+          evaluables_reales: n,
+          investigacion_disponible: n >= 5,
+          dataset_suficiente: n >= 15,
+          dataset_robusto: n >= 30,
+          etiquetas: {
+            nivel_5: n >= 5 ? "Investigación disponible" : null,
+            nivel_15: n >= 15 ? "Dataset suficiente" : null,
+            nivel_30: n >= 30 ? "Dataset robusto" : null
+          }
+        };
+      }
+
+      function rechaBuildPipelineExport() {
+        const store = loadPipelineStore();
+        const n = rechaGetEvaluablesCount();
+        const desb = rechaPipelineDesbloqueos(n);
+        return {
+          exportado: new Date().toISOString(),
+          modulo: "MODO_PIPELINE_AUTOMATICO_AB",
+          app_version: APP_VERSION,
+          nota: PIPELINE_NOTA,
+          EVALUABLES_REALES: n,
+          desbloqueos: desb,
+          PIPELINE_EVENTOS: store.PIPELINE_EVENTOS.slice()
+        };
+      }
+
+      function rechaRenderPipelineHistorial() {
+        const tb = document.getElementById("rechaPipelineHistorialBody");
+        if (!tb) return;
+        const evs = loadPipelineStore().PIPELINE_EVENTOS.slice().reverse();
+        if (!evs.length) {
+          tb.innerHTML =
+            '<tr><td colspan="4" class="recha-muted">(sin eventos aún)</td></tr>';
+          return;
+        }
+        tb.innerHTML = evs
+          .map(function (e) {
+            return (
+              "<tr><td>" +
+              escapeHtml(e.hora || "") +
+              "</td><td>" +
+              escapeHtml(e.accion || "") +
+              "</td><td>" +
+              (e.evaluables_antes != null ? e.evaluables_antes : "—") +
+              "</td><td>" +
+              (e.evaluables_despues != null ? e.evaluables_despues : "—") +
+              "</td></tr>"
+            );
+          })
+          .join("");
+      }
+
+      function rechaRenderPipelineUi() {
+        const mount = document.getElementById("rechaPipelineStatus");
+        const btnEst = document.getElementById("btnPipelineInvEstructural");
+        const btnComp = document.getElementById("btnPipelineInvCompleta");
+        const btnAv = document.getElementById("btnPipelineInvAvanzada");
+        const n = rechaGetEvaluablesCount();
+        const desb = rechaPipelineDesbloqueos(n);
+        if (mount) {
+          let html =
+            '<span class="recha-muted">EVALUABLES_REALES: <strong style="color:#ffd27d">' +
+            n +
+            "</strong></span> ";
+          if (desb.etiquetas.nivel_30) {
+            html +=
+              '<span class="recha-pipeline-badge ok">' +
+              escapeHtml(desb.etiquetas.nivel_30) +
+              "</span>";
+          }
+          if (desb.etiquetas.nivel_15) {
+            html +=
+              '<span class="recha-pipeline-badge ok">' +
+              escapeHtml(desb.etiquetas.nivel_15) +
+              "</span>";
+          }
+          if (desb.etiquetas.nivel_5) {
+            html +=
+              '<span class="recha-pipeline-badge ok">' +
+              escapeHtml(desb.etiquetas.nivel_5) +
+              "</span>";
+          }
+          if (n < 5) {
+            html +=
+              '<span class="recha-pipeline-badge lock">Necesita ≥5 evaluables para investigación</span>';
+          }
+          mount.innerHTML = html;
+        }
+        if (btnEst) btnEst.disabled = !desb.investigacion_disponible;
+        if (btnComp) btnComp.disabled = !desb.dataset_suficiente;
+        if (btnAv) btnAv.disabled = !desb.dataset_robusto;
+        rechaRenderPipelineHistorial();
+        rechaLastPipelineExport = rechaBuildPipelineExport();
+      }
+
+      function rechaRunPipeline(accion) {
+        const evalAntes = rechaGetEvaluablesCount();
+        return rechaRunConsolidacion()
+          .then(function (pack) {
+            rechaRefreshUi(pack);
+            const evalDespues = rechaGetEvaluablesCount();
+            appendPipelineEvent(accion, evalAntes, evalDespues);
+            rechaRenderPipelineUi();
+            return rechaBuildValorEvidencia().then(function () {
+              return pack;
+            });
+          });
+      }
+
+      /* MODO_VALOR_EVIDENCIA_AB */
+      const VALOR_EVIDENCIA_NOTA =
+        "Aporte marginal de cada evidencia manual al ecosistema consolidado. No infiere ni calcula inicios A/B.";
+      let rechaLastValorExport = null;
+
+      function rechaMetricasEcosistema(pack) {
+        const salud = rechaBuildSaludDataset(pack);
+        const total = salud.TOTAL_REGISTROS || 1;
+        const fuentesKeys = (salud.FUENTES_USADAS || [])
+          .filter(function (f) {
+            return f.registros > 0;
+          })
+          .map(function (f) {
+            return f.fuente;
+          });
+        return {
+          total_registros: total,
+          n_evaluables: salud.EVALUABLES_REALES,
+          cobertura_a: salud.COBERTURA_A / 100,
+          cobertura_b: salud.COBERTURA_B / 100,
+          cobertura_completa: salud.COBERTURA_COMPLETA / 100,
+          indice_madurez: salud.INDICE_MADUREZ_DATASET,
+          fuentes_activas: salud.fuentes_activas,
+          fuentes_keys: fuentesKeys
+        };
+      }
+
+      function rechaClasificarValorAporte(score) {
+        const s = Number(score);
+        if (s >= 0.8) return "APORTE_CRITICO";
+        if (s >= 0.6) return "APORTE_ALTO";
+        if (s >= 0.4) return "APORTE_UTIL";
+        return "APORTE_BAJO";
+      }
+
+      function rechaValorAporteClase(clasificacion) {
+        if (clasificacion === "APORTE_CRITICO") return "recha-valor-aporte-critico";
+        if (clasificacion === "APORTE_ALTO") return "recha-valor-aporte-alto";
+        if (clasificacion === "APORTE_UTIL") return "recha-valor-aporte-util";
+        return "recha-valor-aporte-bajo";
+      }
+
+      function rechaAgregoFuenteNueva(antesKeys, despuesKeys) {
+        const antes = antesKeys || [];
+        const desp = despuesKeys || [];
+        for (let i = 0; i < desp.length; i++) {
+          if (antes.indexOf(desp[i]) < 0) return true;
+        }
+        return desp.length > antes.length;
+      }
+
+      function rechaBuildValorEvidencia() {
+        return invoFetchMaestro()
+          .then(function (payload) {
+            const regs =
+              payload && Array.isArray(payload.registros)
+                ? payload.registros
+                : Array.isArray(payload)
+                  ? payload
+                  : [];
+            return rechaFetchAbArray().then(function (abArr) {
+              const memAll = loadMemory();
+              const obs = loadObservacionesStore();
+              const entradas = loadEvidenciaManualStore().evidencia_manual_ab
+                .slice()
+                .sort(function (a, b) {
+                  return String(a.ts || a.id || "").localeCompare(String(b.ts || b.id || ""));
+                });
+              const ranking = [];
+              let acum = [];
+              let prevMet = rechaMetricasEcosistema(
+                rechaConsolidarPackDesdeDatos(regs, abArr, memAll, obs, { evidencia_manual_ab: [] })
+              );
+              entradas.forEach(function (evi) {
+                acum.push(evi);
+                const pack = rechaConsolidarPackDesdeDatos(regs, abArr, memAll, obs, {
+                  evidencia_manual_ab: acum.slice()
+                });
+                const met = rechaMetricasEcosistema(pack);
+                const deltaEval = met.n_evaluables - prevMet.n_evaluables;
+                const deltaMad = met.indice_madurez - prevMet.indice_madurez;
+                const deltaCobA = met.cobertura_a - prevMet.cobertura_a;
+                const deltaCobB = met.cobertura_b - prevMet.cobertura_b;
+                const deltaCobC = met.cobertura_completa - prevMet.cobertura_completa;
+                const nuevaFuente = rechaAgregoFuenteNueva(prevMet.fuentes_keys, met.fuentes_keys);
+                const total = met.total_registros || 1;
+                const deltaEvalNorm = Math.min(1, Math.max(0, deltaEval / total));
+                const score =
+                  0.4 * deltaEvalNorm +
+                  0.25 * deltaMad +
+                  0.2 * deltaCobC +
+                  (nuevaFuente ? 0.15 : 0);
+                const scoreR = Number(Math.min(1, Math.max(0, score)).toFixed(4));
+                const clas = rechaClasificarValorAporte(scoreR);
+                ranking.push({
+                  id_evidencia: evi.id,
+                  ts: evi.ts,
+                  semilla: sanitize4(evi.semilla),
+                  fuente: String(evi.fuente || "evidencia_manual_ab"),
+                  equivalente: String(evi.equivalente || ""),
+                  inicioA: String(evi.inicioA || ""),
+                  inicioB: String(evi.inicioB || ""),
+                  impacto_evaluables: {
+                    antes: prevMet.n_evaluables,
+                    despues: met.n_evaluables,
+                    delta: deltaEval
+                  },
+                  impacto_fuentes: {
+                    agrego_fuente_nueva: nuevaFuente ? "si" : "no"
+                  },
+                  impacto_cobertura: {
+                    delta_cobertura_A: Number(deltaCobA.toFixed(4)),
+                    delta_cobertura_B: Number(deltaCobB.toFixed(4)),
+                    delta_cobertura_completa: Number(deltaCobC.toFixed(4))
+                  },
+                  impacto_madurez: {
+                    antes: prevMet.indice_madurez,
+                    despues: met.indice_madurez,
+                    delta: Number(deltaMad.toFixed(4))
+                  },
+                  delta_evaluables: deltaEval,
+                  delta_madurez: Number(deltaMad.toFixed(4)),
+                  score_aporte: scoreR,
+                  clasificacion: clas,
+                  formula_score:
+                    "0.40*delta_evaluables_norm+0.25*delta_madurez+0.20*delta_cobertura_completa+0.15*nueva_fuente"
+                });
+                prevMet = met;
+              });
+              ranking.sort(function (a, b) {
+                return b.score_aporte - a.score_aporte || b.delta_evaluables - a.delta_evaluables;
+              });
+              rechaLastValorExport = {
+                exportado: new Date().toISOString(),
+                modulo: "MODO_VALOR_EVIDENCIA_AB",
+                app_version: APP_VERSION,
+                nota: VALOR_EVIDENCIA_NOTA,
+                n_evidencias_medidas: ranking.length,
+                ranking: ranking
+              };
+              rechaRenderValorEvidencia(rechaLastValorExport);
+              return rechaLastValorExport;
+            });
+          });
+      }
+
+      function rechaRenderValorEvidencia(exportPack) {
+        const tb = document.getElementById("rechaValorEvidenciaBody");
+        if (!tb) return;
+        const rows = exportPack && exportPack.ranking ? exportPack.ranking : [];
+        if (!rows.length) {
+          tb.innerHTML =
+            '<tr><td colspan="6" class="recha-muted">(sin entradas en evidencia_manual_ab; importe evidencia y recalcule)</td></tr>';
+          return;
+        }
+        tb.innerHTML = rows
+          .map(function (r) {
+            const deltaTxt =
+              (r.delta_evaluables > 0 ? "+" : "") + String(r.delta_evaluables);
+            const madTxt =
+              (r.delta_madurez > 0 ? "+" : "") + String(r.delta_madurez);
+            return (
+              "<tr>" +
+              "<td>" +
+              escapeHtml(r.semilla) +
+              "</td>" +
+              "<td>" +
+              escapeHtml(r.fuente) +
+              "</td>" +
+              "<td>" +
+              escapeHtml(deltaTxt) +
+              "</td>" +
+              "<td>" +
+              escapeHtml(madTxt) +
+              "</td>" +
+              "<td>" +
+              r.score_aporte.toFixed(4) +
+              "</td>" +
+              '<td class="' +
+              rechaValorAporteClase(r.clasificacion) +
+              '">' +
+              escapeHtml(r.clasificacion) +
+              "</td>" +
+              "</tr>"
+            );
+          })
+          .join("");
+      }
+      /* /MODO_VALOR_EVIDENCIA_AB */
+
+      function rechaAbrirInvestigacionEstructural() {
+        if (typeof aseRunAndRender === "function") {
+          aseRunAndRender();
+          return;
+        }
+        const ov = document.getElementById("structuralAnalysisOverlay");
+        if (ov) {
+          ov.style.display = "block";
+          ov.setAttribute("aria-hidden", "false");
+        }
+      }
+
+      function rechaAbrirInvestigacionOrigen() {
+        const ov = document.getElementById("investigacionOrigenOverlay");
+        if (!ov) return;
+        ov.style.display = "block";
+        ov.setAttribute("aria-hidden", "false");
+      }
+      /* /MODO_PIPELINE_AUTOMATICO_AB */
+
+      function setupModoRecuperacionHistoricaAB() {
+        const btnOpen = document.getElementById("btnRecuperacionHistoricaAB");
+        const ov = document.getElementById("recuperacionHistoricaOverlay");
+        const btnClose = document.getElementById("btnRechaCerrar");
+        const btnRun = document.getElementById("btnRechaEjecutar");
+        const btnEx = document.getElementById("btnRechaExportar");
+        if (!btnOpen || !ov) return;
+        btnOpen.addEventListener("click", function () {
+          ov.style.display = "block";
+          ov.setAttribute("aria-hidden", "false");
+          rechaRunPipeline("CONSOLIDAR_HISTORICOS")
+            .catch(function (err) {
+              const tb = document.getElementById("rechaBody");
+              if (tb) {
+                tb.innerHTML =
+                  '<tr><td colspan="8" class="recha-muted">Error: ' +
+                  escapeHtml(String(err && err.message ? err.message : err)) +
+                  "</td></tr>";
+              }
+            });
+        });
+        if (btnClose) {
+          btnClose.addEventListener("click", function () {
+            ov.style.display = "none";
+            ov.setAttribute("aria-hidden", "true");
+          });
+        }
+        ov.addEventListener("click", function (ev) {
+          if (ev.target === ov) {
+            ov.style.display = "none";
+            ov.setAttribute("aria-hidden", "true");
+          }
+        });
+        if (btnRun) {
+          btnRun.addEventListener("click", function () {
+            rechaRunPipeline("CONSOLIDAR_HISTORICOS").catch(function (err) {
+              window.alert(String(err && err.message ? err.message : err));
+            });
+          });
+        }
+        if (btnEx) {
+          btnEx.addEventListener("click", function () {
+            if (!rechaLastExport) {
+              window.alert("Ejecute «Consolidar históricos» antes de exportar.");
+              return;
+            }
+            const blob = new Blob([JSON.stringify(rechaLastExport, null, 2)], {
+              type: "application/json;charset=utf-8"
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "recuperacion_historica_ab.json";
+            a.click();
+            URL.revokeObjectURL(url);
+          });
+        }
+        const btnExEnr = document.getElementById("btnRechaExportarEnriquecimiento");
+        if (btnExEnr) {
+          btnExEnr.addEventListener("click", function () {
+            if (!rechaLastEnriquecimientoExport) {
+              window.alert("Ejecute «Consolidar históricos» antes de exportar.");
+              return;
+            }
+            const blob = new Blob([JSON.stringify(rechaLastEnriquecimientoExport, null, 2)], {
+              type: "application/json;charset=utf-8"
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "enriquecimiento_historico_ab.json";
+            a.click();
+            URL.revokeObjectURL(url);
+          });
+        }
+        document.querySelectorAll('input[name="rechaFiltroIncompletos"]').forEach(function (inp) {
+          inp.addEventListener("change", function () {
+            if (inp.checked) {
+              rechaFiltroIncompletos = inp.value;
+              rechaRenderIncompletos(rechaLastPack);
+            }
+          });
+        });
+        const btnCompletar = document.getElementById("btnRechaCompletarEvidencia");
+        if (btnCompletar) {
+          btnCompletar.addEventListener("click", function () {
+            if (!rechaSelectedSemilla) {
+              window.alert("Seleccione una fila incompleta o pulse «Evidencia» en la tabla.");
+              return;
+            }
+            rechaOpenFormEvidencia(rechaSelectedSemilla, rechaLastPack);
+          });
+        }
+        const tbInc = document.getElementById("rechaIncompletosBody");
+        if (tbInc) {
+          tbInc.addEventListener("click", function (ev) {
+            const tr = ev.target.closest("tr[data-semilla]");
+            const btn = ev.target.closest("button[data-recha-evi]");
+            if (btn) {
+              rechaOpenFormEvidencia(btn.getAttribute("data-recha-evi"), rechaLastPack);
+              return;
+            }
+            if (tr) {
+              rechaSelectedSemilla = tr.getAttribute("data-semilla") || "";
+              rechaRenderIncompletos(rechaLastPack);
+            }
+          });
+        }
+        const btnGuardarEvi = document.getElementById("btnRechaGuardarEvidencia");
+        if (btnGuardarEvi) {
+          btnGuardarEvi.addEventListener("click", function () {
+            if (!rechaGuardarEvidenciaManual()) return;
+            rechaRunPipeline("GUARDAR_EVIDENCIA").catch(function (err) {
+              window.alert(String(err && err.message ? err.message : err));
+            });
+          });
+        }
+        const btnCancelEvi = document.getElementById("btnRechaCancelarEvidencia");
+        if (btnCancelEvi) {
+          btnCancelEvi.addEventListener("click", rechaCloseFormEvidencia);
+        }
+        const btnExSalud = document.getElementById("btnRechaExportarSalud");
+        if (btnExSalud) {
+          btnExSalud.addEventListener("click", function () {
+            if (!rechaLastSaludExport) {
+              window.alert("Ejecute «Consolidar históricos» antes de exportar.");
+              return;
+            }
+            const blob = new Blob([JSON.stringify(rechaLastSaludExport, null, 2)], {
+              type: "application/json;charset=utf-8"
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "salud_dataset_ab.json";
+            a.click();
+            URL.revokeObjectURL(url);
+          });
+        }
+        const btnImportCaptura = document.getElementById("btnRechaImportarCaptura");
+        if (btnImportCaptura) {
+          btnImportCaptura.addEventListener("click", function () {
+            rechaImportarCapturaMasiva().catch(function (err) {
+              window.alert(String(err && err.message ? err.message : err));
+            });
+          });
+        }
+        const btnExErrImp = document.getElementById("btnRechaExportarErroresImport");
+        if (btnExErrImp) {
+          btnExErrImp.addEventListener("click", function () {
+            if (!rechaLastErroresImportacion) {
+              window.alert("Ejecute «Importar evidencia» antes de exportar errores.");
+              return;
+            }
+            const blob = new Blob([JSON.stringify(rechaLastErroresImportacion, null, 2)], {
+              type: "application/json;charset=utf-8"
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "errores_importacion_ab.json";
+            a.click();
+            URL.revokeObjectURL(url);
+          });
+        }
+        const btnPipeEst = document.getElementById("btnPipelineInvEstructural");
+        if (btnPipeEst) {
+          btnPipeEst.addEventListener("click", function () {
+            if (rechaGetEvaluablesCount() < 5) {
+              window.alert("Se requieren al menos 5 registros evaluables (A y B).");
+              return;
+            }
+            rechaAbrirInvestigacionEstructural();
+          });
+        }
+        const btnPipeComp = document.getElementById("btnPipelineInvCompleta");
+        if (btnPipeComp) {
+          btnPipeComp.addEventListener("click", function () {
+            if (rechaGetEvaluablesCount() < 15) {
+              window.alert("Se requieren al menos 15 registros evaluables para investigación completa.");
+              return;
+            }
+            rechaAbrirInvestigacionOrigen();
+          });
+        }
+        const btnPipeAv = document.getElementById("btnPipelineInvAvanzada");
+        if (btnPipeAv) {
+          btnPipeAv.addEventListener("click", function () {
+            if (rechaGetEvaluablesCount() < 30) {
+              window.alert("Se requieren al menos 30 registros evaluables para investigación avanzada.");
+              return;
+            }
+            rechaAbrirInvestigacionOrigen();
+          });
+        }
+        const btnExPipe = document.getElementById("btnRechaExportarPipeline");
+        if (btnExPipe) {
+          btnExPipe.addEventListener("click", function () {
+            rechaLastPipelineExport = rechaBuildPipelineExport();
+            const blob = new Blob([JSON.stringify(rechaLastPipelineExport, null, 2)], {
+              type: "application/json;charset=utf-8"
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "pipeline_ab.json";
+            a.click();
+            URL.revokeObjectURL(url);
+          });
+        }
+        rechaRenderPipelineHistorial();
+        rechaRenderPipelineUi();
+        const btnRecValor = document.getElementById("btnRechaRecalcularValor");
+        if (btnRecValor) {
+          btnRecValor.addEventListener("click", function () {
+            rechaBuildValorEvidencia().catch(function (err) {
+              window.alert(String(err && err.message ? err.message : err));
+            });
+          });
+        }
+        const btnExValor = document.getElementById("btnRechaExportarValor");
+        if (btnExValor) {
+          btnExValor.addEventListener("click", function () {
+            if (!rechaLastValorExport) {
+              window.alert("Ejecute «Recalcular valor evidencia» o el pipeline primero.");
+              return;
+            }
+            const blob = new Blob([JSON.stringify(rechaLastValorExport, null, 2)], {
+              type: "application/json;charset=utf-8"
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "valor_evidencia_ab.json";
+            a.click();
+            URL.revokeObjectURL(url);
+          });
+        }
+      }
+
+      setupModoRecuperacionHistoricaAB();
+      /* /MODO_RECUPERACION_HISTORICA_AB */
 
 
 
